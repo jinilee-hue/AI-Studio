@@ -645,6 +645,7 @@ const state = {
   selectedWriterScene: 0,
   storySentenceInputs: {},
   tellStory: null,
+  scriptedShown: new Set(),
   savedSentences: {},
   portfolioTab: "all",
   portfolio: [],
@@ -1877,7 +1878,14 @@ const SCRIPTED_OUTCOMES = [
   ["here",  "retry"]    /* End       */
 ];
 
+/* Once per slot. The script is there to show a screen, not to hold a slot shut -
+   forcing "I did not catch that" on every attempt at the second sentence meant it
+   could never be filled, so Add a sentence never appeared either. Say Again and
+   the next attempt goes through on its own merits. */
 function scriptedOutcome(index) {
+  const key = `${state.tellStory.sceneId}:${index}`;
+  if (state.scriptedShown.has(key)) return null;
+  state.scriptedShown.add(key);
   return SCRIPTED_OUTCOMES[state.selectedWriterScene]?.[index] || null;
 }
 
@@ -2321,6 +2329,7 @@ function resetStory() {
   state.selectedWriterScene = 0;
   state.storySentenceInputs = {};
   state.tellStory = null;
+  state.scriptedShown = new Set();
   state.savedSentences = {};
   state.presentationSceneIndex = 0;
   showScreen("welcome");

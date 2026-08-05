@@ -238,6 +238,7 @@
   background: var(--glass-quiet);
 }
 .student-card {
+  position: relative;
   height: 100%;
   /* A size container now that the rows are 1fr of a definite grid - which is what
      the avatar needs to measure itself against. It could not before: at the old
@@ -312,6 +313,44 @@
   color: var(--brand-strong);
 }
 .student-warn::before { content: "\26A0"; }
+
+/* --- no Class 1 storyboard yet ------------------------------------------- */
+/* Rides the card's top-right corner rather than joining the column, so the avatar
+   and the name stay centred whether the flag is there or not. */
+.class1-flag {
+  position: absolute;
+  top: clamp(8px, 1.2vh, 12px);
+  /* Right, where the eye lands after the name rather than before it. */
+  right: clamp(8px, 1.2vh, 12px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--rose-soft);
+  border: 1px solid #F7CBD9;
+}
+.class1-flag-text {
+  font-family: var(--font-body);
+  font-size: min(9cqh, 13px);
+  font-weight: 800;
+  letter-spacing: .03em;
+  color: #B32E58;
+  white-space: nowrap;
+}
+.class1-flag-mark {
+  display: grid;
+  place-items: center;
+  width: min(11cqh, 18px);
+  height: min(11cqh, 18px);
+  flex: none;
+  border-radius: 50%;
+  background: var(--rose);
+  color: #FFFFFF;
+  font-size: min(9cqh, 13px);
+  font-weight: 800;
+  line-height: 1;
+}
 
 
 @media (max-width: 1180px) { .roster-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -416,7 +455,7 @@
         <div class="screen-foot-inner" data-foot="browse">
           <button class="btn ghost" type="button" data-go="roster"><span data-icon="chevronLeft"></span> Back</button>
           <div class="foot-actions">
-            <button id="downloadPdfBtn" class="btn mint" type="button">Download PDF</button>
+            <button id="downloadPdfBtn" class="btn mint" type="button">Download</button>
           </div>
         </div>
 
@@ -455,7 +494,7 @@
         <div class="screen-foot-inner">
           <button class="btn ghost" type="button" data-go="results"><span data-icon="chevronLeft"></span> Back</button>
           <div class="foot-actions">
-            <button id="detailPdfBtn" class="btn mint" type="button">Download PDF</button>
+            <button id="detailPdfBtn" class="btn mint" type="button">Download</button>
           </div>
         </div>
       </footer>
@@ -490,6 +529,11 @@ const CLASS_ROSTER = [
 
 /* Stand-in submissions. Replace with the real results feed: each entry needs the
    three scene images in story order and the sentences the child recorded. */
+/* Placeholder: who already has a Class 1 storyboard to build on. Story Builder
+   needs one, so the roster has to say who is missing it before the class starts.
+   TODO: read this from the child's saved work. */
+const CLASS1_DONE = new Set(["s1", "s2", "s4", "s5", "s7", "s9"]);
+
 const RESULT_SCENES = [
   "assets/Base%20Image%201.jpg",
   "assets/My%20Generated%20Scene_1.png",
@@ -756,12 +800,22 @@ function renderIntroChoice() {
 function renderRoster() {
   if (!els.rosterGrid) return;
 
+  /* Story Builder is built on a Class 1 storyboard, so a child without one has
+     nothing to write about. Only worth saying when that is the activity. */
+  const flagClass1 = state.introChoice === "storyBuilder";
+
   const cards = CLASS_ROSTER.map((student) => {
     const present = state.present.has(student.id);
     const initial = student.name.trim().charAt(0).toUpperCase();
+    const missing = flagClass1 && !CLASS1_DONE.has(student.id);
     return `
       <button class="student-card ${present ? "is-present" : ""}" type="button"
               data-student="${student.id}" aria-pressed="${present}">
+        ${missing ? `
+          <span class="class1-flag" title="No Class 1 storyboard yet">
+            <span class="class1-flag-text">Class 1</span>
+            <span class="class1-flag-mark" aria-hidden="true">&times;</span>
+          </span>` : ""}
         <span class="student-avatar" style="background:${student.tone}" aria-hidden="true">${initial}</span>
         <span class="student-copy">
           <span class="student-name">${escapeHtml(student.name)}</span>
@@ -1250,7 +1304,7 @@ async function exportOneStudent() {
 function setDetailBusy(busy) {
   if (!els.detailPdfBtn) return;
   els.detailPdfBtn.disabled = busy;
-  els.detailPdfBtn.textContent = busy ? "Making the file..." : "Download PDF";
+  els.detailPdfBtn.textContent = busy ? "Making the file..." : "Download";
 }
 
 function setExportBusy(busy) {
