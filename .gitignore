@@ -1,0 +1,38 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editors
+.vscode/
+.idea/
+*.swp
+
+# tooling
+node_modules/
+package-lock.json
+.agents/
+.claude/
+
+# scratch
+*.tmp
+.tmp_*
+*.bak
+*.original.*
+
+# working files that belong on a drive, not in the repo
+*.pptx
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# the superseded single-file prototypes
+Wonder-Story-Lab.html
+Wonder-Story-Lab-v2.html
+script.js
+style.css
+
+# exports
+*.zip
+story-cards*.pdf

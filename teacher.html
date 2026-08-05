@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wonder Story Lab - Teacher</title>
+<link rel="stylesheet" href="wsl-core.css">
+<style>
+/* Teacher chrome has no section tabs, so the bar is just brand and controls. */
+.topbar { grid-template-columns: minmax(0, 1fr) auto; }
+
+/* =============================================================================
+   TEACHER: STUDENT RESULTS + DETAIL
+   Only in teacher.html. The results grid mirrors the roster's shape, so the two
+   screens read as the same class seen two ways.
+   ========================================================================== */
+/* The count rides at the right end of the title's line. Absolute, so the title
+   stays centred on the page rather than being pushed off by the pill's width. */
+[data-screen="results"] .screen-head-copy { position: relative; width: 100%; }
+[data-screen="results"] #resultCount {
+  font-size: var(--fs-sm);
+  padding: 6px 16px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  margin: 0;
+  /* How much of the class has handed in is the fact the teacher came here for,
+     so it carries the brand rather than sitting in the quiet grey the default
+     pill uses for incidental labels. */
+  background: var(--brand-grad);
+  border: 2px solid var(--edge-brand);
+  color: var(--ink-on-brand);
+  box-shadow: var(--sh-1);
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  flex: 1 1 auto;
+  /* No floor and no scroll: the whole class has to be on screen at a glance, so
+     the rows divide the band and the thumbnails take what is left. The roster
+     keeps its 168px floor because enrolment there can outgrow the screen. */
+  grid-auto-rows: minmax(0, 1fr);
+  align-content: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  /* Bleed, so the cards' shadows are not sliced by the clip. */
+  margin: -12px -14px;
+  padding: 12px 14px 18px;
+}
+.result-card {
+  container-type: size;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  padding: 10px;
+  text-align: center;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  transition: all var(--dur-2) var(--ease);
+}
+.result-card.is-done:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-tint);
+  box-shadow: var(--sh-2);
+}
+.result-card:disabled { opacity: .55; }
+
+/* --- choosing whose cards to export ------------------------------------- */
+/* The name and its checkbox share the top row, so the thumbnail below keeps the
+   whole width it had before the mode existed. */
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* The card's own 10px was not enough for a name to sit off the edge. Both
+     sides, so the checkbox opposite is not jammed against the other one. */
+  padding-inline: 12px;
+}
+[data-screen="results"].is-picking .result-head { justify-content: space-between; }
+.pick-box {
+  display: grid;
+  place-items: center;
+  /* Big enough to read as a tap target from across the room, not a form field. */
+  width: min(16cqh, 32px);
+  height: min(16cqh, 32px);
+  flex: none;
+  /* A circle, matching every other round control in the product. */
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  color: #FFFFFF;
+  transition: all var(--dur-2) var(--ease);
+}
+.pick-box.is-on {
+  border-color: var(--brand);
+  background: var(--brand-grad);
+}
+.pick-box .ico { width: 80%; height: 80%; }
+.result-card.is-picked {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  box-shadow: var(--sh-2), 0 0 16px rgba(124, 91, 230, .22);
+}
+/* Picking is a choice, not a visit, so the card does not lift the way it does
+   when it is a door to somewhere. */
+[data-screen="results"].is-picking .result-card.is-done:hover { transform: none; }
+[data-screen="results"].is-picking .result-card.is-done:hover .pick-box { border-color: var(--brand); }
+.screen-foot-inner[hidden] { display: none; }
+.result-name {
+  font-family: var(--font-body);
+  font-size: min(15cqh, 24px);
+  font-weight: 800;
+  color: var(--ink);
+}
+.result-thumb {
+  width: 100%;
+  /* Fills the card's lower row, which the stretched grid sizes. */
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+}
+.result-thumb.is-waiting {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border: 1.5px dashed var(--line-strong);
+  font-size: min(12cqh, 19px);
+  font-weight: 700;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/* --- one student's finished story --------------------------------------- */
+.detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  height: 100%;
+  min-height: 0;
+}
+.detail-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.detail-scene {
+  margin: 0;
+  padding: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  overflow: hidden;
+}
+.detail-scene img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+/* The child's own words, on the product's violet rather than a yellow that
+   belongs to nothing else here. */
+.story-panel {
+  flex: none;
+  padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 30px);
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+  border-radius: var(--r-lg);
+}
+.story-panel-title {
+  margin-bottom: 10px;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--brand-strong);
+}
+.story-lines { display: grid; gap: 8px; }
+.story-lines p {
+  font-size: var(--fs-read);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+@media (max-width: 1180px) { .result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px), (orientation: portrait) and (max-width: 1100px) {
+  .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* =============================================================================
+   TEACHER: CLASS ROSTER
+   Only in teacher.html. Cards are buttons so a tap toggles attendance, and the
+   class cannot start until at least one student is present.
+   ========================================================================== */
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  height: 100%;
+  min-height: 0;
+}
+
+.roster-grid {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-content: stretch;
+  /* No floor and no scroll: the class has to be readable at a glance, so the rows
+     divide the band between them. */
+  grid-auto-rows: minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  /* Bleed the scroll box outward and pad it back in, so card shadows have room
+     inside the clip. overflow-y:auto also clips the x axis, which was slicing
+     them at the left and right edges. */
+  margin: -12px -14px;
+  padding: 12px 14px 18px;
+}
+
+.student-slot {
+  border-radius: var(--r-lg);
+  border: 2px dashed var(--line-strong);
+  background: var(--glass-quiet);
+}
+.student-card {
+  height: 100%;
+  /* A size container now that the rows are 1fr of a definite grid - which is what
+     the avatar needs to measure itself against. It could not before: at the old
+     minmax(168px, ...) floor the card height was indefinite and cqh read zero. */
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.2vh, 12px);
+  min-height: 0;
+  padding: clamp(10px, 1.6vh, 16px) 12px;
+  text-align: center;
+  border-radius: var(--r-lg);
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 2px solid var(--glass-line);
+  box-shadow: var(--glass-hi), var(--sh-1);
+  transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease),
+              box-shadow var(--dur-2) var(--ease);
+}
+.student-card:hover { transform: translateY(-2px); border-color: var(--brand-tint); }
+.student-card.is-present {
+  border-color: var(--brand);
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(246,242,255,.9));
+  box-shadow: var(--glass-hi), var(--sh-2), 0 0 18px rgba(124, 91, 230, .22);
+}
+
+.student-avatar {
+  display: grid;
+  place-items: center;
+  /* Measured against the card, so it holds its proportion whatever the row height
+     works out to - viewport units could not, because a short tablet and a tall
+     one can land on very different card heights. */
+  width: min(40cqh, 124px);
+  height: min(40cqh, 124px);
+  flex: none;
+  border-radius: 50%;
+  font-family: var(--font-body);
+  font-size: min(15cqh, 46px);
+  font-weight: 800;
+  color: #fff;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .34), 0 4px 14px rgba(45, 30, 110, .18);
+}
+.student-copy { display: grid; gap: 4px; justify-items: center; min-width: 0; width: 100%; }
+.student-name {
+  font-family: var(--font-body);
+  /* Scales with the card, like the avatar: a viewport-based size stayed put on a
+     short tablet where the card had shrunk, and the two crowded each other. */
+  font-size: min(15cqh, 27px);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+/* Speaker ID is what ties a recording to the right child, so a missing profile
+   is called out here rather than discovered mid-lesson. */
+/* Reserved even when there is no warning, so every card is the same height as
+   the tallest one instead of rows shifting between each other. */
+.student-warn.is-placeholder { visibility: hidden; }
+.student-warn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: min(10cqh, 15px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--brand-strong);
+}
+.student-warn::before { content: "\26A0"; }
+
+
+@media (max-width: 1180px) { .roster-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px), (orientation: portrait) and (max-width: 1100px) {
+  .roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) { .roster-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="app is-immersive" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-mark" src="assets/star_symbol.png" alt="" aria-hidden="true" draggable="false">
+      <span class="brand-name">Wonder Story Lab</span>
+    </div>
+    <div class="topbar-end">
+      <span id="lessonTag" class="lesson-tag">Class 1 &middot; Image Maker</span>
+      <button id="closeBtn" class="icon-btn" type="button" aria-label="Close and return to the start">
+        <span aria-hidden="true" data-icon="close"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+
+    <section class="screen on" data-screen="welcome">
+      <div class="welcome-stage">
+        <!-- The cover is a loop now. Muted and playsinline so it autoplays on a
+             tablet; the still stays as the poster and as the fallback if the
+             video cannot run. -->
+        <video class="wl-bg" src="assets/intro/intro.mp4" poster="assets/intro/bg.jpg"
+               autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <!-- Chips, logo, cards and CTA are separate elements now, so copy,
+             state and interaction are editable without re-exporting art. -->
+        <div class="wl-chip wl-chip--ai">AI Powered Creativity</div>
+
+        <img class="wl-logo" src="assets/intro/bi.png"
+             alt="Wonder Story Lab — AI Story Creator" draggable="false">
+
+        <div class="wl-cards" role="group" aria-label="Choose what to make">
+          <button class="wl-card" type="button" data-intro-choice="imageMaker" aria-pressed="false">
+            <img class="wl-card-icon" src="assets/intro/icon-image-maker.png" alt="" draggable="false">
+            <span class="wl-card-title">Image Maker</span>
+            <span class="wl-card-body">Create AI images<br>to start your story.</span>
+          </button>
+          <button class="wl-card" type="button" data-intro-choice="storyBuilder" aria-pressed="false">
+            <img class="wl-card-icon" src="assets/intro/icon-story-builder.png" alt="" draggable="false">
+            <span class="wl-card-title">Story Builder</span>
+            <span class="wl-card-body">Sequence your scenes<br>and build your story.</span>
+          </button>
+        </div>
+
+        <button class="wl-start" type="button" data-go="roster" disabled>Start Creating</button>
+      </div>
+    </section>
+
+    <!-- =============================================== 2. CLASS ROSTER ==== -->
+    <section class="screen" data-screen="roster">
+      <div class="screen-inner">
+        <header class="screen-head">
+          <div class="screen-head-copy">
+            <h1>Students</h1>
+          </div>
+        </header>
+
+        <div class="screen-body">
+          <div class="roster">
+            <div id="rosterGrid" class="roster-grid"></div>
+          </div>
+        </div>
+      </div>
+      <footer class="screen-foot">
+        <div class="screen-foot-inner">
+          <div class="foot-actions">
+            <button class="btn ghost" type="button" data-go="results">Student results <span data-icon="chevronRight"></span></button>
+            <button id="previewDemoBtn" class="btn mint" type="button">Preview demo <span data-icon="chevronRight"></span></button>
+            <button id="startClassBtn" class="btn primary" type="button" disabled>Start class <span data-icon="chevronRight"></span></button>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+
+    <!-- ============================================ 3. STUDENT RESULTS ==== -->
+    <section class="screen" data-screen="results">
+      <div class="screen-inner">
+        <header class="screen-head">
+          <div class="screen-head-copy">
+            <h1>Student results</h1>
+            <p id="resultCount" class="pill"></p>
+          </div>
+        </header>
+
+        <div class="screen-body">
+          <div class="roster">
+            <div id="resultGrid" class="result-grid"></div>
+          </div>
+        </div>
+      </div>
+      <footer class="screen-foot">
+        <div class="screen-foot-inner" data-foot="browse">
+          <button class="btn ghost" type="button" data-go="roster"><span data-icon="chevronLeft"></span> Back</button>
+          <div class="foot-actions">
+            <button id="downloadPdfBtn" class="btn mint" type="button">Download PDF</button>
+          </div>
+        </div>
+
+        <!-- Choosing who to export. The same bar, so the screen does not jump when
+             the mode changes - only what it offers does. -->
+        <div class="screen-foot-inner" data-foot="pick" hidden>
+          <button id="backPickBtn" class="btn ghost" type="button"><span data-icon="chevronLeft"></span> Back</button>
+          <div class="foot-actions">
+            <button id="selectAllBtn" class="btn primary" type="button">Select all</button>
+            <button id="downloadPickedBtn" class="btn mint" type="button" disabled>Download selected</button>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================= 4. STUDENT DETAIL ==== -->
+    <section class="screen" data-screen="studentDetail">
+      <div class="screen-inner">
+        <header class="screen-head">
+          <div class="screen-head-copy">
+            <h1 id="detailName">Student</h1>
+          </div>
+        </header>
+
+        <div class="screen-body">
+          <div class="detail-layout">
+            <div id="detailScenes" class="detail-scenes"></div>
+            <section class="story-panel">
+              <h2 class="story-panel-title">My Story</h2>
+              <div id="detailStory" class="story-lines"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <footer class="screen-foot">
+        <div class="screen-foot-inner">
+          <button class="btn ghost" type="button" data-go="results"><span data-icon="chevronLeft"></span> Back</button>
+          <div class="foot-actions">
+            <button id="detailPdfBtn" class="btn mint" type="button">Download PDF</button>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script src="wsl-icons.js"></script>
+<script>
+/* =============================================================================
+   WONDER STORY LAB - teacher view
+   Two screens: the intro, and the class roster. Starting the class opens the
+   student view in its own window, carrying the roster with it.
+   ========================================================================== */
+const screenOrder = ["welcome", "roster", "results", "studentDetail"];
+const immersiveScreens = new Set(["welcome"]);
+let currentScreen = "welcome";
+
+/* Stand-in roster. Replace with the real class feed when the backend exists. */
+const CLASS_ROSTER = [
+  { id: "s1", name: "James Choi",  tone: "#F08A8A", speaker: true },
+  { id: "s2", name: "Ella Lee",    tone: "#6FC7E8", speaker: true },
+  { id: "s3", name: "Ethan Lee",   tone: "#9B7CF0", speaker: false },
+  { id: "s4", name: "Grace Choi",  tone: "#5FC79A", speaker: true },
+  { id: "s5", name: "Daniel Kim",  tone: "#F0B84A", speaker: true },
+  { id: "s6", name: "Emma Song",   tone: "#EE7BA3", speaker: true },
+  { id: "s7", name: "Noah Han",    tone: "#4FC3C0", speaker: true },
+  { id: "s8", name: "Chloe Baek",  tone: "#F09A7A", speaker: true },
+  { id: "s9", name: "Mia Oh",      tone: "#F0C766", speaker: false }
+];
+
+/* Stand-in submissions. Replace with the real results feed: each entry needs the
+   three scene images in story order and the sentences the child recorded. */
+const RESULT_SCENES = [
+  "assets/Base%20Image%201.jpg",
+  "assets/My%20Generated%20Scene_1.png",
+  "assets/Base%20Image%202.jpg"
+];
+const RESULT_STORY = [
+  "It is a beautiful day. The boy makes a snowman.",
+  "He decorates the snowman with lights. Then he makes a wish."
+];
+/* Who has handed something in. The rest are still working. */
+const SUBMITTED = new Set(["s1", "s2", "s3", "s4", "s5", "s6", "s7"]);
+const ROSTER_STORAGE_KEY = "wonderStoryLabClass";
+
+const state = {
+  introChoice: null,
+  /* Nobody is marked present until the teacher taps them, so attendance is a
+     deliberate act rather than a default the teacher has to correct. */
+  present: new Set(),
+  openStudent: null,
+  /* Export mode: the same grid, tapping a card picks it instead of opening it. */
+  picking: false,
+  picked: new Set()
+};
+
+const els = {
+  app: document.querySelector("#app"),
+  rosterGrid: document.querySelector("#rosterGrid"),
+  lessonTag: document.querySelector("#lessonTag"),
+  resultGrid: document.querySelector("#resultGrid"),
+  resultCount: document.querySelector("#resultCount"),
+  selectAllBtn: document.querySelector("#selectAllBtn"),
+  downloadPickedBtn: document.querySelector("#downloadPickedBtn"),
+  detailName: document.querySelector("#detailName"),
+  detailScenes: document.querySelector("#detailScenes"),
+  detailStory: document.querySelector("#detailStory"),
+  detailPdfBtn: document.querySelector("#detailPdfBtn"),
+  startClassBtn: document.querySelector("#startClassBtn")
+};
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
+/* ================================================================== BGM ===
+   Cover / Class / Portfolio tracks. Position is preserved when navigating
+   inside the same section so the music never restarts mid-lesson.
+   ======================================================================== */
+const BGM_VOLUME = 0.2;
+const BGM_FADE_MS = 850;
+const BGM_STORAGE_KEY = "wonderStoryLabBgmMuted";
+/* The intro carries the cover track; from the roster on it is class time. */
+const classActivityScreens = new Set(["roster", "results", "studentDetail"]);
+
+let bgmTracks = null;
+let bgmActiveTrackName = null;
+let bgmUnlocked = false;
+let bgmMuted = false;
+const bgmFadeFrames = new Map();
+
+function readSavedBgmMuted() {
+  try { return localStorage.getItem(BGM_STORAGE_KEY) === "true"; }
+  catch (error) { return false; }
+}
+
+function saveBgmMuted() {
+  try { localStorage.setItem(BGM_STORAGE_KEY, String(bgmMuted)); }
+  catch (error) { console.warn("BGM mute preference could not be saved.", error); }
+}
+
+function getBgmTrackName(screenName) {
+  if (screenName === "welcome") return "cover";
+  if (classActivityScreens.has(screenName)) return "class12";
+  return null;
+}
+
+function updateBgmToggle() {
+  if (!els.bgmToggle) return;
+  const host = els.bgmToggle.querySelector("[data-icon], span");
+  if (host) {
+    host.dataset.icon = bgmMuted ? "muted" : "speaker";
+    host.dataset.iconHydrated = "0";
+    host.innerHTML = icon(host.dataset.icon);
+    host.dataset.iconHydrated = "1";
+  }
+  els.bgmToggle.setAttribute("aria-pressed", String(bgmMuted));
+  els.bgmToggle.setAttribute("aria-label", bgmMuted ? "Unmute background music" : "Mute background music");
+}
+
+function cancelBgmFade(audio) {
+  const frame = bgmFadeFrames.get(audio);
+  if (frame) cancelAnimationFrame(frame);
+  bgmFadeFrames.delete(audio);
+}
+
+/* HTMLMediaElement.volume throws outside [0,1], and interpolation can drift a
+   fraction past either end, so every write is clamped. */
+function clampVolume(value) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function fadeBgmAudio(audio, targetVolume, duration = BGM_FADE_MS, pauseWhenSilent = false) {
+  if (!audio) return;
+  cancelBgmFade(audio);
+  const startVolume = audio.volume;
+  const endVolume = clampVolume(targetVolume);
+  const startedAt = performance.now();
+
+  if (duration <= 0 || Math.abs(startVolume - endVolume) < 0.002) {
+    audio.volume = endVolume;
+    if (pauseWhenSilent && endVolume === 0) audio.pause();
+    return;
+  }
+
+  const step = (now) => {
+    const progress = Math.min(1, (now - startedAt) / duration);
+    audio.volume = clampVolume(startVolume + ((endVolume - startVolume) * progress));
+    if (progress < 1) { bgmFadeFrames.set(audio, requestAnimationFrame(step)); return; }
+    bgmFadeFrames.delete(audio);
+    audio.volume = endVolume;
+    if (pauseWhenSilent && endVolume === 0) audio.pause();
+  };
+  bgmFadeFrames.set(audio, requestAnimationFrame(step));
+}
+
+function playBgmAudio(audio) {
+  if (!audio || !audio.paused) return;
+  const playPromise = audio.play();
+  if (playPromise?.catch) playPromise.catch((error) => console.warn("BGM could not start.", error));
+}
+
+function canPlayBgm() { return bgmUnlocked && !bgmMuted && !document.hidden; }
+
+function syncBgmForScreen(screenName, immediate = false) {
+  if (!bgmTracks) return;
+  const nextTrackName = getBgmTrackName(screenName);
+  const previousTrack = bgmActiveTrackName ? bgmTracks[bgmActiveTrackName] : null;
+  const nextTrack = nextTrackName ? bgmTracks[nextTrackName] : null;
+
+  if (nextTrackName === bgmActiveTrackName) {
+    if (!nextTrack) return;
+    if (canPlayBgm()) {
+      playBgmAudio(nextTrack);
+      if (Math.abs(nextTrack.volume - BGM_VOLUME) >= 0.002) {
+        fadeBgmAudio(nextTrack, BGM_VOLUME, immediate ? 0 : BGM_FADE_MS);
+      }
+    } else if (bgmMuted) {
+      fadeBgmAudio(nextTrack, 0, immediate ? 0 : 300, true);
+    }
+    return;
+  }
+
+  bgmActiveTrackName = nextTrackName;
+  if (previousTrack) fadeBgmAudio(previousTrack, 0, immediate ? 0 : BGM_FADE_MS, true);
+
+  if (nextTrack && canPlayBgm()) {
+    if (nextTrack.paused) nextTrack.volume = 0;
+    playBgmAudio(nextTrack);
+    fadeBgmAudio(nextTrack, BGM_VOLUME, immediate ? 0 : BGM_FADE_MS);
+  }
+}
+
+function setBgmMuted(muted) {
+  bgmMuted = Boolean(muted);
+  saveBgmMuted();
+  updateBgmToggle();
+  if (bgmMuted) Object.values(bgmTracks || {}).forEach((audio) => fadeBgmAudio(audio, 0, 300, true));
+  else syncBgmForScreen(currentScreen);
+}
+
+function unlockBgm() {
+  if (bgmUnlocked) return;
+  bgmUnlocked = true;
+  syncBgmForScreen(currentScreen);
+}
+
+function initializeBgmSystem() {
+  bgmTracks = {
+    cover: new Audio("assets/Audio/coverpage_bgm.mp3"),
+    class12: new Audio("assets/Audio/class1and2_bgm.mp3")
+  };
+
+  Object.entries(bgmTracks).forEach(([name, audio]) => {
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0;
+    audio.addEventListener("error", () => console.warn(`Could not load ${name} BGM.`, audio.error));
+  });
+
+  bgmMuted = readSavedBgmMuted();
+  updateBgmToggle();
+
+  bgmActiveTrackName = getBgmTrackName(currentScreen);
+  if (!bgmMuted && !document.hidden) {
+    const openingTrack = bgmTracks[bgmActiveTrackName];
+    if (openingTrack) {
+      openingTrack.volume = BGM_VOLUME;
+      const autoplayPromise = openingTrack.play();
+      if (autoplayPromise?.then) {
+        autoplayPromise.then(() => { bgmUnlocked = true; }).catch(() => { openingTrack.volume = 0; });
+      }
+    }
+  }
+
+  document.addEventListener("pointerdown", unlockBgm, { capture: true, once: true });
+  document.addEventListener("click", unlockBgm, { capture: true, once: true });
+
+  els.bgmToggle?.addEventListener("click", () => {
+    bgmUnlocked = true;
+    setBgmMuted(!bgmMuted);
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      Object.values(bgmTracks).forEach((audio) => { cancelBgmFade(audio); audio.pause(); });
+      return;
+    }
+    syncBgmForScreen(currentScreen);
+  });
+}
+
+/* ---------------------------------------------------------------- router -- */
+function showScreen(screenName) {
+  if (!screenOrder.includes(screenName)) return;
+  currentScreen = screenName;
+  document.querySelectorAll("[data-screen]").forEach((screen) => {
+    screen.classList.toggle("on", screen.dataset.screen === screenName);
+  });
+  els.app.classList.toggle("is-immersive", immersiveScreens.has(screenName));
+  /* The mode belongs to the screen, not to the session. */
+  if (screenName !== "results") { state.picking = false; state.picked = new Set(); }
+  syncBgmForScreen(screenName);
+  renderAll();
+}
+
+/* The bar names where the teacher is in the lesson, not what they picked on the
+   intro: everything up to the roster is Class 1, and results are reviewed after
+   Class 2. Same wording the children see on their own screens. */
+const SCREEN_LABELS = {
+  welcome: "Class 1 · Image Maker",
+  roster: "Class 1 · Image Maker",
+  results: "Class 2 · Story Builder",
+  studentDetail: "Class 2 · Story Builder"
+};
+
+function renderLessonTag() {
+  if (!els.lessonTag) return;
+  els.lessonTag.textContent = SCREEN_LABELS[currentScreen] || SCREEN_LABELS.roster;
+}
+
+/* ---------------------------------------------------------- intro choice -- */
+function renderIntroChoice() {
+  const start = document.querySelector(".wl-start");
+  document.querySelectorAll("[data-intro-choice]").forEach((card) => {
+    const chosen = card.dataset.introChoice === state.introChoice;
+    card.classList.toggle("is-selected", chosen);
+    card.setAttribute("aria-pressed", String(chosen));
+  });
+  if (start) start.disabled = !state.introChoice;
+}
+
+/* ---------------------------------------------------------------- roster -- */
+function renderRoster() {
+  if (!els.rosterGrid) return;
+
+  const cards = CLASS_ROSTER.map((student) => {
+    const present = state.present.has(student.id);
+    const initial = student.name.trim().charAt(0).toUpperCase();
+    return `
+      <button class="student-card ${present ? "is-present" : ""}" type="button"
+              data-student="${student.id}" aria-pressed="${present}">
+        <span class="student-avatar" style="background:${student.tone}" aria-hidden="true">${initial}</span>
+        <span class="student-copy">
+          <span class="student-name">${escapeHtml(student.name)}</span>
+          ${student.speaker
+            ? '<span class="student-warn is-placeholder" aria-hidden="true">&nbsp;</span>'
+            : '<span class="student-warn">Speaker registration required</span>'}
+        </span>
+      </button>`;
+  });
+
+  /* Empty seats fill out the last row and no further: padding to a fixed twelve
+     added a whole extra row on a three-column tablet, which is what put the grid
+     into a scroll. */
+  const columns = Math.max(1, getComputedStyle(els.rosterGrid)
+    .gridTemplateColumns.split(" ").filter(Boolean).length);
+  const remainder = CLASS_ROSTER.length % columns;
+  const empty = remainder === 0 ? 0 : columns - remainder;
+  const slots = Array.from({ length: empty },
+    () => '<div class="student-slot" aria-hidden="true"></div>');
+
+  els.rosterGrid.innerHTML = cards.concat(slots).join("");
+  els.startClassBtn.disabled = state.present.size === 0;
+  hydrateIcons(els.rosterGrid);
+}
+
+/* -------------------------------------------------------------- results -- */
+function renderResults() {
+  if (!els.resultGrid) return;
+
+  els.resultGrid.innerHTML = CLASS_ROSTER.map((student) => {
+    const done = SUBMITTED.has(student.id);
+    const thumb = done
+      ? `<img class="result-thumb" src="${RESULT_SCENES[0]}" alt="" draggable="false">`
+      : '<div class="result-thumb is-waiting">Not submitted yet</div>';
+
+    /* Two jobs, one card: browsing, it opens the student; choosing, it picks
+       them. A card with nothing submitted can do neither. */
+    const picked = state.picked.has(student.id);
+    const action = state.picking
+      ? `data-pick-student="${student.id}" aria-pressed="${picked ? "true" : "false"}"`
+      : `data-open-student="${student.id}"`;
+    /* No box on a card with nothing to export - an unusable checkbox reads as
+       something the teacher failed to tick. */
+    const box = state.picking && done
+      ? `<span class="pick-box${picked ? " is-on" : ""}" aria-hidden="true">${picked ? icon("check") : ""}</span>`
+      : "";
+
+    return `
+      <button class="result-card ${done ? "is-done" : ""}${picked ? " is-picked" : ""}" type="button"
+              ${action} ${done ? "" : "disabled"}>
+        <span class="result-head">
+          <span class="result-name">${escapeHtml(student.name)}</span>
+          ${box}
+        </span>
+        ${thumb}
+      </button>`;
+  }).join("");
+
+  els.resultCount.textContent = `${SUBMITTED.size} / ${CLASS_ROSTER.length} submitted`;
+  renderPickChrome();
+  hydrateIcons(els.resultGrid);
+}
+
+/* ------------------------------------------------------------- export -- */
+function submittedIds() {
+  return CLASS_ROSTER.filter((student) => SUBMITTED.has(student.id)).map((student) => student.id);
+}
+
+function renderPickChrome() {
+  const screen = document.querySelector('[data-screen="results"]');
+  if (!screen) return;
+  screen.classList.toggle("is-picking", state.picking);
+  screen.querySelectorAll("[data-foot]").forEach((foot) => {
+    foot.hidden = (foot.dataset.foot === "pick") !== state.picking;
+  });
+  if (!state.picking) return;
+
+  /* The count lives on the button that acts on it - a separate tally on the far
+     side of the bar was the same number said twice. */
+  const total = submittedIds().length;
+  const chosen = state.picked.size;
+  /* No count on this one: it does not report anything, it just does the thing -
+     and with everyone already chosen the only thing left to do is undo it. */
+  /* Selecting is the helpful move, so it carries the brand. Undoing it is not, so
+     it drops back to the grey Back wears. */
+  const allChosen = total > 0 && chosen === total;
+  els.selectAllBtn.textContent = allChosen ? "Clear all" : "Select all";
+  els.selectAllBtn.classList.toggle("primary", !allChosen);
+  els.selectAllBtn.classList.toggle("ghost", allChosen);
+  els.selectAllBtn.disabled = total === 0;
+  els.downloadPickedBtn.textContent = `Download selected (${chosen})`;
+  els.downloadPickedBtn.disabled = chosen === 0;
+}
+
+function startPicking() {
+  state.picking = true;
+  state.picked = new Set();
+  renderResults();
+}
+
+function stopPicking() {
+  state.picking = false;
+  state.picked = new Set();
+  renderResults();
+}
+
+function togglePicked(studentId) {
+  if (state.picked.has(studentId)) state.picked.delete(studentId);
+  else state.picked.add(studentId);
+  renderResults();
+}
+
+/* =============================================================== EXPORT ===
+   One PDF per student, zipped, saved in a single click. No print dialog: the
+   teacher asked for files, and a print sheet is neither one file per child nor
+   something they can hand on.
+
+   Everything here is written out by hand rather than pulled from a library, so
+   the page keeps working with no network and nothing vendored:
+     - the card is drawn on a canvas, so there are no PDF fonts to embed
+     - the canvas goes into the PDF as a single JPEG (DCTDecode)
+     - the ZIP is stored, not deflated, which needs only a CRC32
+   ========================================================================= */
+
+/* --- the card ------------------------------------------------------------ */
+/* Printed on every card, so the teacher can tell one lesson's stack from another
+   once they are out of the browser. */
+const LESSON_LABEL = "Wonder Story Lab  ·  ECP7 Unit 1 Lesson 10";
+
+/* A4 landscape width at 150dpi, and the same width in points for the PDF's box.
+   The height of both follows the content. */
+const CARD_W = 1754;
+const PDF_W = 842;
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`could not load ${src}`));
+    img.src = src;
+  });
+}
+
+/* Wraps to the width it is given and returns where it ended, so whatever comes
+   next can start below it. */
+/* Pass ctx as null and a measuring context as `measure` to get the height back
+   without painting - the panel has to be sized before the text goes on it. */
+function drawWrapped(ctx, text, x, y, maxWidth, lineHeight, measure) {
+  const gauge = ctx || measure;
+  let line = "";
+  let cursor = y;
+  text.split(/\s+/).filter(Boolean).forEach((word) => {
+    const next = line ? `${line} ${word}` : word;
+    if (gauge.measureText(next).width > maxWidth && line) {
+      if (ctx) ctx.fillText(line, x, cursor);
+      cursor += lineHeight;
+      line = word;
+    } else {
+      line = next;
+    }
+  });
+  if (line) {
+    if (ctx) ctx.fillText(line, x, cursor);
+    cursor += lineHeight;
+  }
+  return cursor;
+}
+
+async function drawStoryCard(student) {
+  const images = await Promise.all(RESULT_SCENES.map(loadImage));
+
+  /* Measured before the canvas exists, because the card is only as tall as its
+     content - a fixed page left a hand's width of blank paper under a
+     two-sentence story. */
+  const pad = 70;
+  const gap = 34;
+  const frameW = (CARD_W - pad * 2 - gap * 2) / 3;
+  const frameH = Math.round(frameW * 0.75);
+  const top = pad + 150;
+  const panelTop = top + frameH + 44;
+  const textW = CARD_W - pad * 2 - 80;
+
+  const gauge = document.createElement("canvas").getContext("2d");
+  gauge.font = "600 36px Nunito, Segoe UI, sans-serif";
+  const bodyH = RESULT_STORY.reduce(
+    (sum, line) => sum + drawWrapped(null, line, 0, 0, textW, 50, gauge) + 10, 0);
+  const panelH = 84 + bodyH + 24;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = CARD_W;
+  canvas.height = Math.round(panelTop + panelH + pad);
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.textBaseline = "top";
+
+  ctx.fillStyle = "#1D1B3C";
+  ctx.font = "700 58px Nunito, Segoe UI, sans-serif";
+  ctx.fillText(student.name, pad, pad);
+
+  ctx.fillStyle = "#918CB4";
+  ctx.font = "700 30px Nunito, Segoe UI, sans-serif";
+  ctx.fillText(LESSON_LABEL, pad, pad + 74);
+
+  /* Three scenes across, each in the white mount the screens use. */
+  images.forEach((img, index) => {
+    const x = pad + index * (frameW + gap);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.strokeStyle = "#E7E2F7";
+    ctx.lineWidth = 3;
+    roundRect(ctx, x, top, frameW, frameH, 22);
+    ctx.fill();
+    ctx.stroke();
+    ctx.save();
+    roundRect(ctx, x + 10, top + 10, frameW - 20, frameH - 20, 14);
+    ctx.clip();
+    /* Cover, so a portrait source is not squashed into a landscape frame. */
+    const scale = Math.max((frameW - 20) / img.width, (frameH - 20) / img.height);
+    const w = img.width * scale;
+    const h = img.height * scale;
+    ctx.drawImage(img, x + 10 + ((frameW - 20) - w) / 2, top + 10 + ((frameH - 20) - h) / 2, w, h);
+    ctx.restore();
+  });
+
+  /* My Story, on the same violet panel both views show it in. */
+  ctx.fillStyle = "#F0EBFF";
+  ctx.strokeStyle = "#E4DBFC";
+  ctx.lineWidth = 3;
+  roundRect(ctx, pad, panelTop, CARD_W - pad * 2, panelH, 26);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = "#5634C0";
+  ctx.font = "800 26px Nunito, Segoe UI, sans-serif";
+  ctx.fillText("MY STORY", pad + 40, panelTop + 34);
+
+  ctx.fillStyle = "#1D1B3C";
+  ctx.font = "600 36px Nunito, Segoe UI, sans-serif";
+  let y = panelTop + 84;
+  RESULT_STORY.forEach((line) => {
+    y = drawWrapped(ctx, line, pad + 40, y, textW, 50) + 10;
+  });
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+/* --- PDF ---------------------------------------------------------------- */
+/* A single page holding one JPEG. Every object's byte offset has to be exact for
+   the xref table, so the file is assembled as bytes and the offsets counted as
+   they go in. */
+function jpegToPdf(jpeg, pixelW, pixelH) {
+  const enc = new TextEncoder();
+  const parts = [];
+  const offsets = [];
+  let length = 0;
+
+  const put = (bytes) => { parts.push(bytes); length += bytes.length; };
+  const putText = (text) => put(enc.encode(text));
+  const startObject = () => { offsets.push(length); };
+
+  putText("%PDF-1.4\n");
+
+  startObject();
+  putText("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+  startObject();
+  putText("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+
+  /* The page takes the picture's own shape, scaled to A4 width - a fixed page
+     would leave blank paper under a short story. */
+  const pageH = Math.round((PDF_W * pixelH) / pixelW);
+
+  startObject();
+  putText(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PDF_W} ${pageH}]`
+    + " /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n");
+
+  startObject();
+  putText(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pixelW} /Height ${pixelH}`
+    + ` /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);
+  put(jpeg);
+  putText("\nendstream\nendobj\n");
+
+  const content = `q ${PDF_W} 0 0 ${pageH} 0 0 cm /Im0 Do Q\n`;
+  startObject();
+  putText(`5 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+
+  const xref = length;
+  let table = `xref\n0 ${offsets.length + 1}\n0000000000 65535 f \n`;
+  offsets.forEach((offset) => { table += `${String(offset).padStart(10, "0")} 00000 n \n`; });
+  table += `trailer\n<< /Size ${offsets.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  putText(table);
+
+  const out = new Uint8Array(length);
+  let at = 0;
+  parts.forEach((bytes) => { out.set(bytes, at); at += bytes.length; });
+  return out;
+}
+
+/* --- ZIP ---------------------------------------------------------------- */
+const CRC_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < 256; i += 1) {
+    let value = i;
+    for (let bit = 0; bit < 8; bit += 1) {
+      value = value & 1 ? 0xEDB88320 ^ (value >>> 1) : value >>> 1;
+    }
+    table[i] = value >>> 0;
+  }
+  return table;
+})();
+
+function crc32(bytes) {
+  let crc = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i += 1) {
+    crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  }
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+/* Stored, not deflated. The payload is already JPEG, so compressing it again
+   would buy a few bytes for a whole inflate implementation. */
+function makeZip(files, now) {
+  const enc = new TextEncoder();
+  const time = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF;
+  const date = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+
+  const chunks = [];
+  const central = [];
+  let offset = 0;
+
+  const u16 = (view, at, value) => view.setUint16(at, value, true);
+  const u32 = (view, at, value) => view.setUint32(at, value, true);
+
+  files.forEach((file) => {
+    const name = enc.encode(file.name);
+    const crc = crc32(file.bytes);
+
+    const header = new Uint8Array(30 + name.length);
+    const hv = new DataView(header.buffer);
+    u32(hv, 0, 0x04034B50);
+    u16(hv, 4, 20);
+    u16(hv, 6, 0x0800);          /* the name is UTF-8 */
+    u16(hv, 8, 0);               /* stored */
+    u16(hv, 10, time);
+    u16(hv, 12, date);
+    u32(hv, 14, crc);
+    u32(hv, 18, file.bytes.length);
+    u32(hv, 22, file.bytes.length);
+    u16(hv, 26, name.length);
+    u16(hv, 28, 0);
+    header.set(name, 30);
+
+    chunks.push(header, file.bytes);
+
+    const entry = new Uint8Array(46 + name.length);
+    const ev = new DataView(entry.buffer);
+    u32(ev, 0, 0x02014B50);
+    u16(ev, 4, 20);
+    u16(ev, 6, 20);
+    u16(ev, 8, 0x0800);
+    u16(ev, 10, 0);
+    u16(ev, 12, time);
+    u16(ev, 14, date);
+    u32(ev, 16, crc);
+    u32(ev, 20, file.bytes.length);
+    u32(ev, 24, file.bytes.length);
+    u16(ev, 28, name.length);
+    u32(ev, 42, offset);
+    entry.set(name, 46);
+    central.push(entry);
+
+    offset += header.length + file.bytes.length;
+  });
+
+  const centralSize = central.reduce((sum, entry) => sum + entry.length, 0);
+  const end = new Uint8Array(22);
+  const endView = new DataView(end.buffer);
+  u32(endView, 0, 0x06054B50);
+  u16(endView, 8, files.length);
+  u16(endView, 10, files.length);
+  u32(endView, 12, centralSize);
+  u32(endView, 16, offset);
+
+  return new Blob([...chunks, ...central, end], { type: "application/zip" });
+}
+
+/* --- the click ---------------------------------------------------------- */
+function canvasToJpeg(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob ? blob.arrayBuffer().then((buffer) => resolve(new Uint8Array(buffer))) : reject(new Error("no blob"))),
+      "image/jpeg",
+      0.92
+    );
+  });
+}
+
+function safeFileName(name) {
+  return String(name).replace(/[\\/:*?"<>|]+/g, "-").trim();
+}
+
+function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  /* Revoked on the next turn of the loop - immediately, and Safari cancels the
+     download it was in the middle of starting. */
+  window.setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+let exportRunning = false;
+
+async function exportStudents(ids) {
+  if (!ids.length || exportRunning) return;
+  exportRunning = true;
+  setExportBusy(true);
+
+  try {
+    const students = CLASS_ROSTER.filter((student) => ids.includes(student.id));
+    const files = [];
+    for (const student of students) {
+      /* Sequential on purpose: three of these canvases at once on a school
+         tablet is how you get a blank page instead of a download. */
+      const canvas = await drawStoryCard(student);
+      const jpeg = await canvasToJpeg(canvas);
+      files.push({
+        name: `${safeFileName(student.name)} - story card.pdf`,
+        bytes: jpegToPdf(jpeg, canvas.width, canvas.height)
+      });
+    }
+
+    const stamp = new Date();
+    const day = `${stamp.getFullYear()}-${String(stamp.getMonth() + 1).padStart(2, "0")}-${String(stamp.getDate()).padStart(2, "0")}`;
+    saveBlob(makeZip(files, stamp), `story-cards ${day} (${files.length}).zip`);
+    stopPicking();
+  } catch (error) {
+    /* Reading pixels back out of a canvas that has drawn a file:// image is
+       blocked by the browser, so opening this page straight off disk cannot
+       produce the cards. Served over http it can. */
+    window.console.error("Export failed:", error);
+    window.alert("The story cards could not be saved. Please open this page from the school server and try again.");
+  } finally {
+    exportRunning = false;
+    setExportBusy(false);
+  }
+}
+
+/* One child, one file. Zipping a single PDF would only add a step between the
+   teacher and the thing they asked for. */
+async function exportOneStudent() {
+  const student = CLASS_ROSTER.find((entry) => entry.id === state.openStudent);
+  if (!student || exportRunning) return;
+  exportRunning = true;
+  setDetailBusy(true);
+
+  try {
+    const canvas = await drawStoryCard(student);
+    const jpeg = await canvasToJpeg(canvas);
+    const pdf = jpegToPdf(jpeg, canvas.width, canvas.height);
+    saveBlob(new Blob([pdf], { type: "application/pdf" }),
+      `${safeFileName(student.name)} - story card.pdf`);
+  } catch (error) {
+    window.console.error("Export failed:", error);
+    window.alert("The story card could not be saved. Please open this page from the school server and try again.");
+  } finally {
+    exportRunning = false;
+    setDetailBusy(false);
+  }
+}
+
+function setDetailBusy(busy) {
+  if (!els.detailPdfBtn) return;
+  els.detailPdfBtn.disabled = busy;
+  els.detailPdfBtn.textContent = busy ? "Making the file..." : "Download PDF";
+}
+
+function setExportBusy(busy) {
+  if (!els.downloadPickedBtn) return;
+  els.downloadPickedBtn.disabled = busy || state.picked.size === 0;
+  els.downloadPickedBtn.textContent = busy
+    ? "Making files..."
+    : `Download selected (${state.picked.size})`;
+  els.selectAllBtn.disabled = busy || submittedIds().length === 0;
+}
+
+
+/* --------------------------------------------------------------- detail -- */
+function renderStudentDetail() {
+  if (!els.detailScenes || !state.openStudent) return;
+  const student = CLASS_ROSTER.find((entry) => entry.id === state.openStudent);
+  if (!student) return;
+
+  els.detailName.textContent = student.name;
+  els.detailScenes.innerHTML = RESULT_SCENES.map((src, index) => `
+    <figure class="detail-scene">
+      <img src="${src}" alt="Scene ${index + 1} of ${escapeHtml(student.name)}'s story" draggable="false">
+    </figure>`).join("");
+  els.detailStory.innerHTML = RESULT_STORY
+    .map((line) => `<p>${escapeHtml(line)}</p>`).join("");
+}
+
+function renderAll() {
+  renderLessonTag();
+  renderIntroChoice();
+  renderRoster();
+  renderResults();
+  renderStudentDetail();
+  hydrateIcons();
+}
+
+/* ------------------------------------------------------------ hand-off --- */
+function startClass() {
+  if (state.present.size === 0) return;
+  const payload = {
+    startedAt: new Date().toISOString(),
+    mode: state.introChoice,
+    students: CLASS_ROSTER.filter((student) => state.present.has(student.id))
+      .map(({ id, name, speaker }) => ({ id, name, speaker }))
+  };
+  try {
+    localStorage.setItem(ROSTER_STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("Class roster could not be saved.", error);
+  }
+  window.open(studentHref(), "_blank", "noopener");
+}
+
+/* Image Maker starts at the top; Story Builder starts at Class 2. */
+function studentHref() {
+  return state.introChoice === "storyBuilder" ? "student.html#storyBuilder" : "student.html";
+}
+
+/* ---------------------------------------------------------------- events -- */
+document.addEventListener("click", (event) => {
+  const target = event.target.closest("button");
+  if (!target) return;
+
+  if (target.dataset.introChoice) {
+    state.introChoice = target.dataset.introChoice;
+    renderIntroChoice();
+    return;
+  }
+
+  if (target.matches('.wl-start[data-go="roster"]')) {
+    if (target.disabled || !state.introChoice) return;
+    showScreen("roster");
+    return;
+  }
+
+  if (target.dataset.go) { showScreen(target.dataset.go); return; }
+
+  if (target.dataset.student) {
+    const id = target.dataset.student;
+    if (state.present.has(id)) state.present.delete(id);
+    else state.present.add(id);
+    renderRoster();
+    return;
+  }
+
+  if (target.id === "startClassBtn") { startClass(); return; }
+
+  if (target.dataset.openStudent) {
+    state.openStudent = target.dataset.openStudent;
+    showScreen("studentDetail");
+    return;
+  }
+
+  /* --- choosing whose story cards to export --- */
+  if (target.dataset.pickStudent) { togglePicked(target.dataset.pickStudent); return; }
+
+  if (target.id === "downloadPdfBtn") { startPicking(); return; }
+  if (target.id === "backPickBtn") { stopPicking(); return; }
+  if (target.id === "downloadPickedBtn") { exportStudents([...state.picked]); return; }
+
+  if (target.id === "selectAllBtn") {
+    const all = submittedIds();
+    state.picked = state.picked.size === all.length ? new Set() : new Set(all);
+    renderResults();
+    return;
+  }
+
+  if (target.id === "detailPdfBtn") { exportOneStudent(); return; }
+
+  if (target.id === "closeBtn") {
+    /* Opened from another window? Close it. Otherwise fall back to the intro. */
+    window.close();
+    showScreen("welcome");
+    return;
+  }
+
+  if (target.id === "previewDemoBtn") {
+    /* Demo run: open the lesson without recording anyone's work, on whichever
+       activity was chosen at the intro - Story Builder is Class 2, so walking
+       the whole of Class 1 to reach it is not a preview of anything. */
+    try { localStorage.removeItem(ROSTER_STORAGE_KEY); } catch (error) { /* ignore */ }
+    window.open(studentHref(), "_blank", "noopener");
+  }
+});
+
+/* ============================================================ BOOT === */
+/* Breakpoints change the column count, and the empty seats are counted from it. */
+window.addEventListener("resize", () => {
+  if (currentScreen === "roster") renderRoster();
+});
+
+initializeBgmSystem();
+showScreen("welcome");
+</script>
+</body>
+</html>

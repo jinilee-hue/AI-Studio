@@ -1,0 +1,3766 @@
+/* =============================================================================
+   WONDER STORY LAB - shared design system
+   Loaded by both teacher.html and student.html. Edit here once; both follow.
+   ========================================================================== */
+/* =============================================================================
+   Self-hosted webfonts (Baloo 2 + Nunito, latin / latin-ext).
+   Bundled rather than loaded from a CDN so classroom tablets render the same
+   typography even if the network drops mid-lesson.
+   ========================================================================== */
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-600-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-800-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/baloo-2-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/nunito-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/nunito-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/nunito-600-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/nunito-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/nunito-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/nunito-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/nunito-800-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/nunito-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------------------------------------------------------------- 1. TOKENS */
+:root {
+  /* Surfaces */
+  --bg:            #F4F2FD;
+  --bg-deep:       #ECE7FA;
+  --surface:       #FFFFFF;
+  --surface-2:     #FAF9FF;
+  --surface-3:     #F3F0FE;
+  --line:          #E7E2F7;
+  --line-strong:   #D5CCF0;
+
+  /* Brand + accents (one primary, two accents — nothing else) */
+  --brand:         #6C4BD8;
+  --brand-strong:  #5634C0;
+  --brand-deep:    #3E2494;
+  --brand-soft:    #F0EBFF;
+  --brand-tint:    #E4DBFC;
+  /* Intro "Start Creating" energy — magenta → violet → royal blue */
+  /* Same pink -> violet -> blue journey, but translucent so the star-dusted
+     canvas and the night bar read through instead of the button sitting on
+     top of them. Values are deepened because white text on the old #FF4FA3
+     stop measured 2.99:1; these stops clear 4.5:1 on both light and dark. */
+  /* Tuned to assets/next_button.png: a soft lavender-violet pill rather than a
+     saturated block. Stops stay at or below #7C5BE6 because white label text
+     drops under 4.5:1 on anything lighter. */
+  --brand-grad:    linear-gradient(105deg,
+                     rgba(124, 91, 230, .95) 0%,
+                     rgba(108, 75, 216, .95) 45%,
+                     rgba(86, 52, 192, .96) 100%);
+  --brand-grad-soft: linear-gradient(105deg,
+                     rgba(140, 108, 240, .96) 0%,
+                     rgba(124, 91, 230, .96) 45%,
+                     rgba(100, 66, 208, .97) 100%);
+  --brand-grad-glass: linear-gradient(105deg,
+                     rgba(255, 116, 192, .40) 0%,
+                     rgba(196, 126, 255, .38) 36%,
+                     rgba(142, 124, 255, .38) 66%,
+                     rgba(96, 156, 255, .40) 100%);
+  --magic-border:  rgba(255, 255, 255, .78);
+  /* A filled button is edged in its own darkest stop rather than a white rim: the
+     white read as a separate outline sitting on top of the colour. */
+  --edge-brand:    #4A2BA8;
+  --edge-mint:     #0A7A66;
+  --edge-rose:     #A82A55;
+  --edge-grey:     #4E4E66;
+  --edge-grey-hi:  #66668A;
+  --magic-glow:    0 0 18px rgba(140, 108, 240, .34), 0 0 34px rgba(124, 91, 230, .22);
+
+  --mint:          #12AE92;
+  --mint-soft:     #E2F7F2;
+  --sun:           #E9930B;
+  --sun-soft:      #FFF3DC;
+  --rose:          #E4557F;
+  --rose-soft:     #FDECF1;
+
+  /* Night sky — carried over from the cover illustration so the intro and the
+     lesson screens read as one world. Used for app chrome only. */
+  --night:         #1B1149;
+  --night-2:       #251A5E;
+  --night-ink:     #EDE7FF;
+  --night-ink-2:   rgba(237, 231, 255, .70);
+  --night-line:    rgba(255, 255, 255, .13);
+  --night-fill:    rgba(255, 255, 255, .08);
+  --lantern:       #FFD79A;
+
+  /* A hand-placed star field. Reused by the top bar and the canvas. */
+  --stars:
+    radial-gradient(1.6px 1.6px at 6%  32%, rgba(255,255,255,.85), transparent),
+    radial-gradient(1.1px 1.1px at 14% 68%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.3px 1.3px at 23% 22%, rgba(255,244,214,.75), transparent),
+    radial-gradient(1px   1px   at 31% 78%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1.5px 1.5px at 42% 40%, rgba(255,255,255,.70), transparent),
+    radial-gradient(1px   1px   at 52% 74%, rgba(214,206,255,.55), transparent),
+    radial-gradient(1.4px 1.4px at 61% 26%, rgba(255,255,255,.72), transparent),
+    radial-gradient(1.1px 1.1px at 69% 60%, rgba(255,244,214,.55), transparent),
+    radial-gradient(1.6px 1.6px at 78% 36%, rgba(255,255,255,.80), transparent),
+    radial-gradient(1px   1px   at 86% 70%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1.2px 1.2px at 93% 28%, rgba(214,206,255,.65), transparent),
+    radial-gradient(1px   1px   at 97% 58%, rgba(255,255,255,.40), transparent);
+
+  /* Ink */
+  --ink:           #1D1B3C;
+  --ink-2:         #5F5A85;
+  --ink-3:         #918CB4;
+  --ink-on-brand:  #FFFFFF;
+
+  /* Glass — translucent surfaces over the tinted, star-dusted canvas.
+     Stays light, so dark ink keeps its contrast; the border and the top
+     highlight are what give the pane its edge. */
+  --glass:        rgba(255, 255, 255, .74);
+  --glass-strong: rgba(255, 255, 255, .86);
+  --glass-quiet:  rgba(255, 255, 255, .52);
+  --glass-line:   rgba(255, 255, 255, .85);
+  --glass-hi:     inset 0 1px 0 rgba(255, 255, 255, .92);
+  --blur:         blur(22px) saturate(180%);
+  --blur-sm:      blur(12px) saturate(160%);
+
+  /* Elevation */
+  --sh-1: 0 1px 2px rgba(29,27,60,.05), 0 2px 8px rgba(76,58,150,.05);
+  --sh-2: 0 2px 4px rgba(29,27,60,.04), 0 12px 28px rgba(76,58,150,.09);
+  --sh-3: 0 8px 16px rgba(29,27,60,.06), 0 28px 64px rgba(45,30,110,.18);
+  --sh-brand: 0 4px 12px rgba(196, 91, 232, .30), 0 10px 26px rgba(59, 123, 255, .22);
+  --ring: 0 0 0 3px rgba(196, 91, 232, .30);
+
+  /* What the card tray occupies on Sequence: its padding plus a square card.
+     Finalize reserves the same, so both screens give their slots exactly the same
+     height and the pictures come out identical. */
+  --tray-h: calc(clamp(168px, 26vh, 240px) + 2 * var(--s-4));
+
+  /* The height of a decision button - action bars and the speech sheet share it,
+     and the sheet's round mic matches it so the pair sits level. */
+  --action-btn-h: 66px;
+
+  /* Radius */
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 18px;
+  --r-lg: 24px;
+  --r-xl: 30px;
+  --r-pill: 999px;
+
+  /* Space (8pt) */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-7: 32px; --s-8: 40px; --s-9: 56px;
+
+  /* Type */
+  /* One family across the UI, matching the Figma intro. --font-display is kept
+     as an alias so any future rule that reaches for it still lands on Nunito. */
+  --font-display: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* Two scales, because two audiences share this screen.
+     CHROME (--fs-micro / --fs-sm) is navigation and teacher-facing chrome.
+     CHILD  (--fs-body and up) is anything a 7-year-old has to read or tap;
+     early-reader guidance puts that floor at 18px, and --fs-read carries the
+     text the child wrote themselves, which is the whole point of the lesson. */
+  --fs-micro: clamp(14px, .22vw + 13px, 15px);
+  --fs-sm:    clamp(17px, .30vw + 15px, 19px);
+  --fs-body:  clamp(21px, .42vw + 18px, 24px);
+  --fs-read:  clamp(24px, .55vw + 20px, 28px);
+  --fs-lg:    clamp(23px, .45vw + 20px, 26px);
+  --fs-h3:    clamp(22px, .55vw + 18px, 26px);
+  --fs-h2:    clamp(26px, .90vw + 19px, 34px);
+  --fs-h1:    clamp(30px, 1.30vw + 20px, 44px);
+
+  /* Layout */
+  --topbar-h: 62px;
+  --foot-h: 98px;
+  --page-max: 1320px;
+  --page-pad: clamp(16px, 2.4vw, 34px);
+
+  /* Motion */
+  --ease: cubic-bezier(.22,.68,.36,1);
+  --dur-1: 140ms;
+  --dur-2: 240ms;
+  --dur-3: 420ms;
+}
+
+/* ------------------------------------------------------- 2. RESET / BASE */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+
+p { color: var(--ink-2); }
+img { display: block; max-width: 100%; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+ul { list-style: none; }
+
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Scrollbars — quiet, tablet friendly */
+.scroll-y, .panel-body, .sentence-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-y::-webkit-scrollbar,
+.panel-body::-webkit-scrollbar,
+.sentence-list::-webkit-scrollbar { width: 10px; }
+.scroll-y::-webkit-scrollbar-track,
+.panel-body::-webkit-scrollbar-track,
+.sentence-list::-webkit-scrollbar-track { background: transparent; }
+.scroll-y::-webkit-scrollbar-thumb,
+.panel-body::-webkit-scrollbar-thumb,
+.sentence-list::-webkit-scrollbar-thumb {
+  background: var(--brand-tint);
+  border: 3px solid transparent;
+  border-radius: var(--r-pill);
+  background-clip: padding-box;
+}
+.scroll-y::-webkit-scrollbar-thumb:hover { background: var(--line-strong); background-clip: padding-box; }
+
+/* ----------------------------------------------------------- 3. APP SHELL */
+/* The canvas keeps a memory of the cover: night bleeding down from the top bar
+   and a faint dusting of stars, resolving into daylight where the work happens. */
+.app {
+  position: relative;
+  display: grid;
+  grid-template-rows: var(--topbar-h) 1fr;
+  height: 100dvh;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .78) 0%, rgba(255, 255, 255, .30) 14%, transparent 32%),
+    radial-gradient(1100px 320px at 50% -6%, rgba(206, 190, 252, .38), transparent 72%),
+    radial-gradient(900px 520px at 12% -6%,  rgba(124, 92, 230, .16), transparent 62%),
+    radial-gradient(760px 480px at 96% 12%,  rgba(18, 174, 146, .10), transparent 60%),
+    radial-gradient(820px 560px at 50% 108%, rgba(228, 85, 127, .07), transparent 62%),
+    var(--bg);
+}
+.topbar, .stage { position: relative; z-index: 1; }
+
+/* --- Top bar ------------------------------------------------------------- */
+.topbar {
+  position: relative;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-4);
+  padding: 0 var(--page-pad);
+  /* Literally the same surface: the bar paints nothing, so the canvas gradient
+     runs straight through it and only the shadow marks the edge.
+     No backdrop-filter here — it would clip the active tab's glow. */
+  background: transparent;
+  box-shadow:
+    0 6px 16px -12px rgba(45, 30, 110, .28),
+    0 18px 40px -28px rgba(45, 30, 110, .22);
+}
+
+/* Welcome + Presentation run full bleed with no app chrome. */
+.app.is-immersive { grid-template-rows: 1fr; }
+.app.is-immersive .topbar { display: none; }
+
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-mark {
+  display: block;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(233, 147, 11, .34));
+}
+.brand-name {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: clamp(19px, .55vw + 15px, 24px);
+  color: var(--brand-deep);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Segmented class navigation */
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+}
+.nav-tab {
+  padding: 8px 18px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+}
+.tab-sub { }
+.nav-tab:hover { color: var(--brand); background: rgba(255, 255, 255, .8); }
+.nav-tab.on {
+  color: #fff;
+  background: var(--brand-grad);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .30),
+    0 2px 8px rgba(108, 75, 216, .26),
+    0 0 18px rgba(124, 91, 230, .24);
+}
+
+.topbar-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 46px; height: 46px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+  box-shadow: var(--glass-hi), 0 2px 8px rgba(108, 75, 216, .12);
+  font-size: 20px;
+  color: var(--brand-strong);
+  transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease),
+              box-shadow var(--dur-1) var(--ease);
+}
+.icon-btn:hover { background: var(--brand-tint); transform: translateY(-1px); box-shadow: var(--glass-hi), 0 4px 14px rgba(108, 75, 216, .22); }
+
+/* 3D colorful SVG icons (Magical UI style reference) */
+.ico {
+  display: block;
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  overflow: visible;
+  filter: drop-shadow(0 2px 4px rgba(60, 40, 120, .18));
+}
+.ico-lg { width: 1.5em; height: 1.5em; }
+.prompt-icon .ico { width: 72%; height: 72%; }
+.result-icon .ico { width: 40px; height: 40px; }
+.empty-icon .ico { width: 36px; height: 36px; }
+.hint-icon .ico { width: 28px; height: 28px; }
+.panel-title .ico,
+.paragraph-box h3 .ico { width: 32px; height: 32px; }
+.observe-block h3 .ico { width: 30px; height: 30px; }
+.btn .ico { width: 24px; height: 24px; }
+.icon-btn .ico { width: 26px; height: 26px; }
+/* Proportional, so the glyph keeps its weight as the button scales. The wrapper
+   carries the percentage: on the <svg> it resolves against the wrapper, which is
+   itself sized by the svg, and the span ends up stretched full width. */
+.mic-button > [data-icon] {
+  display: grid;
+  place-items: center;
+  width: 48%;
+  height: 48%;
+}
+.mic-button .ico { width: 100%; height: 100%; filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
+.star-field .star .ico {
+  width: clamp(26px, 2.4vw, 36px);
+  height: clamp(26px, 2.4vw, 36px);
+  filter: drop-shadow(0 0 8px rgba(255, 214, 120, .55));
+}
+.brand-mark .ico { width: 20px; height: 20px; }
+
+/* Lantern light — the warm accent from the cover illustration. */
+/* Matches the speaker button: same height, same corner radius. */
+.lesson-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  border: 1.5px solid var(--brand-tint);
+  box-shadow: var(--glass-hi), 0 2px 8px rgba(108, 75, 216, .12);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+/* --- Stage / screens ----------------------------------------------------- */
+.stage { position: relative; min-height: 0; }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  grid-template-rows: 1fr auto;
+  min-height: 0;
+}
+.screen.on { display: grid; }
+.screen.on > * { animation: screen-in var(--dur-3) var(--ease) both; }
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.screen-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(22px, 2.8vw, 38px) var(--page-pad) 0;
+  min-height: 0;
+}
+.screen-inner.narrow { max-width: 1020px; }
+
+/* --- Screen header ------------------------------------------------------- */
+/* Centred page header: step chip, title, then the instruction. */
+.screen-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: clamp(4px, 1vw, 12px);
+  flex: none;
+  text-align: center;
+}
+/* Centred in the action bar, so the buttons on either side cannot push it
+   off-centre. */
+.screen-foot .steps {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.screen-head-copy { min-width: 0; text-align: center; }
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.screen-head h1 { margin-bottom: 4px; }
+.lede { font-size: var(--fs-body); color: var(--ink-2); max-width: 62ch;
+  max-width: 56ch;
+  margin-inline: auto;
+}
+
+/* Step indicator — replaces the old floating step bubble */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 7px 8px 7px 14px;
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-hi), var(--sh-1);
+}
+/* Names the activity, so the dots are not the only cue for where the child is. */
+.steps-label {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: .01em;
+  color: var(--brand-strong);
+  white-space: nowrap;
+  margin-right: 6px;
+}
+.step-dot {
+  width: 9px; height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brand-tint);
+  transition: all var(--dur-2) var(--ease);
+}
+.steps.is-nav { padding-right: 12px; }
+
+/* The dots say where you are; the arrows are how you move. Same round button as
+   the sequencing swap, a size down so the indicator stays the centre of the
+   group rather than the thing between two buttons. */
+.scene-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px);
+  flex: none;
+}
+/* On the card it is the loudest thing about the scene, so it takes the brand
+   fill outright, and it stands as tall as the arrows either side of it - three
+   controls of one height read as one control. */
+.write-scene-card .steps.is-nav {
+  min-height: clamp(42px, 3.4vw, 52px);
+  padding: 0 16px 0 20px;
+  background: var(--brand-grad);
+  border: 2px solid var(--edge-brand);
+  box-shadow: var(--sh-1);
+}
+.write-scene-card .steps.is-nav .steps-label { color: var(--ink-on-brand); }
+/* The dots have to carry on a violet ground, so they become white rather than
+   the brand colour they use against the footer's glass. */
+.write-scene-card .steps.is-nav .step-dot { background: rgba(255, 255, 255, .38); }
+.write-scene-card .steps.is-nav .step-dot.on {
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(255, 255, 255, .6);
+}
+.scene-arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(42px, 3.4vw, 52px);
+  height: clamp(42px, 3.4vw, 52px);
+  flex: none;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--brand-tint);
+  box-shadow: var(--sh-1);
+  color: var(--brand);
+  cursor: pointer;
+  transition: all var(--dur-2) var(--ease);
+}
+.scene-arrow:hover:not(:disabled) {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  transform: scale(1.06);
+  box-shadow: var(--sh-2), 0 0 18px rgba(124, 92, 230, .22);
+}
+.scene-arrow:disabled { opacity: .3; cursor: default; }
+.scene-arrow > [data-icon] { display: grid; place-items: center; }
+.scene-arrow .ico { width: 56%; height: 56%; }
+
+@media (max-width: 900px) {
+  /* Narrow enough that the centred group and the primary action were touching. */
+  .scene-nav { gap: 6px; }
+  .scene-arrow { width: 40px; height: 40px; }
+  .write-scene-card .steps.is-nav { min-height: 40px; }
+  .steps.is-nav { padding-left: 10px; padding-right: 8px; }
+  .steps.is-nav .steps-label { margin-right: 4px; }
+}
+@media (max-width: 800px) {
+  /* Portrait tablet: the centred group and Next scene were 7px apart. */
+  .scene-arrow { width: 36px; height: 36px; }
+  .write-scene-card .steps.is-nav { min-height: 36px; }
+  .screen-foot .scene-nav ~ .foot-actions .btn { padding: 0 24px; }
+}
+.step-dot.done { background: var(--brand); opacity: .45; }
+.step-dot.on {
+  width: 26px;
+  border-radius: var(--r-pill);
+  background: var(--brand-grad);
+  box-shadow: 0 0 12px rgba(124, 92, 230, .55);
+}
+
+/* --- Screen body / footer ------------------------------------------------ */
+.screen-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* Deliberately not a scroll box: overflow-y:auto also clips the x axis, which
+     was slicing the card shadows. The dense panels inside scroll instead. */
+  overflow: visible;
+  padding-bottom: var(--s-3);
+}
+
+.screen-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex: none;
+  min-height: var(--foot-h);
+  padding: var(--s-3) 0;
+  /* Nothing at all: the action bar is simply the bottom of the canvas. */
+  background: transparent;
+}
+/* Back sits left, the forward action sits right — the same two anchor points
+   on every screen. `margin-left: auto` keeps the primary action right even on
+   screens that have no Back button. */
+.screen-foot-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  /* Matches .screen-inner so Back and the primary action line up with the
+     content columns above them. */
+  padding-inline: var(--page-pad);
+}
+.foot-note {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-3);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.foot-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex: none;
+  margin-left: auto;
+}
+
+/* The forward action is the one control a 7-year-old must never miss, so the
+   footer runs a size larger than buttons inside the content. */
+/* The sheet's actions are the same decision as an action bar's, so they are the
+   same size - a Done that is smaller in a popup than on the page reads as a
+   different, lesser button. */
+.screen-foot .btn,
+.modal.is-sheet .btn,
+.ai-actions .btn,
+.btn.celebrate-go {
+  min-height: var(--action-btn-h);
+  padding: 0 34px;
+  font-size: var(--fs-lg);
+}
+.screen-foot .btn.primary,
+.modal.is-sheet .btn.primary,
+.btn.celebrate-go { padding: 0 40px; }
+@media (max-height: 820px) {
+  .screen-foot .btn,
+  .modal.is-sheet .btn,
+  .ai-actions .btn,
+  .btn.celebrate-go { padding: 0 30px; }
+  .screen-foot .btn.primary,
+  .modal.is-sheet .btn.primary { padding: 0 32px; }
+}
+
+/* Back matches the forward action's treatment - filled, ringed, lifted - and
+   differs only in colour. Grey stops stay dark enough for white text: the
+   lightest stop measures 4.6:1. */
+.screen-foot .btn.ghost,
+.modal-actions .btn.ghost,
+.ai-actions .btn.ghost {
+  color: #FFFFFF;
+  background: linear-gradient(105deg,
+    rgba(116, 116, 138, .95) 0%,
+    rgba(94, 94, 114, .95) 45%,
+    rgba(82, 82, 106, .96) 100%);
+  border: 2px solid var(--edge-grey);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .34),
+    inset 0 -1px 0 rgba(30, 30, 45, .22),
+    0 4px 12px rgba(70, 70, 95, .22),
+    0 12px 30px rgba(50, 50, 75, .16);
+}
+.screen-foot .btn.ghost:hover:not(:disabled),
+.modal-actions .btn.ghost:hover:not(:disabled),
+.ai-actions .btn.ghost:hover:not(:disabled) {
+  color: #FFFFFF;
+  background: linear-gradient(105deg,
+    rgba(132, 132, 154, .96) 0%,
+    rgba(110, 110, 130, .96) 45%,
+    rgba(96, 96, 120, .97) 100%);
+  /* Lifts with the fill, stays in the grey family: a violet rim on a grey button
+     read as a different button lighting up. */
+  border-color: var(--edge-grey-hi);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .40),
+    0 6px 18px rgba(70, 70, 95, .28),
+    0 16px 38px rgba(50, 50, 75, .20),
+    0 0 22px rgba(140, 140, 165, .30);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  letter-spacing: .005em;
+  white-space: nowrap;
+  transition: transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease),
+              background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+.btn:active:not(:disabled) { transform: translateY(1px) scale(.99); }
+
+/* Primary: intro-style magic gradient (pink → violet → blue) + glass rim. */
+.btn.primary {
+  position: relative;
+  color: var(--ink-on-brand);
+  background: var(--brand-grad);
+  border: 2px solid var(--edge-brand);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .48),
+    inset 0 -1px 0 rgba(255, 255, 255, .14),
+    var(--sh-brand),
+    var(--magic-glow);
+}
+.btn.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--brand-grad-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    inset 0 -1px 0 rgba(255, 255, 255, .18),
+    0 6px 16px rgba(255, 79, 163, .28),
+    0 14px 32px rgba(59, 123, 255, .26),
+    0 0 40px rgba(196, 91, 232, .48);
+}
+
+.btn.ghost {
+  color: var(--ink-2);
+  background: var(--glass-strong);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border: 1.5px solid var(--glass-line);
+  box-shadow: var(--glass-hi), var(--sh-1);
+}
+.btn.ghost:hover:not(:disabled) {
+  color: var(--brand);
+  border-color: rgba(196, 176, 250, .9);
+  background: rgba(255, 255, 255, .96);
+  box-shadow: var(--glass-hi), var(--sh-2), 0 0 18px rgba(124, 92, 230, .18);
+}
+
+/* A filled sibling of .btn.primary in the mint accent: same rim, same lift, same
+   glow structure - only the hue differs, which is the whole point of a row of
+   equal actions. */
+.btn.mint {
+  position: relative;
+  color: var(--ink-on-brand);
+  background: linear-gradient(105deg,
+    rgba(45, 205, 176, .95) 0%,
+    rgba(24, 182, 154, .95) 45%,
+    rgba(13, 150, 126, .96) 100%);
+  border: 2px solid var(--edge-mint);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .48),
+    inset 0 -1px 0 rgba(255, 255, 255, .14),
+    0 4px 12px rgba(16, 168, 142, .30),
+    0 10px 26px rgba(16, 168, 142, .22);
+}
+.btn.mint:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    0 6px 16px rgba(16, 168, 142, .34),
+    0 14px 32px rgba(16, 168, 142, .26),
+    0 0 34px rgba(34, 199, 169, .40);
+}
+
+/* Rose: "go back and change your words" is its own kind of action, and sharing
+   grey with Back made the two look like the same button in two places. */
+.btn.rose {
+  position: relative;
+  color: var(--ink-on-brand);
+  background: linear-gradient(105deg,
+    rgba(238, 106, 143, .95) 0%,
+    rgba(224, 78, 120, .95) 45%,
+    rgba(198, 52, 96, .96) 100%);
+  border: 2px solid var(--edge-rose);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .48),
+    inset 0 -1px 0 rgba(255, 255, 255, .14),
+    0 4px 12px rgba(206, 60, 104, .30),
+    0 10px 26px rgba(206, 60, 104, .22);
+}
+.btn.rose:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    0 6px 16px rgba(206, 60, 104, .34),
+    0 14px 32px rgba(206, 60, 104, .26),
+    0 0 34px rgba(238, 106, 143, .40);
+}
+
+.btn.soft {
+  color: var(--brand-strong);
+  background: rgba(240, 235, 255, .78);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border: 1.5px solid var(--brand-tint);
+  box-shadow: var(--glass-hi);
+}
+.btn.soft:hover:not(:disabled) {
+  background: rgba(228, 219, 252, .92);
+  box-shadow: var(--glass-hi), 0 0 20px rgba(124, 92, 230, .24);
+}
+
+/* Chevrons on the action bar: same optical weight as the label they sit with. */
+.btn [data-icon="chevronLeft"],
+.btn [data-icon="chevronRight"] { display: grid; place-items: center; }
+.btn [data-icon="chevronLeft"] .ico,
+.btn [data-icon="chevronRight"] .ico { width: 20px; height: 20px; }
+
+.btn.lg { min-height: 56px; padding: 0 32px; font-size: var(--fs-lg); }
+.btn.block { width: 100%; }
+
+.btn:disabled {
+  opacity: .45;
+  filter: grayscale(.5);
+  box-shadow: none;
+}
+
+/* Cards */
+.card,
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-2);
+}
+.card-pad { padding: clamp(16px, 1.6vw, 24px); }
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-2);
+  overflow: hidden;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex: none;
+  padding: 14px clamp(16px, 1.6vw, 22px);
+  background: linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.28));
+}
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  color: var(--ink);
+}
+.panel-body { flex: 1 1 auto; min-height: 0; padding: clamp(14px, 1.5vw, 22px); }
+.panel-body.no-scroll { overflow: visible; }
+.panel-foot {
+  flex: none;
+  padding: 14px clamp(16px, 1.6vw, 22px);
+  background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.62));
+}
+
+/* Pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: .03em;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+.pill.ai      { background: var(--brand-soft); color: var(--brand-strong); border-color: var(--brand-tint); }
+.pill.mint    { background: var(--mint-soft);  color: #0B7D68;            border-color: #BCEBE1; }
+.pill.sunny   { background: var(--sun-soft);   color: #9A5F02;            border-color: #F6DCAE; }
+.pill.rose    { background: var(--rose-soft);  color: #B32E58;            border-color: #F7CBD9; }
+
+/* Counter badge */
+.counter {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--ink-2);
+}
+.counter b { color: var(--brand); }
+
+/* Hint strip */
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--brand-strong);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  max-width: 62ch;
+}
+.hint .hint-icon { display: grid; place-items: center; flex: none; }
+
+/* Empty state */
+.empty-state {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: var(--s-8) var(--s-5);
+  text-align: center;
+  color: var(--ink-2);
+}
+.empty-state .empty-icon {
+  display: grid; place-items: center;
+  width: 60px; height: 60px;
+  border-radius: 20px;
+  background: var(--brand-soft);
+  font-size: 26px;
+}
+
+/* --------------------------------------------------------- 5. SCENE MEDIA */
+.scene-art {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: linear-gradient(160deg, #E9E3FB, #DCEEF7);
+  isolation: isolate;
+}
+.scene-art > img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+/* Sample scene assets (same files as Wonder-Story-Lab.html) — CSS fallback
+   so the pictures still show if an <img> fails to paint. */
+.scene-art.snowstorm,
+.scene-art.snowman {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.scene-art.snowstorm { background-image: url("assets/Base%20Image%201.jpg"); }
+.scene-art.snowman   { background-image: url("assets/Base%20Image%202.jpg"); }
+.scene-art.ai-lights { background: center / cover no-repeat url("assets/My%20Generated%20Scene_1.png"); }
+.scene-art.ai-cave   { background: center / cover no-repeat url("assets/My%20Generated%20Scene_2.png"); }
+.scene-art.ai-placeholder {
+  display: grid;
+  place-items: center;
+  background: var(--brand-soft);
+  border: 2px dashed var(--brand-tint);
+}
+.scene-art.ai-placeholder > img { object-fit: contain; padding: 14%; opacity: .9; }
+/* In the tray the card has no padding, so the card's hover outline lands right on
+   the dashed edge and the two read as a doubled border. The colour goes, not the
+   border, so nothing shifts by 2px on hover. */
+.scene-card:hover .scene-art.ai-placeholder { border-color: transparent; }
+
+/* Scene card */
+.scene-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  /* No backdrop-filter. A card filled by an opaque picture has nothing to blur,
+     and the filtered layer was what broke the hover outline into pieces and left
+     stray flashes of shadow beside the thumbnails. */
+  background: var(--glass);
+  /* Transparent at rest. The glass border and the white inset highlight together
+     drew a 1px white line around every thumbnail; the border stays for geometry
+     so hover has something to colour. */
+  border: 1px solid transparent;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease),
+              border-color var(--dur-2) var(--ease);
+}
+.scene-card.drag-source { cursor: grab; touch-action: none; }
+.scene-card.drag-source:hover {
+  transform: translateY(-3px);
+  border-color: rgba(196, 176, 250, .9);
+  /* --glass-hi is an opaque white 1px inset along the top edge; over a 1px border
+     it wipes it out there, so the hover outline looked broken across the top.
+     The lift and the glow carry the state without it. */
+  box-shadow: var(--sh-2), 0 0 22px rgba(124, 92, 230, .22);
+}
+.scene-card.dragging { opacity: .32; }
+.scene-card.selected { border-color: var(--brand); box-shadow: var(--sh-brand); }
+
+/* One centred caption under the picture, now that the tag has moved onto it. */
+.scene-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 4px;
+  text-align: center;
+}
+.scene-meta h3 { font-size: var(--fs-body); font-weight: 700; }
+.scene-meta p  { font-size: var(--fs-sm); color: var(--ink-2); }
+
+.scene-tag.is-ai {
+  background: linear-gradient(135deg, rgba(150, 118, 255, .96), rgba(108, 75, 216, .96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), 0 2px 12px rgba(108, 75, 216, .40);
+}
+
+/* Card label, pinned to the picture it names. Turns white + purple once the
+   card has been placed in a slot, so the tray doubles as the checklist. */
+/* One block for both badges. They were two blocks with the same numbers and came
+   out 2px apart, because they sit at different depths and inherited different
+   line-heights. Sharing the declaration makes drift impossible. */
+.card-badge,
+.scene-tag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  left: auto;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  background: rgba(29, 27, 60, .66);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* The AI card announces itself in the brand colour; base scenes stay neutral. */
+.card-badge.is-ai {
+  background: linear-gradient(135deg, rgba(150, 118, 255, .96), rgba(108, 75, 216, .96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), 0 2px 12px rgba(108, 75, 216, .40);
+}
+.card-badge.is-placed,
+.card-badge.is-ai.is-placed {
+  background: #fff;
+  color: var(--brand-strong);
+  border: 1px solid var(--brand-tint);
+  box-shadow: 0 2px 10px rgba(108, 75, 216, .18);
+}
+.card-badge.is-placed::before { content: "\2713"; }
+
+/* Drag ghost */
+.drag-ghost {
+  position: fixed;
+  z-index: 900;
+  width: 168px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-3deg) scale(.94);
+  opacity: .92;
+  box-shadow: var(--sh-3);
+}
+
+/* === Welcome / intro =====================================================
+   Rebuilt from the Figma frame (1280 x 800). The illustration is the only
+   bitmap left in the composition; every chip, the logo, the two cards and the
+   CTA are their own elements. Sizes are expressed in design pixels via --u so
+   the whole layout scales with the viewport instead of being one flat image.
+   ========================================================================= */
+.screen[data-screen="welcome"] { grid-template-rows: 1fr; }
+
+.welcome-stage {
+  /* one design pixel, clamped so the composition holds at the extremes */
+  --u: clamp(0.6px, min(100vw / 1280, 100vh / 800), 1.7px);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 100%;
+  /* Design offsets from the Figma frame: 59 top, 33 and 48 between blocks,
+     48 bottom. Reproducing them keeps the stack exactly 800u tall. */
+  padding: calc(11 * var(--u)) calc(24 * var(--u)) 0;
+  overflow: hidden;
+  /* The still remains behind the video: it is what shows before the first frame
+     decodes, and all there is if the video is blocked. */
+  background: #1B0B47 url("assets/intro/bg.jpg") center / cover no-repeat;
+}
+/* Negative z-index puts the loop above the stage's own background and below every
+   child, without touching how those children are positioned - forcing them to
+   position:relative dropped the absolutely placed chip into the flex flow. */
+.wl-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* --- corner chips -------------------------------------------------------- */
+.wl-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  background: center / 100% 100% no-repeat;
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 700;
+  white-space: nowrap;
+  user-select: none;
+}
+.wl-chip--ai {
+  top: calc(23 * var(--u));
+  left: calc(24 * var(--u));
+  width: calc(233 * var(--u));
+  height: calc(48 * var(--u));
+  padding-left: calc(53 * var(--u));
+  font-family: var(--font-body);
+  font-size: calc(17 * var(--u));
+  font-weight: 800;
+  letter-spacing: calc(-0.5 * var(--u));
+  color: #9456FF;   /* from Figma 21:122 */
+  background-image: url("assets/intro/chip-ai.png");
+}
+
+/* --- logo --------------------------------------------------------------- */
+.wl-logo {
+  flex: none;
+  width: calc(560 * var(--u));
+  /* Figma 22:231 sits at x=334, i.e. 26px left of centre. */
+  margin: 0 calc(52 * var(--u)) calc(33 * var(--u)) 0;
+  max-width: 76vw;
+  filter: drop-shadow(0 calc(14 * var(--u)) calc(34 * var(--u)) rgba(20, 6, 60, .55));
+  animation: welcome-logo-float 3.4s var(--ease) infinite;
+  user-select: none;
+}
+@keyframes welcome-logo-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-9 * var(--u))); }
+}
+
+/* --- the two preview cards ---------------------------------------------- */
+.wl-cards {
+  flex: none;
+  margin-bottom: calc(48 * var(--u));
+  display: grid;
+  grid-template-columns: repeat(2, calc(280 * var(--u)));
+  gap: calc(24 * var(--u));
+}
+.wl-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(8 * var(--u));
+  height: calc(180 * var(--u));
+  padding: calc(16 * var(--u)) calc(18 * var(--u));
+  text-align: center;
+  border-radius: calc(20 * var(--u));
+  background: rgba(86, 52, 176, .34);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border: 1px solid rgba(196, 160, 255, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .22),
+    0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(20, 6, 60, .35);
+}
+.wl-card-icon {
+  width: calc(60 * var(--u));
+  height: calc(60 * var(--u));
+  object-fit: contain;
+  filter: drop-shadow(0 calc(6 * var(--u)) calc(14 * var(--u)) rgba(20, 6, 60, .45));
+  user-select: none;
+  pointer-events: none;
+}
+.wl-card-title {
+  /* Figma 22:234 / 22:241 */
+  font-family: var(--font-body);
+  font-size: calc(24 * var(--u));
+  font-weight: 800;
+  line-height: calc(24 * var(--u));
+  letter-spacing: calc(-0.5 * var(--u));
+  color: #FFFFFF;
+}
+.wl-card-body {
+  /* Figma 22:236 / 22:242 */
+  font-family: var(--font-body);
+  font-size: calc(16 * var(--u));
+  font-weight: 600;
+  line-height: calc(20 * var(--u));
+  letter-spacing: calc(-0.5 * var(--u));
+  color: #9456FF;
+}
+
+/* A choice has to be made before the lesson starts, so the cards are buttons
+   with a pressed state and the CTA stays disabled until one is picked. */
+.wl-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease),
+              background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.wl-card:hover {
+  transform: translateY(calc(-4 * var(--u)));
+  border-color: #9456FF;
+  background: rgba(88, 42, 168, .28);
+}
+.wl-card.is-selected {
+  border-width: calc(3 * var(--u));
+  border-color: #A855F7;
+  background: rgba(96, 46, 190, .34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .26),
+    0 0 calc(22 * var(--u)) rgba(168, 85, 247, .45);
+}
+/* A highlight travels around the outline of the chosen card. The conic
+   gradient is masked to a ring so only the border lights up. */
+@property --wl-sweep {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.wl-card.is-selected::after {
+  content: "";
+  position: absolute;
+  /* inset:0 would be the padding box, i.e. inside the 3px border, which drew
+     the light as a second concentric line. Pull it out onto the border box so
+     the highlight rides the outline itself. */
+  inset: calc(-3 * var(--u));
+  z-index: 2;
+  border-radius: inherit;
+  padding: calc(3 * var(--u));
+  background: conic-gradient(from var(--wl-sweep),
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0) 250deg,
+    rgba(233, 213, 255, .55) 296deg,
+    #FFFFFF 315deg,
+    rgba(233, 213, 255, .55) 334deg,
+    rgba(255, 255, 255, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: wl-sweep 2.4s linear infinite;
+  pointer-events: none;
+}
+@keyframes wl-sweep { to { --wl-sweep: 360deg; } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the brighter outline, drop the travelling light. */
+  .wl-card.is-selected::after { animation: none; opacity: 0; }
+}
+
+.wl-start:disabled {
+  cursor: not-allowed;
+  filter: grayscale(.7) brightness(.75);
+  opacity: .55;
+  transform: none;
+}
+.wl-start:disabled:hover { transform: none; }
+
+/* --- call to action ----------------------------------------------------- */
+.wl-start {
+  flex: none;
+  width: calc(364 * var(--u));
+  height: calc(100 * var(--u));
+  padding-left: calc(34 * var(--u));
+  background: center / 100% 100% no-repeat url("assets/intro/btn-start.png");
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: calc(26 * var(--u));
+  font-weight: 800;
+  letter-spacing: calc(-0.5 * var(--u));
+  text-shadow: 0 2px 10px rgba(30, 8, 90, .5);
+  filter: drop-shadow(0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(120, 40, 220, .45));
+  transition: transform var(--dur-2) var(--ease), filter var(--dur-2) var(--ease);
+}
+.wl-start:hover {
+  transform: translateY(calc(-4 * var(--u))) scale(1.02);
+  filter: drop-shadow(0 calc(12 * var(--u)) calc(28 * var(--u)) rgba(150, 70, 255, .6)) brightness(1.05);
+}
+.wl-start:active,
+.wl-start.is-clicking { transform: scale(.97); }
+
+/* Portrait tablets have height to spare, so the composition may scale past the
+   pure width ratio and still fit. */
+@media (orientation: portrait) {
+  .welcome-stage { --u: clamp(0.6px, min(100vw / 900, 100vh / 800), 1.7px); }
+  .wl-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(92vw, calc(584 * var(--u)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wl-logo { animation: none; }
+}
+
+/* === Goals =============================================================== */
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-5);
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  align-items: stretch;
+}
+.goal-grid .goal-card { min-height: 0; }
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 0;
+  padding: clamp(16px, 1.6vw, 26px);
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-2);
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.goal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-hi), var(--sh-3), 0 0 30px rgba(124, 92, 230, .16);
+}
+.goal-num {
+  display: grid; place-items: center;
+  width: 42px; height: 42px;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--brand-grad);
+  box-shadow: var(--sh-brand);
+}
+.goal-card h3 { font-size: var(--fs-h3); }
+.goal-samples {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface-3);
+  box-shadow: inset 0 0 0 1px rgba(231, 226, 247, .9);
+  flex: 1 1 auto;
+  min-height: 130px;
+}
+.goal-samples.pair { grid-template-columns: 1fr 1fr; }
+.goal-samples img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: linear-gradient(160deg, #E9E3FB, #DCEEF7);
+}
+.goal-samples.single img { height: 100%; }
+.goal-card > p { font-size: var(--fs-body); }
+
+/* All three goal thumbnails share one height, set by the card whose text runs
+   longest. Subgrid lets the cards align their rows to the grid instead of each
+   sizing independently; without it they simply keep the flex behaviour. */
+@supports (grid-template-rows: subgrid) {
+  .goal-grid { grid-template-rows: auto auto auto minmax(0, 1fr); }
+  .goal-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    align-content: stretch;
+  }
+  .goal-samples { margin-top: 0; }
+}
+
+/* === Base scenes (observe) =============================================== */
+.observe-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--s-5);
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+}
+.base-scene-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+  min-height: 0;
+  height: 100%;
+  align-items: stretch;
+}
+.base-scene-grid .scene-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+}
+/* Picture fills leftover height so both cards match the aside. */
+.base-scene-grid .scene-art {
+  flex: 1 1 auto;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+.base-scene-grid .scene-meta { flex: none; }
+
+.observe-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  min-height: 0;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+  /* One size, one reserve, and the owl positions itself from both - so the perch
+     is the same at every resolution instead of drifting with the bubble's line
+     count. Grows with width, not height: portrait tablets have no room to give. */
+  --owl-size: clamp(132px, min(13.5vw, 23vh), 200px);
+  --owl-reserve: clamp(24px, 4.6vw, 92px);
+  padding-top: var(--owl-reserve);
+}
+.observe-aside .observe-block--mission {
+  flex: 0 0 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.observe-aside .observe-block--mission .observe-list {
+  flex: 1 1 auto;
+  align-content: start;
+}
+.observe-aside > .observe-block:not(.observe-block--mission) {
+  flex: none;
+}
+.observe-block {
+  /* Taller boxes: the column had room to spare, and 15px top and bottom made the
+     lists feel packed into the card. */
+  padding: clamp(18px, 2.4vh, 30px) 18px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-1);
+}
+.observe-block h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(11px, 1.5vh, 18px);
+  font-size: var(--fs-sm);
+}
+/* One gap for both lists, so they stay in step. */
+.observe-list {
+  display: grid;
+  gap: clamp(10px, 1.4vh, 17px);
+  grid-template-columns: minmax(0, 1fr);
+}
+.observe-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: var(--r-pill);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-tint);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+  min-height: 52px;
+}
+.observe-list li > .ico,
+.observe-block h3 > [data-icon],
+.panel-title > [data-icon] { display: grid; place-items: center; flex: none; }
+.clue-chips > span > :not([data-icon]) { min-width: 0; }
+/* One colour for the whole set, with the same ink as the Observation list, so
+   the two panels read as one system rather than four coloured tags. */
+.clue-chips .c-weather,
+.clue-chips .c-character,
+.clue-chips .c-place,
+.clue-chips .c-problem {
+  background: var(--mint-soft);
+  color: var(--ink);
+  border: 1px solid #BCEBE1;
+}
+.clue-chips {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(10px, 1.4vh, 17px);
+}
+.clue-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  white-space: nowrap;
+  min-height: 52px;
+}
+
+/* Observation questions and story clues are the same component, so their icon
+   box and glyph share one size. Scoped to direct children: a descendant
+   selector here previously gave the icon wrapper the pill's own padding. */
+.observe-list li > [data-icon],
+.clue-chips > span > [data-icon] {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+}
+.observe-list li > [data-icon] > .ico,
+.clue-chips > span > [data-icon] > .ico {
+  width: 34px;
+  height: 34px;
+}
+
+.mascot-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: auto;
+  padding: 9px 12px;
+  border-radius: var(--r-lg);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-tint);
+}
+.mascot-note img { width: 30px; flex: none; }
+.mascot-note p { font-size: var(--fs-sm); font-weight: 700; color: var(--brand-deep); }
+
+/* === Sequence / rearrange ================================================ */
+.sequence-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  height: 100%;
+  min-height: 0;
+}
+/* Card tray: label + checklist on the left, the three draggable cards on the
+   right, so the row fills the width instead of trailing off into blank space. */
+.tray {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5);
+  flex: none;
+  padding: var(--s-4) var(--s-5);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-1);
+}
+
+.tray-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+  justify-items: center;
+}
+.tray-cards .scene-card {
+  width: min(100%, clamp(168px, 26vh, 240px));
+  padding: 0;
+  /* No padding, so the picture reaches the card's edge. Its own 18px radius cut
+     across the card's 24px corners and clipped the hover outline there, which is
+     why the line looked broken at the rounds. Clipping to the card fixes it. */
+  overflow: hidden;
+}
+.tray-cards .scene-art { border-radius: var(--r-lg); }
+/* Keep tray thumbs square. width:100% + a short max-height was letterboxing
+   them into thin strips. */
+.tray-cards .scene-art {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: auto;
+  max-height: none;
+}
+.tray-cards .scene-card.is-placed { pointer-events: none; }
+.tray-cards .scene-card.is-placed .scene-art { opacity: .3; }
+.tray-cards .scene-card.is-placed .card-badge { opacity: 1; }
+
+/* slot, swap, slot, swap, slot - the controls are columns of their own. */
+.slot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--s-5);
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-top: 22px;   /* room for the numbered tab overhang */
+}
+/* On Finalize the grid is the whole page, and .screen-body is a block, so flex
+   grow does nothing there - it has to be told to fill. The pictures are capped
+   though: filling the band turned a square scene into a very tall crop, so they
+   sit at about the height of the Sequence slots and centre in what is left. */
+.screen-body > .slot-grid { height: 100%; }
+/* Finalize has no tray, so it holds that space open instead - its slots then get
+   the same height as Sequence's and the pictures match without either screen's own
+   rules being touched. Split top and bottom, because with nothing above them the
+   cards belong in the middle of the screen rather than down where Sequence's sit. */
+/* Finalize has room to spare, so its numbers sit higher and read larger than the
+   ones tucked under Sequence's tray. */
+.screen-body > .slot-grid .slot-index {
+  top: calc(-1 * (clamp(28px, 3.4vh, 40px) + 50px));
+  width: clamp(40px, 4.6vh, 54px);
+  height: clamp(40px, 4.6vh, 54px);
+  font-size: clamp(18px, 2vh, 24px);
+}
+.screen-body > .slot-grid {
+  padding-block: calc((var(--tray-h) + var(--s-5) + 22px) / 2);
+}
+.slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-1);
+  transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease),
+              background var(--dur-2) var(--ease);
+}
+/* Tabbed onto the slot's top edge, centred: it numbers the slot itself, so it
+   belongs on the frame rather than inside the picture. */
+.slot-index {
+  position: absolute;
+  top: -21px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--r-pill);
+  background: var(--brand-grad);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: var(--sh-brand);
+}
+.slot.is-empty { background: var(--glass-quiet); border-style: dashed; border-color: var(--line-strong); }
+.slot.drop-ready {
+  border-color: var(--brand);
+  border-style: solid;
+  background: rgba(240, 235, 255, .88);
+  animation: drop-pulse 1.1s var(--ease) infinite;
+}
+@keyframes drop-pulse {
+  0%, 100% { box-shadow: var(--sh-2), 0 0 0 0 rgba(124, 91, 230, .34); }
+  50%      { box-shadow: var(--sh-2), 0 0 0 10px rgba(124, 91, 230, 0); }
+}
+.slot { min-height: 0; }
+.slot .scene-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: none;
+}
+.slot .scene-art,
+.slot .slot-empty {
+  flex: 1 1 auto;
+  min-height: 130px;
+  aspect-ratio: auto;
+}
+
+.slot-empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  text-align: center;
+  padding: var(--s-4);
+}
+/* Tone-on-tone: a shade deeper than the empty slot behind it, no elevation. */
+.slot-empty .slot-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  background: var(--brand-tint);
+  color: #A98CFF;   /* decorative, so it sits softly on the tile */
+  box-shadow: none;
+}
+.slot-empty .slot-empty-icon svg { width: 28px; height: 28px; display: block; }
+
+/* Sits in the gap between two cards and trades them. */
+.slot-swap {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 4.4vw, 68px);
+  height: clamp(52px, 4.4vw, 68px);
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--brand-tint);
+  box-shadow: var(--sh-1);
+  color: var(--brand);
+  transition: all var(--dur-2) var(--ease);
+}
+.slot-swap:hover:not(:disabled) {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  transform: scale(1.06);
+  box-shadow: var(--sh-2), 0 0 18px rgba(124, 92, 230, .22);
+}
+.slot-swap:disabled { opacity: .3; }
+.slot-swap > [data-icon] { display: grid; place-items: center; }
+.slot-swap .ico { width: 58%; height: 58%; }
+
+.slot-btn {
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+  transition: all var(--dur-1) var(--ease);
+}
+.slot-btn:hover:not(:disabled) { background: var(--brand-soft); color: var(--brand); border-color: var(--brand-tint); }
+/* Removing a card is reversible, so it reads in the brand tone rather than as
+   a destructive red. */
+.slot-btn:disabled { opacity: .3; }
+
+.slot-btn [data-icon] { display: grid; place-items: center; }
+.slot-btn .ico { width: 26px; height: 26px; }
+.btn [data-icon] { display: grid; place-items: center; }
+
+/* === AI Scene Maker ====================================================== */
+/* The drawing step: the picture, then what to do about it. The panel spans the
+   content band, same as every other screen, in both states - loading and done.
+   The picture is a square centred inside it. */
+.ai-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vh, 24px);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(14px, 2vh, 26px);
+  background: var(--surface-3);
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+}
+/* Transparent - the stage around it is the panel - and not a clip box: the base
+   rule's overflow:hidden was cutting the picture's own drop shadow off. */
+.ai-stage .result-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+/* The picture takes the shorter side of the space it is given, so it stays square
+   whatever shape the panel is. aspect-ratio plus max-width does not work here:
+   Chrome clamps the width and keeps the derived height, which squashed it. */
+/* Higher specificity than .result-frame.is-filled, which sits later in the file
+   and was still supplying two things: --sh-2, drawing an inner rounded box the
+   width of the panel, and overflow:hidden, clipping the picture's drop shadow. */
+.ai-stage .result-frame.is-filled {
+  container-type: size;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.ai-stage .result-frame.is-filled img {
+  position: static;
+  inset: auto;
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+  border-radius: var(--r-md);
+  box-shadow: 0 10px 30px rgba(45, 30, 110, .28);
+}
+.ai-actions .btn [data-icon] { display: grid; place-items: center; flex: none; }
+.ai-actions .btn .ico { width: 34px; height: 34px; }
+.ai-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 1vw, 16px);
+}
+
+/* The five questions are the whole page, so they share the page width and split
+   its height between them - five targets a seven-year-old cannot miss. */
+/* Six columns so a card can span two: the three required parts fill the top row,
+   the two optional ones sit centred beneath them, and every card is the same
+   size because every card spans the same two columns. */
+.prompt-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: clamp(14px, 1.6vw, 22px);
+  height: 100%;
+  min-height: 0;
+  align-content: stretch;
+}
+.prompt-card { grid-column: span 2; }
+.prompt-card:nth-child(4) { grid-column: 2 / span 2; }
+.prompt-card:nth-child(5) { grid-column: 4 / span 2; }
+
+.prompt-card {
+  /* The two rows divide the page height between them, so the icon and the state
+     badge are sized from that height rather than nailed down. */
+  --prompt-icon: clamp(56px, 8.6vh, 92px);
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.6vh, 18px);
+  width: 100%;
+  min-height: 0;
+  padding: clamp(14px, 2vh, 24px) clamp(12px, 1.4vw, 20px);
+  text-align: center;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  /* Standing on the page rather than inside a panel, so they carry their own
+     lift. */
+  box-shadow: var(--sh-1);
+  transition: all var(--dur-2) var(--ease);
+}
+.prompt-card:hover {
+  border-color: var(--brand-tint);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-2);
+}
+/* Two auto margins split the free space, so the icon and label sit centred in
+   the upper half while the slot stays pinned to the bottom edge. */
+.prompt-icon { margin-top: auto; }
+.prompt-slot { margin-top: auto; }
+
+.prompt-icon {
+  display: grid; place-items: center;
+  width: var(--prompt-icon); height: var(--prompt-icon);
+  flex: none;
+  border-radius: 30%;
+  background: var(--surface-3);
+  font-size: 21px;
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+
+/* Two cards per row once three would squeeze the labels; the centred pair goes
+   back to the normal flow. */
+@media (max-width: 700px) {
+  .prompt-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prompt-card,
+  .prompt-card:nth-child(4),
+  .prompt-card:nth-child(5) { grid-column: auto; }
+  .prompt-card:nth-child(5) { grid-column: 1 / span 2; }
+}
+.prompt-icon[data-tone="who"]    { background: linear-gradient(160deg, #EDE4FF, #D3C0FF); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.prompt-icon[data-tone="where"]  { background: linear-gradient(160deg, #E4FBC8, #C8F08A); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.prompt-icon[data-tone="happen"] { background: linear-gradient(160deg, #FFF8E2, #FFEDBC); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.prompt-icon[data-tone="when"]   { background: linear-gradient(160deg, #D9F0FF, #A8DCFF); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.prompt-icon[data-tone="feel"]   { background: linear-gradient(160deg, #FFE0F0, #FFB8D6); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.prompt-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-family: var(--font-body);
+  /* The question is the loudest thing on the card, so it sits above the reading
+     scale rather than on it - --fs-body left it looking like a caption next to a
+     92px icon. */
+  font-size: clamp(24px, .62vw + 20px, 32px);
+  font-weight: 700;
+  color: var(--ink);
+  flex: none;
+}
+/* Out of the label and into the corner: it is a note about the card, not part of
+   the question, and pulling it out lets the question centre on its own. */
+.prompt-req {
+  position: absolute;
+  top: clamp(12px, 1.7vh, 20px);
+  right: clamp(12px, 1.7vh, 20px);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  /* It is an <em>, so the italic has to be turned off explicitly. */
+  font-style: normal;
+  font-size: clamp(12px, .16vw + 11px, 13px);
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  border: 1px solid var(--brand-tint);
+}
+/* The slot along the bottom of the card: a + to press while it is empty, and the
+   child's own words once it is not. One place to look, either way.
+   Two elements, because -webkit-line-clamp needs display:-webkit-box, which
+   ignores every centring property Chrome still honours. So the box centres and
+   the text inside it clamps. */
+.prompt-slot {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  /* Exactly two lines of answer, always - so an empty + slot and a full one are
+     the same height and the five cards stay level. */
+  height: calc(2 * 1.3 * var(--fs-body) + 23px);
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  border: 1.5px dashed var(--line-strong);
+  text-align: center;
+  transition: all var(--dur-2) var(--ease);
+  overflow: hidden;
+}
+.prompt-answer {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* A long unbroken word will not wrap on its own, so it ran straight out of the
+     card instead of being clamped. Breaking anywhere lets the clamp do its job
+     and add the ellipsis. */
+  overflow-wrap: anywhere;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+/* Empty: the pale surface and the dashed edge from .prompt-slot stand, so the
+   slot still reads as "nothing here yet". Only the + takes the Sequence colour. */
+.prompt-card:not(.has-response) .prompt-answer {
+  font-family: var(--font-body);
+  font-size: clamp(28px, 3.4vh, 38px);
+  font-weight: 700;
+  line-height: 1;
+  color: #A98CFF;
+}
+/* Filled: a solid edge and the brand tint, so answered cards read at a glance. */
+.prompt-card.has-response .prompt-slot {
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+}
+.prompt-card:hover .prompt-slot { border-color: var(--brand-tint); }
+/* Answered: a mint edge, matching the check badge already on the card. */
+.prompt-card.has-response {
+  position: relative;
+  border-color: #B9A2F5;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,245,255,.86));
+  box-shadow: var(--glass-hi), var(--sh-1), 0 0 16px rgba(124, 91, 230, .18);
+}
+.prompt-card.has-response .prompt-icon { background: var(--brand-soft); }
+.prompt-card.has-response .prompt-answer { color: var(--ink); }
+
+/* AI result panel */
+/* The AI frame bleeds outside its box by design, so this pane must not treat
+   that bleed as scrollable content. */
+.panel-body:has(> #aiOptions) { overflow: hidden; }
+#aiOptions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+.result-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface-3);
+  border: 2px dashed var(--line-strong);
+}
+/* The generated scene stands on its own - no decorative frame. */
+.result-frame.is-filled {
+  border: 0;
+  padding: 0;
+  background: none;
+  overflow: hidden;
+  box-shadow: var(--sh-2);
+}
+.result-frame.is-filled img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-lg);
+}
+.result-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.result-placeholder {
+  /* Above the loading shimmer. The sweep is an ::after, so it painted over the
+     text - barely noticeable in a small frame, but across the full content band
+     it washed out both the label and the percentage. */
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: var(--s-6);
+  text-align: center;
+  color: var(--ink-3);
+}
+.result-placeholder .result-icon {
+  display: grid; place-items: center;
+  width: 66px; height: 66px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  font-size: 28px;
+}
+/* While drawing, the same circle grows a ring. It loops rather than fills: the
+   image service does not say how far along it is, so a percentage would be a
+   promise about a finish time nobody can keep. A ring that keeps turning says
+   the only true thing - still working. */
+.result-placeholder .result-icon.is-ring {
+  position: relative;
+  width: clamp(104px, 13vh, 140px);
+  height: clamp(104px, 13vh, 140px);
+}
+/* An SVG arc, not a conic gradient: Chrome does not antialias a conic hard stop
+   and it cannot round the ends, which is what made the mic ring look chipped. */
+.ai-spinner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: ai-spin 1.15s linear infinite;
+}
+.ai-spinner circle { fill: none; stroke-width: 9; }
+.ai-spinner-track { stroke: rgba(124, 91, 230, .16); }
+.ai-spinner-arc {
+  stroke: var(--brand);
+  stroke-linecap: round;
+  /* 2πr = 283. Showing a third of it keeps a clear head and tail turning. */
+  stroke-dasharray: 283;
+  stroke-dashoffset: 189;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Stopping it dead would read as a hung screen, so the arc breathes instead
+     of turning. */
+  .ai-spinner { animation: none; }
+  .ai-spinner-arc { animation: ai-breathe 1.8s var(--ease) infinite; }
+  @keyframes ai-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+}
+
+.result-icon.is-ring .ico { width: 46%; height: 46%; }
+.result-placeholder strong { font-size: var(--fs-body); color: var(--ink-2); font-family: var(--font-body); }
+.result-placeholder span { font-size: var(--fs-sm); }
+
+/* Loading shimmer for generation */
+.result-frame.is-loading::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.7) 45%, transparent 70%);
+  background-size: 240% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer { from { background-position: 180% 0; } to { background-position: -60% 0; } }
+
+/* === Class 1 complete / celebration ====================================== */
+/* Owl leads; the title sits under it as a caption, not a page header. */
+.celebrate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.6vh, 8px);
+  height: 100%;
+  min-height: 0;
+}
+.celebrate-title {
+  margin: 0;
+  text-align: center;
+  flex: none;
+}
+/* The one way out of Class 1. It sits under the message rather than in a footer
+   bar, so the owl stays the whole screen and the step indicator stays gone. */
+.celebrate-go {
+  flex: none;
+  margin-top: clamp(10px, 2vh, 26px);
+}
+/* The finished scenes take every bit of height the owl leaves them, the same way
+   the slots do on Sequence. */
+.storyboard-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* Cards hug their picture rather than stretching to the row, and the row
+     centres them in whatever height is left. */
+  align-items: start;
+  align-content: center;
+}
+/* An explicit height, matching Finalize: with align-items:start the row is
+   content-sized, so a flexible height had nothing to grow into and collapsed to
+   the 120px floor. */
+.storyboard-row .scene-art {
+  flex: none;
+  height: var(--thumb-h);
+  aspect-ratio: auto;
+}
+.celebrate-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--brand-tint);
+  box-shadow: var(--sh-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--brand-deep);
+}
+/* Only the owl is in flow, so the owl itself lands on the page's centre line and
+   the bubbles hang off to either side. */
+.celebrate-say {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  flex: none;
+}
+/* The owl is the screen now that the storyboard has gone, so it takes the room
+   that frees up. */
+/* =============================================================================
+   OWL SPRITE
+   One 4x4 sheet, 16 frames of 580x406. Two step animations walk it: the fast one
+   moves along a row, the slow one - four times its length - drops to the next, so
+   together they cycle every cell in order. jump-none is what lands the last frame
+   exactly on the sheet's edge instead of one frame short.
+   ========================================================================== */
+.owl-sprite {
+  display: block;
+  aspect-ratio: 580 / 406;
+  background: url("assets/owl-sprite.png") 0% 0% / 400% 400% no-repeat;
+  animation: owl-frame-x 1.12s steps(4, jump-none) infinite,
+             owl-frame-y 4.48s steps(4, jump-none) infinite;
+}
+@keyframes owl-frame-x { from { background-position-x: 0%; } to { background-position-x: 100%; } }
+@keyframes owl-frame-y { from { background-position-y: 0%; } to { background-position-y: 100%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Holds the first frame rather than flickering through sixteen. */
+  .owl-sprite { animation: none; background-position: 0% 0%; }
+}
+
+.celebrate-owl {
+  width: clamp(330px, 45vw, 690px);
+  flex: none;
+  filter: drop-shadow(0 16px 30px rgba(45, 30, 110, .28));
+}
+.celebrate-bubble {
+  position: absolute;
+  top: 50%;
+  /* Tucked in against the owl: the art carries a wide transparent margin, so a
+     positive gap left the bubble floating away from its beak. */
+  left: calc(100% - clamp(24px, 4vw, 76px));
+  transform: translateY(-50%);
+  width: max-content;
+  max-width: 42vw;
+  padding: clamp(12px, 1.5vh, 18px) clamp(18px, 1.8vw, 26px);
+  border-radius: 20px;
+  background: linear-gradient(150deg, rgba(124, 91, 230, .94), rgba(86, 52, 192, .96));
+  border: 1px solid rgba(255, 255, 255, .34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .30), var(--sh-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: #FFFFFF;
+}
+.celebrate-bubble.is-left {
+  left: auto;
+  right: calc(100% - clamp(24px, 4vw, 76px));
+}
+.screen[data-screen="welcome"] .celebrate-bubble.is-left,
+.screen[data-screen="class1Complete"] .celebrate-bubble.is-left {
+  transform: translateY(calc(-50% - 100px));
+}
+/* Portrait has no room beside a big owl, so the bubbles drop underneath it. */
+@media (max-width: 900px) {
+  .celebrate-bubble {
+    position: static;
+    transform: none;
+    max-width: 100%;
+    margin-top: clamp(8px, 1vh, 14px);
+  }
+  .celebrate-bubble::before {
+    top: -7px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) rotate(45deg);
+  }
+}
+
+/* Tail pointing back at the owl on its left. */
+.celebrate-bubble::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 3px;
+  background: rgba(120, 86, 228, .95);
+}
+/* Mirror: tail on the right edge, pointing at the owl. */
+.celebrate-bubble.is-left::before {
+  left: auto;
+  right: -7px;
+}
+
+/* The bubbles drift, so the pair reads as alive next to the owl rather than
+   pinned to it. This uses the independent `translate` property, not `transform`:
+   transform is already carrying the -50% centring (and a -100px lift on the left
+   bubble), and animating it would throw both away. The two run at different
+   speeds and out of phase, so they never bob in lockstep. */
+.celebrate-bubble {
+  animation: bubble-drift 3.6s var(--ease) infinite;
+}
+.celebrate-bubble.is-left {
+  animation-duration: 3s;
+  animation-delay: -1.4s;
+}
+@keyframes bubble-drift {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebrate-bubble { animation: none; translate: none; }
+}
+.builder-write {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.write-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex: none;
+  padding-bottom: 12px;
+}
+.write-head h3 { font-size: var(--fs-body); }
+/* The list grows with its content and only scrolls once it runs out of room,
+   so "Add sentence" always sits directly under the last sentence. */
+.sentence-list {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: 2px 4px 4px 2px;
+}
+.write-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex: none;
+  padding-top: 14px;
+}
+@keyframes pop-in { from { opacity: 0; transform: scale(.97) translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.sentence-field { min-width: 0; }
+.sentence-field textarea {
+  display: block;
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  resize: none;
+  font-size: var(--fs-read);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ink);
+  field-sizing: content;
+}
+.sentence-field textarea::placeholder { color: var(--ink-2); font-weight: 500; }
+.sentence-field textarea:focus { outline: none; }
+
+.sentence-actions { display: flex; align-items: center; gap: 7px; flex: none; }
+@keyframes mic-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(228,85,127,.5), var(--sh-brand); }
+  50%     { box-shadow: 0 0 0 12px rgba(228,85,127,0), var(--sh-brand); }
+}
+
+.add-sentence {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: var(--r-pill);
+  border: 1.5px dashed var(--line-strong);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--brand);
+  transition: all var(--dur-1) var(--ease);
+}
+.add-sentence:hover:not(:disabled) { background: var(--brand-soft); border-color: var(--brand); border-style: solid; }
+.add-sentence:disabled { opacity: .4; }
+
+/* === Submit success ====================================================== */
+.screen[data-screen="submitSuccess"] { grid-template-rows: 1fr; }
+
+.star-field { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.star-field .star {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  font-size: clamp(20px, 2vw, 30px);
+  opacity: 0;
+  animation: star-fall 2.6s var(--ease) forwards;
+}
+@keyframes star-fall {
+  0%   { opacity: 0; transform: translateY(-30px) scale(.4) rotate(0deg); }
+  25%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(72vh) scale(1) rotate(220deg); }
+}
+
+/* === Portfolio =========================================================== */
+.portfolio-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--s-4);
+  height: 100%;
+  min-height: 0;
+}
+.seg-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-hi), var(--sh-1);
+  width: fit-content;
+}
+.seg-tab {
+  padding: 9px 20px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: all var(--dur-1) var(--ease);
+}
+.seg-tab:hover { color: var(--brand); }
+.seg-tab.on {
+  background: var(--brand-grad);
+  color: #fff;
+  border: 2px solid var(--edge-brand);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .42),
+    var(--sh-brand),
+    var(--magic-glow);
+}
+
+.portfolio-scroll { min-height: 0; padding-right: 4px; }
+.portfolio-list { display: grid; gap: var(--s-4); align-content: start; }
+
+.story-card {
+  display: grid;
+  gap: var(--s-4);
+  padding: clamp(16px, 1.8vw, 22px);
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-hi), var(--sh-1);
+}
+.story-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.avatar {
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-grad);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 800;
+}
+.story-card-head .who { display: grid; }
+.story-card-head .who strong { font-family: var(--font-body); font-size: var(--fs-body); }
+.story-card-head .who span { font-size: var(--fs-micro); color: var(--ink-3); font-weight: 700; }
+.story-card-head .btn { margin-left: auto; }
+
+.story-scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.story-scenes .scene-art { aspect-ratio: 4 / 3; border-radius: var(--r-sm); }
+.story-paragraph {
+  padding: 14px 18px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 600;
+  max-width: 58ch;
+}
+
+.feedback-card { display: grid; gap: var(--s-4); }
+.skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.skill {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+}
+.skill-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.skill-name {
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.skill-score { font-size: var(--fs-sm); font-weight: 800; color: var(--brand); }
+.skill-bar {
+  display: block;
+  height: 8px;
+  margin-top: 9px;
+  border-radius: var(--r-pill);
+  background: var(--brand-tint);
+  overflow: hidden;
+}
+.skill-bar i { display: block; height: 100%; border-radius: inherit; background: var(--brand-grad); }
+
+/* === Presentation ======================================================== */
+.screen[data-screen="presentation"] { grid-template-rows: 1fr; }
+.present-stage {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--s-4);
+  height: 100%;
+  padding: var(--s-5) var(--page-pad);
+  background: linear-gradient(165deg, #241A54, #150E36 60%, #0F0A28);
+}
+.present-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.present-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  min-height: 0;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+}
+.present-art {
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  justify-self: center;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  background: #1B1340;
+}
+.present-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.present-copy { display: grid; gap: var(--s-4); align-content: center; }
+.present-copy h2 { color: #fff; }
+.present-copy .eyebrow { color: #C6B4FF; }
+.present-paragraph {
+  font-size: clamp(16px, .8vw + 13px, 22px);
+  line-height: 1.8;
+  color: rgba(255,255,255,.92);
+  font-weight: 600;
+}
+.present-bottom { display: flex; align-items: center; justify-content: center; gap: var(--s-3); }
+.present-stage .btn.ghost {
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.28);
+  color: #fff;
+  backdrop-filter: blur(10px);
+}
+.present-stage .btn.ghost:hover:not(:disabled) { background: rgba(255,255,255,.18); color: #fff; }
+.present-stage .pill { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.24); color: #fff; }
+
+/* --------------------------------------------------------------- 7. MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5);
+  background: rgba(24,17,58,.52);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fade-in var(--dur-2) var(--ease) both;
+}
+.modal[hidden] { display: none; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-panel {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-4);
+  width: min(560px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: clamp(24px, 3vw, 36px);
+  text-align: center;
+  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: var(--r-xl);
+  box-shadow: var(--glass-hi), var(--sh-3), 0 0 80px rgba(124, 92, 230, .30);
+  animation: modal-in var(--dur-3) var(--ease) both;
+}
+@keyframes modal-in { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  display: grid; place-items: center;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-size: 20px;
+  line-height: 1;
+  transition: all var(--dur-1) var(--ease);
+}
+/* Hover matches Cancel, because it does the same thing: leaves without saving. */
+.modal-close:hover {
+  color: #FFFFFF;
+  background: linear-gradient(105deg,
+    rgba(116, 116, 138, .95) 0%,
+    rgba(94, 94, 114, .95) 45%,
+    rgba(82, 82, 106, .96) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), var(--sh-1);
+}
+.modal-close .ico { width: 17px; height: 17px; }
+
+.modal-panel h2 { font-size: var(--fs-h2); }
+/* The sheet fills the screen, so its question is a page title, not a dialog
+   label - same size as every other screen's heading. And everything a child
+   reads on it sits on the reading scale, not the chrome scale: 17px was fine for
+   a tab, not for the only instruction on the page. */
+.modal.is-sheet h2 { font-size: var(--fs-h1); }
+.modal.is-sheet .sentence-frame { font-size: var(--fs-read); }
+.modal.is-sheet .mic-status { font-size: var(--fs-body); min-height: 1.4em; }
+.modal.is-sheet .type-toggle { font-size: var(--fs-body); padding: 10px 22px; }
+.modal.is-sheet .type-toggle .ico { width: 30px; height: 30px; }
+.modal-sub { font-size: var(--fs-sm); color: var(--ink-3); font-weight: 700; }
+
+/* The keyboard mark rides beside the box once it holds an answer, so it reads as
+   something to type in. It lives outside the editable region - inside, it would
+   be content the child could delete. Both sides get the same padding so the
+   answer stays centred. */
+/* The sheet sets display on this, so `hidden` needs saying twice. */
+.sentence-field[hidden] { display: none; }
+.sentence-field {
+  position: relative;
+  width: 100%;
+  /* Shared with the frame's padding so the icon can find the first line. */
+  --frame-pad: clamp(20px, 2.4vh, 28px);
+}
+.sentence-field-icon {
+  position: absolute;
+  /* Centred on the first line of text, not on the box: a three-line answer put it
+     down beside line two. Line height is 1.5, so half of it is .75em. */
+  top: calc(var(--frame-pad) + .75 * var(--fs-read));
+  left: clamp(14px, 1.4vw, 20px);
+  transform: translateY(-50%);
+  z-index: 1;
+  display: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--brand);
+  pointer-events: none;
+}
+.sentence-field:has(.sentence-frame.is-answer) .sentence-field-icon { display: grid; }
+.sentence-field:has(.sentence-frame.is-answer) .sentence-frame {
+  padding-inline: calc(clamp(14px, 1.4vw, 20px) + 38px);
+}
+
+/* Holding an answer rather than an example: a solid edge and the brand ink, so it
+   reads as the child's own words instead of a prompt to fill in - and it is the
+   edit field, so it invites a tap. */
+.sentence-frame.is-answer {
+  border-style: solid;
+  border-color: var(--brand-tint);
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  cursor: text;
+}
+.sentence-frame.is-answer:hover { border-color: var(--brand); }
+.sentence-frame.is-answer:focus {
+  outline: none;
+  border-color: var(--brand);
+  background: var(--surface);
+  box-shadow: var(--ring);
+}
+.sentence-frame {
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 2px dashed var(--brand-tint);
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--brand-deep);
+}
+
+.mic-button {
+  /* The one thing on the sheet a seven-year-old has to hit, so it takes the
+     room the full-screen sheet has to spare. */
+  --mic-size: clamp(116px, 15vh, 156px);
+  display: grid;
+  place-items: center;
+  width: var(--mic-size);
+  height: var(--mic-size);
+  border-radius: 50%;
+  background: var(--brand-grad);
+  color: #fff;
+  font-size: 38px;
+  box-shadow: var(--sh-brand);
+  transition: transform var(--dur-2) var(--ease);
+}
+.mic-button:hover { transform: scale(1.05); }
+
+/* Two looks, not five: resting violet, and recording. Recording keeps its own
+   crimson because "we are listening to you right now" is worth its own colour;
+   processing, retry and added do not repaint, because those are just captions.
+   The crimson is built exactly like the violet - same 105deg three-stop
+   gradient, same 63/57/48 lightness ramp, same two-layer shadow - so only the
+   hue moves and it still reads as the same button. */
+.mic-button.listening,
+.mic-button.is-ending,
+.s-btn.mic.state-listening,
+.s-btn.mic.is-ending {
+  background: linear-gradient(105deg,
+    hsl(var(--mic-h) var(--mic-s) 63% / .95) 0%,
+    hsl(var(--mic-h) calc(var(--mic-s) - 8%) 57% / .95) 45%,
+    hsl(var(--mic-h) calc(var(--mic-s) - 14%) 48% / .96) 100%);
+  box-shadow:
+    0 4px 12px hsl(var(--mic-h) var(--mic-s) 58% / .32),
+    0 10px 26px hsl(var(--mic-h) var(--mic-s) 50% / .24);
+}
+.mic-button.listening, .s-btn.mic.state-listening { --mic-h: 340; --mic-s: 78%; }
+
+/* The glyph rotates with it rather than being repainted, so the white capsule
+   and the soft same-hue stem survive. */
+.mic-button.listening .ico,
+.s-btn.mic.state-listening .ico { filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)) hue-rotate(82deg); }
+.mic-button.is-ending .ico,
+.s-btn.mic.is-ending .ico       { filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)) hue-rotate(112deg); }
+
+/* The ripple is the recording colour spreading, not a second colour arriving. */
+.mic-button.listening,
+.s-btn.mic.state-listening { animation: mic-pulse-tone 1.2s var(--ease) infinite; }
+@keyframes mic-pulse-tone {
+  0%, 100% {
+    box-shadow:
+      0 4px 12px hsl(var(--mic-h) var(--mic-s) 58% / .32),
+      0 10px 26px hsl(var(--mic-h) var(--mic-s) 50% / .24),
+      0 0 0 0 hsl(var(--mic-h) var(--mic-s) 60% / .50);
+  }
+  50% {
+    box-shadow:
+      0 4px 12px hsl(var(--mic-h) var(--mic-s) 58% / .32),
+      0 10px 26px hsl(var(--mic-h) var(--mic-s) 50% / .24),
+      0 0 0 14px hsl(var(--mic-h) var(--mic-s) 60% / 0);
+  }
+}
+
+.mic-status {
+  min-height: 22px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+/* The line under the mic belongs to the mic, so while recording it takes the
+   recording colour and warms with it at the end. Every other state stays in the
+   resting voice. */
+.mic-status[data-state] { color: var(--brand-strong); }
+.mic-status[data-state="listening"] { color: #B32E58; }
+.mic-status[data-state="listening"].is-ending { color: #C8160C; }
+
+.type-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.type-toggle:hover { background: var(--brand-soft); color: var(--brand); }
+/* display:inline-flex above outranks the UA rule for [hidden], so the button kept
+   showing after it was hidden. */
+.type-toggle[hidden] { display: none; }
+.type-toggle > [data-icon] { display: grid; place-items: center; flex: none; }
+.type-toggle .ico { width: 26px; height: 26px; }
+
+/* =============================================================================
+   SPEECH SHEET
+   The question fills the screen: one thing to do, nothing behind it to poke at.
+   Speaking and typing are separate views, because on a tablet the device
+   keyboard takes half the screen and the two cannot share a layout.
+   ========================================================================== */
+/* Anchored to the top, not centred: when the keyboard shortens the sheet, the
+   space it gives up has to be at the bottom - where the keyboard is. */
+.modal.is-sheet { padding: 0; align-items: start; }
+.modal.is-sheet .modal-panel {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(24px, 3.6vh, 44px);
+  width: 100%;
+  max-width: none;
+  /* --kb-inset is measured from the visual viewport while a keyboard is up. */
+  height: calc(100dvh - var(--kb-inset, 0px));
+  max-height: none;
+  /* Side padding matches the lesson screens, so the sheet's content sits on the
+     same band as the page behind it. */
+  padding: clamp(24px, 3vw, 40px) var(--page-pad);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transition: height var(--dur-2) var(--ease);
+}
+/* One column, so both views inherit the sheet's centring. The sheet has room to
+   spare, so nothing here has to crowd its neighbour. */
+.speech-pane {
+  display: grid;
+  justify-items: center;
+  gap: clamp(20px, 2.8vh, 34px);
+  width: min(600px, 100%);
+}
+.speech-pane[hidden] { display: none; }
+
+/* The status line is the mic's caption, so it stays with the mic while the rest
+   of the view spreads out. */
+.speech-pane .mic-status { margin-top: calc(-1 * clamp(10px, 1.6vh, 20px)); }
+/* Cancel and Done are a decision, not part of the mic cluster. */
+.speech-pane .modal-actions { margin-top: clamp(6px, 1.6vh, 20px); }
+.speech-pane .sentence-frame { padding: var(--frame-pad, clamp(20px, 2.4vh, 28px)) 24px; }
+
+.type-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+/* Swaps back to speaking. A circle the same height as Done, so the pair sits
+   level, and the standard brand violet - it is the same mic, not a lesser one. */
+.type-mic {
+  display: grid;
+  place-items: center;
+  width: var(--action-btn-h);
+  height: var(--action-btn-h);
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-grad);
+  /* The same rim as .btn.primary, so the two boxes are built identically and
+     their centres land on the same line. */
+  border: 2px solid var(--edge-brand);
+  box-shadow: var(--sh-brand);
+  transition: transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.type-mic:hover { transform: translateY(-1px); box-shadow: var(--sh-brand), var(--magic-glow); }
+/* The wrapper carries the percentage, not the svg - see .mic-button. */
+.type-mic > [data-icon] { display: grid; place-items: center; width: 48%; height: 48%; }
+.type-mic .ico { width: 100%; height: 100%; filter: drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+
+/* Typing gets the page's content band, not the speaking column: a 600px box on a
+   full-screen sheet felt like a scrap of paper. The mic cluster keeps the narrow
+   measure, because a line of guidance should not run the width of a screen. */
+.speech-pane[data-pane="type"] {
+  width: 100%;
+  max-width: calc(var(--page-max) - 2 * var(--page-pad));
+}
+.speech-pane[data-pane="type"] .modal-input {
+  min-height: clamp(96px, 22vh, 190px);
+  font-size: var(--fs-read);
+  resize: none;
+}
+
+.modal-input {
+  width: 100%;
+  min-height: 92px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.5;
+  resize: vertical;
+}
+.modal-input:focus { outline: none; border-color: var(--brand); box-shadow: var(--ring); }
+
+.modal-actions { display: flex; gap: var(--s-3); margin-top: var(--s-2); }
+
+/* =============================================================================
+   ILLUSTRATED FRAMES
+   The asset folder ships hand-drawn frames whose names map to specific
+   surfaces (Base Card / AI Card / Page). All three are 9-sliceable PNGs with a
+   transparent centre, so they overlay the picture instead of replacing it.
+   ========================================================================== */
+.framed { position: relative; }
+.framed::after {
+  content: "";
+  position: absolute;
+  inset: -7%;
+  z-index: 2;
+  background: center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.result-frame.is-filled img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-md);
+  box-shadow: 0 10px 30px rgba(45, 30, 110, .28);
+}
+
+/* =============================================================================
+   FLOATING GUIDE (owl)
+   Sits on the Observation Mission card, peeking over the title on the right.
+   Tip shows on arrival, retires on its own, and comes back on hover or tap.
+   ========================================================================== */
+.observe-block--mission {
+  position: relative;
+  overflow: visible;
+}
+.observe-block--mission > h3 {
+  position: relative;
+  z-index: 1;
+  padding-right: 72px; /* clear the overlapping owl */
+}
+.observe-block--mission .observe-list {
+  width: 100%;
+}
+.observe-block--mission .observe-list li {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.owl-guide {
+  position: absolute;
+  /* Scaled to the screen instead of pinned at -176px. With the header gone the
+     mission card sits only ~110px from the top, so a fixed offset pushed the tip
+     bubble off the page; this reaches as high as the viewport allows and no
+     higher, overlapping the card a little more on short screens. */
+  /* Anchored to the column, not to the card, so the cards can move without the
+     owl following. It sits mostly in the empty half of the page header, which
+     costs the content band nothing. */
+  /* Anchored by its feet, not its head: the owl art is wider than it is tall, so
+     its rendered height is not --owl-size and positioning from the top put it a
+     random distance above the card. From the bottom, the feet land exactly 34px
+     into the card at every size. */
+  top: auto;
+  bottom: calc(100% - var(--owl-reserve) - 34px);
+  right: -8px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  /* Never wider than the card it hangs off, plus the small overhang. At 60px of
+     overhang the bubble ran off the left edge wherever the mission card was
+     narrow - portrait tablets, mainly. */
+  width: min(330px, calc(100% + 8px));
+  pointer-events: none;
+}
+
+.owl-toast {
+  flex: none;
+  width: max-content;
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  /* No backdrop-filter: the fill is 90% opaque so the blur was invisible, and a
+     filtered layer over the cards (which are themselves filtered) is where this
+     screen's stray flashes of shadow come from. */
+  background: linear-gradient(150deg, rgba(124, 91, 230, .94), rgba(86, 52, 192, .96));
+  border: 1px solid rgba(255, 255, 255, .34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .30),
+    var(--sh-2),
+    0 0 30px rgba(124, 91, 230, .30);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  color: #FFFFFF;
+  /* Out of the flow: the guide's height is then the owl's height alone, so a
+     bubble that wraps to two lines no longer pushes the owl down. */
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  opacity: 0;
+  transform: translateY(6px) scale(.96);
+  transform-origin: 90% 100%;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+  pointer-events: none;
+  order: -1;
+}
+/* speech tail pointing down toward the owl */
+.owl-toast::after {
+  content: "";
+  position: absolute;
+  right: 22px;
+  bottom: -7px;
+  left: auto;
+  top: auto;
+  margin-top: 0;
+  width: 14px;
+  height: 14px;
+  background: rgba(92, 57, 198, .90);
+  border-left: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .28);
+  border-right: 1px solid rgba(255, 255, 255, .28);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 3px;
+  transform: rotate(45deg);
+}
+.owl-guide.is-open .owl-toast {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.owl-button {
+  pointer-events: auto;
+  display: block;
+  width: var(--owl-size);
+  border-radius: 50%;
+  transition: transform var(--dur-2) var(--ease);
+}
+.owl-button .owl-sprite {
+  width: 100%;
+  filter: drop-shadow(0 10px 18px rgba(45, 30, 110, .28));
+  /* The float rides on the button, so the sprite keeps its own frame animation. */
+}
+.owl-button { animation: owl-float 4.5s var(--ease) infinite; }
+.owl-button:hover { transform: translateY(-3px) scale(1.04); }
+.owl-button:active { transform: scale(.97); }
+
+@keyframes owl-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-6px) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owl-button { animation: none; }
+}
+
+@media (max-width: 620px) {
+  .owl-guide { right: -8px; }
+  .owl-button { width: 72px; }
+  .observe-block--mission > h3 { padding-right: 60px; }
+}
+
+/* Confirm dialog — reuses the modal shell, one size smaller. */
+.confirm-panel { width: min(430px, 100%); gap: var(--s-3); }
+.confirm-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: var(--brand-grad);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 32px;
+  font-weight: 800;
+  box-shadow: var(--sh-brand);
+}
+.confirm-body { font-size: var(--fs-body); color: var(--ink-2); }
+
+/* =============================================================================
+   MICROPHONE COUNTDOWN
+   Recording stops itself after MIC_LIMIT seconds. Time left is shown three
+   ways at once, because a 7-year-old should not have to read a number to know
+   they are running out: a ring that drains around the button, the number
+   itself, and — in the last few seconds — a shake and a colour change.
+   ========================================================================== */
+.mic-button,
+.s-btn.mic { position: relative; --mic-progress: 1; }
+
+/* The gauge is a rim ON the button, not a ring around it. Outside, it had to
+   fight the white sheet on one edge and the button's glow on the other, so it
+   always came out as three concentric bands that looked broken. Inside, it only
+   ever sits on the button's own face: solid white for time left, a deep well for
+   time spent - unmistakable, and nothing else to collide with. */
+.mic-gauge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Starts the arc at twelve o'clock and drains clockwise. */
+  transform: rotate(-90deg);
+  overflow: visible;
+  pointer-events: none;
+}
+.mic-gauge circle {
+  fill: none;
+  stroke-width: var(--mic-ring-w, 8);
+  stroke-linecap: round;
+}
+.mic-gauge-track { stroke: var(--mic-track, rgba(74, 8, 32, .40)); }
+/* Solid white. At 80% the button's colour bled through and the ring just looked
+   dirty rather than softer. */
+.mic-gauge-fill  { stroke: var(--mic-ring, #FFFFFF); }
+.mic-button:not(.is-timing) .mic-gauge,
+.s-btn.mic:not(.is-timing) .mic-gauge { display: none; }
+
+/* Last seconds: the recording colour swings warm and the button shakes. */
+.mic-button.is-ending,
+.s-btn.mic.is-ending {
+  /* Red, not orange: the last seconds are a stop signal, and hue 14 read as
+     "warm" rather than "hurry". */
+  --mic-h: 4;
+  --mic-s: 94%;
+  animation: mic-shake .32s var(--ease) infinite;
+}
+
+@keyframes mic-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%      { transform: translateX(-3px) rotate(-5deg); }
+  75%      { transform: translateX(3px) rotate(5deg); }
+}
+
+.mic-countdown {
+  min-height: 1.15em;
+  font-family: var(--font-body);
+  /* Scales with the sheet like the rest of it - it is the biggest thing a child
+     needs to read at a glance. */
+  font-size: clamp(34px, 1.9vw + 22px, 52px);
+  font-weight: 800;
+  line-height: 1;
+  color: #B32E58;
+  font-variant-numeric: tabular-nums;
+}
+.mic-countdown.is-ending { color: #C8160C; }
+.mic-button.is-ending .mic-gauge-track,
+.s-btn.mic.is-ending .mic-gauge-track { stroke: rgba(104, 6, 0, .44); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mic-button.is-ending,
+  .s-btn.mic.is-ending { animation: none; }
+}
+
+/* -------------------------------------------------------- 8. MASCOT / DECO */
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+/* Curtain: the cover's night colour holds for a beat and lifts, so stepping
+   out of the illustrated intro reads as entering the lab rather than a cut. */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: #080053;
+  pointer-events: none;
+  animation: veil-lift 700ms var(--ease) forwards;
+}
+@keyframes veil-lift {
+  0%   { opacity: 1; }
+  35%  { opacity: .92; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .veil { display: none; } }
+
+/* Large desktop — a touch more air */
+@media (min-width: 1500px) {
+  :root { --page-max: 1440px; }
+}
+
+/* Small desktop / tablet landscape */
+@media (max-width: 1180px) {
+  :root { --topbar-h: 58px; }
+  .observe-layout { grid-template-columns: minmax(0, 1fr) 290px; }
+}
+
+/* Tablet — drop the wordmark so the section tabs keep their full labels */
+@media (max-width: 1024px) {
+  .brand-name { display: none; }
+  .tab-sub { display: none; }
+  .topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .nav-tab { padding: 8px 14px; }
+  .goal-grid { gap: var(--s-4); }
+}
+
+/* Below this the header title and the step chip stop fitting on one line */
+@media (max-width: 900px) {
+  .screen-head { grid-template-columns: minmax(0, 1fr); }
+  .steps { justify-self: start; }
+}
+
+/* Tablet portrait — the primary classroom device (768 × 1024) */
+@media (max-width: 900px), (orientation: portrait) and (max-width: 1100px) {
+  :root { --foot-h: 92px; }
+
+  .observe-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; }
+  .observe-aside { flex-direction: row; flex-wrap: wrap; }
+  .observe-block { flex: 1 1 260px; }
+  .mascot-note { flex: 1 1 100%; margin-top: 0; }
+  .base-scene-grid .scene-art { aspect-ratio: 16 / 10; }
+
+  .observe-layout, .base-scene-grid { grid-auto-rows: min-content; }
+  .base-scene-grid .scene-art { flex: 1 1 auto; aspect-ratio: auto; min-height: 110px; }
+
+  /* Square slots read better than tall crops and free up vertical room. */
+  /* Sequence packs its slots under the tray; Finalize has the screen to itself, so
+     its cards stay centred. */
+  .slot-grid { align-content: start; }
+  .screen-body > .slot-grid { align-content: center; }
+  .slot .scene-art, .slot .slot-empty { flex: none; aspect-ratio: 1 / 1; min-height: 0; }
+
+  /* Trim the AI Maker so both panels fit a 768 x 1024 tablet without scrolling. */
+  .screen-inner { gap: var(--s-2); padding-top: 8px; }
+  .screen-head { gap: var(--s-2); }
+  .panel-head { padding: 6px 14px; }
+  .panel-body { padding: 10px 13px; }
+  .panel-foot { padding: 8px 14px; }
+
+  .present-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .present-art { max-width: 52vh; margin: 0 auto; }
+}
+
+/* Short viewports (tablet landscape, laptops): the prompt questions move to
+   two columns and the observation panels tighten up, so nothing has to scroll. */
+/* --- Short viewports -------------------------------------------------------
+   Two tiers, and only two. At 940 the panels tighten and the optional tip
+   steps aside; at 820 the prompt rows and observation panels compact further.
+   No reading size changes in either tier — padding and pictures absorb it. */
+@media (max-height: 940px) {
+  .panel-body { padding: 13px 16px; }
+  .panel-foot { padding: 8px 14px; }
+
+  .observe-block { padding: 16px 16px; }
+}
+
+@media (max-height: 820px) {
+  /* The square is driven by width, so on a wide-but-short screen it derived a
+     height the row could not hold - 1366x768 overflowed by 60px. Capping the
+     width by viewport height keeps it square and inside the stage. */
+  .present-art { max-width: min(100%, 72vh); }
+
+  /* Both pill lists compact together, so they never drift apart. */
+  .observe-list li,
+  .clue-chips > span { min-height: 42px; padding: 6px 10px; gap: 8px; }
+  .observe-list li > [data-icon],
+  .clue-chips > span > [data-icon],
+  .observe-list li > [data-icon] > .ico,
+  .clue-chips > span > [data-icon] > .ico { width: 28px; height: 28px; }
+  .observe-list,
+  .clue-chips { gap: 9px; }
+  .observe-block { padding: 12px 14px; }
+  :root { --topbar-h: 56px; --foot-h: 86px; --action-btn-h: 58px; }
+  .screen-inner { gap: var(--s-4); }
+
+  .panel-body { padding: 10px 13px; }
+
+  .observe-block { padding: 10px 12px; }
+  .observe-block h3 { margin-bottom: 6px; }
+  .observe-list li .ico { width: 26px; height: 26px; }
+  .clue-chips .ico { width: 20px; height: 20px; }
+
+}
+
+@media (max-height: 660px) {
+  .lede { display: none; }
+}
+
+/* Phone fallback — not a target device, but must not break */
+@media (max-width: 620px) {
+  :root { --page-pad: 14px; }
+  .goal-grid, .slot-grid, .storyboard-row, .story-scenes { grid-template-columns: minmax(0, 1fr); }
+  .slot-swap { justify-self: center; }
+  .tray { grid-template-columns: minmax(0, 1fr); }
+  .prompt-list { grid-template-columns: minmax(0, 1fr); }
+  .prompt-list > :nth-child(3) { grid-column: auto; }
+  .lesson-tag { display: none; }
+  .foot-actions .btn { flex: 1 1 auto; }
+}
+
+/* ---------------------------------------------------- 10. ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .screen.on > * { animation: none; }
+}
+
+@media (prefers-contrast: more) {
+  :root { --line: #B9AFE0; --line-strong: #8E7FC9; --ink-2: #423C6B; --ink-3: #605A8C; }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============================================================================
+   CLASS 2 - STORY BUILDER
+   Three scenes, two sentences each. Nothing here is a text field: every slot is
+   a button that opens the Tell My Story sheet, because speaking is the way in
+   at seven and the keyboard is the fallback, not the front door.
+   ========================================================================== */
+
+/* --- write layout -------------------------------------------------------- */
+.write-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  height: 100%;
+  min-height: 0;
+}
+
+/* The number sits above the picture in its own row rather than on top of it - a
+   badge in the corner covered the very thing the child is meant to look at. The
+   picture takes whatever height is left and crops to fit. Deriving its box from
+   an aspect-ratio instead left Chrome unable to pull the height back, and the
+   scene pushed the footer off short screens. */
+/* The picker and the picture are one thing - which scene, and the scene - so they
+   share one card, and it is the same card the sentences opposite sit in. That is
+   what makes the two columns read as a pair. */
+.write-scene-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  justify-items: center;
+  gap: clamp(8px, 1.3vh, 16px);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(14px, 2vh, 24px) clamp(16px, 1.8vw, 26px);
+  border-radius: var(--r-lg);
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--sh-1);
+}
+.write-scene {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.write-scene .scene-art {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  /* A step tighter than the card it sits in, so the two curves nest. */
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface-3);
+}
+
+/* --- sentence slots ------------------------------------------------------ */
+/* The row count follows the sentences, so a third card and the add card share the
+   height rather than overflowing past an explicit two-row template. */
+.write-slots {
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--s-4);
+  height: 100%;
+  min-height: 0;
+}
+.write-slot {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: clamp(14px, 2vh, 24px) clamp(16px, 1.8vw, 26px);
+  text-align: left;
+  border-radius: var(--r-lg);
+  border: 2px dashed var(--line-strong);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease),
+              transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.write-slot:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-2);
+}
+/* Answered, exactly as the Class 1 question cards say it: a solid violet edge and
+   a paler surface. The lesson is one colour, and a card that went green here
+   would read as a different kind of card. */
+.write-slot.is-filled {
+  border-style: solid;
+  border-color: #B9A2F5;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,245,255,.86));
+  box-shadow: var(--glass-hi), var(--sh-1), 0 0 16px rgba(124, 91, 230, .18);
+}
+.write-slot.is-filled:hover { border-color: var(--brand); background: var(--brand-soft); }
+
+.write-slot-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  flex: none;
+}
+.write-slot.is-filled .write-slot-label { color: var(--brand-strong); }
+
+/* The slot fills the card's width and sits at its foot, so an empty + and a
+   written sentence occupy exactly the same place. */
+.write-slot-box {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin-top: auto;
+  padding: clamp(10px, 1.4vh, 16px) 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  border: 1.5px dashed var(--line-strong);
+  text-align: center;
+  overflow: hidden;
+  transition: all var(--dur-2) var(--ease);
+}
+.write-slot-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* A long unbroken word will not wrap on its own, so it would run straight out
+     of the card instead of being clamped. */
+  overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--fs-read);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+/* Empty: the pale surface and dashed edge stand, and only the + takes the
+   tone-on-tone violet the sequencing slots use. */
+.write-slot:not(.is-filled) .write-slot-text {
+  font-size: clamp(28px, 3.4vh, 38px);
+  line-height: 1;
+  color: #A98CFF;
+}
+.write-slot.is-filled .write-slot-box {
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+}
+.write-slot:hover .write-slot-box { border-color: var(--brand-tint); }
+
+/* The offer of one more. It is not a sentence card - no label, nothing at the
+   foot - so it centres its own invitation and stays quieter than the cards above. */
+.write-slot.is-add {
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: transparent;
+}
+.write-slot.is-add:hover { background: var(--brand-soft); }
+.write-add-plus {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.8vh, 32px);
+  font-weight: 700;
+  line-height: 1;
+  color: #A98CFF;
+}
+.write-add-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+
+/* --- Tell My Story sheet ------------------------------------------------- */
+/* Prototype-only control. It is deliberately quiet: it belongs to whoever is
+   reviewing the flow, not to the child. */
+
+/* --- Tell My Story: the last look ---------------------------------------- */
+
+/* Height first, width derived - deriving the box from the width instead let the
+   aspect-ratio compute a height taller than its row, and the picture spilled
+   over the rows either side of it. */
+/* Just the picture in its mount - the title above already names the scene, so a
+   number here would only say it twice. Height drives the box and the width
+   follows; deriving it from the width instead let the aspect-ratio compute a
+   height taller than the row it sits in. */
+.tell-scene {
+  display: grid;
+  margin: 0;
+  height: clamp(140px, 25vh, 250px);
+  width: auto;
+  aspect-ratio: 4 / 3;
+  padding: 10px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  box-shadow: var(--sh-2);
+}
+.tell-scene .scene-art {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+/* The verdict is the owl talking, not a system message - the same guide who
+   greets them at the start of the lesson says whether the sentence landed. */
+.tell-say {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Wide enough for the tail to stand in: tucked any closer it disappeared behind
+     the owl's wing. */
+  gap: clamp(10px, 1vw, 16px);
+}
+.tell-owl {
+  width: clamp(84px, 9vw, 132px);
+  flex: none;
+  filter: drop-shadow(0 8px 16px rgba(45, 30, 110, .22));
+}
+.tell-verdict {
+  position: relative;
+  /* One width for every line the owl says. max-content plus a max-width looked
+     the same but was not: a flex row reserves its child's *unwrapped* width, so
+     the row stayed as wide as the longest line even after it had broken, and the
+     whole owl-and-bubble group sat left of centre with the slack on its right. */
+  /* A plain length, not min() with a percentage: a percentage makes the intrinsic
+     size indefinite, so the row went on reserving the unwrapped width anyway. */
+  width: 12.5em;
+  text-align: center;
+  padding: clamp(9px, 1.1vh, 13px) clamp(14px, 1.3vw, 20px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .30), var(--sh-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 800;
+  color: #FFFFFF;
+  /* The same violet the owl speaks in on every other screen. Whether the check
+     fixed anything is in the words, not in a change of colour. */
+  background: linear-gradient(150deg, rgba(124, 91, 230, .94), rgba(86, 52, 192, .96));
+  animation: bubble-drift 3.4s var(--ease) infinite;
+}
+/* Tail pointing back at the owl on its left, same as the celebration bubbles. */
+.tell-verdict::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 3px;
+  background: rgba(120, 86, 228, .95);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tell-verdict { animation: none; }
+}
+
+/* The sentence itself, in the same box the answer sits in everywhere else. */
+.tell-heard {
+  width: 100%;
+  padding: var(--frame-pad, clamp(20px, 2.4vh, 28px)) 24px;
+  border-radius: var(--r-md);
+  background: var(--brand-soft);
+  border: 2px solid var(--brand-tint);
+  font-family: var(--font-body);
+  font-size: var(--fs-read);
+  font-weight: 700;
+  color: var(--brand-deep);
+  overflow-wrap: anywhere;
+}
+/* The pane sets display on these, so `hidden` needs saying twice. */
+.tell-heard[hidden] { display: none; }
+.modal-actions .btn[hidden] { display: none; }
+
+/* This pane carries more rows than the other two, so it packs tighter. */
+.speech-pane.is-confirm { gap: clamp(12px, 2vh, 26px); }
+
+/* --- final check --------------------------------------------------------- */
+.final-layout {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(16px, 2.4vh, 30px);
+  height: 100%;
+  min-height: 0;
+}
+.final-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+  min-height: 0;
+}
+/* Three pictures, nothing else - left to right is the order, which is all the
+   numbers were saying. Each one is mounted the way the teacher sees it on the
+   student detail page: a white surround, so the finished story reads as three
+   printed cards rather than three cropped images. */
+.final-scene {
+  display: grid;
+  margin: 0;
+  height: 100%;
+  min-height: 0;
+  padding: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+}
+.final-scene .scene-art {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface-3);
+}
+/* The same panel the teacher reads the story in - one flat violet field, not a
+   gradient fading to white. Two people looking at the same story should be
+   looking at the same thing. */
+.story-panel {
+  display: grid;
+  gap: 10px;
+  padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 30px);
+  border-radius: var(--r-lg);
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+  min-height: 0;
+}
+.story-panel-title {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--brand-strong);
+}
+.story-lines {
+  display: grid;
+  gap: 8px;
+  max-height: clamp(96px, 20vh, 190px);
+}
+.story-lines p {
+  font-family: var(--font-body);
+  font-size: var(--fs-read);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.story-lines-empty { color: var(--ink-3); }
+
+/* --- narrow and short screens -------------------------------------------- */
+@media (max-width: 900px) {
+  /* Stacked, the sentences take the larger share: with a third card and the add
+     card sharing one half, the answer boxes were too shallow to hold their text. */
+  .write-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, .78fr) minmax(0, 1fr);
+  }
+  .write-slots { gap: 10px; }
+  .write-slot { padding: 9px 14px; }
+  .write-slot-box { padding: 7px 12px; }
+}
+@media (max-height: 820px) {
+  .write-slot-text { -webkit-line-clamp: 2; }
+  .story-lines { max-height: clamp(84px, 17vh, 140px); }
+}
