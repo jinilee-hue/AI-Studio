@@ -24,12 +24,13 @@ npx serve .
 python -m http.server 8000
 ```
 
-Then open:
+Then open the root — `index.html` links the three ways in:
 
 | | |
 |---|---|
 | `teacher.html` | teacher view — start a class, see results, export story cards |
-| `student.html` | the lesson itself |
+| `student.html` | the lesson, from the cover |
+| `student.html#storyBuilder` | straight into Class 2 |
 
 Opening the files directly (`file://`) mostly works, but the teacher's PDF export
 cannot: reading pixels back out of a canvas that has drawn a local image is
@@ -48,6 +49,7 @@ student.html#storyBuilder    → Class 2, with a finished Class 1 storyboard rea
 ## Files
 
 ```
+index.html        a way in - links the teacher view and both classes.
 teacher.html      teacher view. Screen markup, its own CSS, all of its logic.
 student.html      the lesson. Eleven screens, the speech sheets, the AI stand-in.
 wsl-core.css      the design system and every shared screen. Both pages load it.
