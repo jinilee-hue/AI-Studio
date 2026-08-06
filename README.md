@@ -2,7 +2,7 @@
 
 An AI story-writing lesson for seven-year-olds, in two classes.
 
-**Class 1 · Image Maker** — the child looks at two scenes, puts them in order,
+**Class 1 · Picture Maker** — the child looks at two scenes, puts them in order,
 answers five questions about the scene they want, and an AI draws it.
 **Class 2 · Story Builder** — they tell the story of each scene out loud, one
 sentence at a time, and hand the finished story card in.

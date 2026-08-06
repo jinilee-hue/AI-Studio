@@ -368,7 +368,7 @@
       <span class="brand-name">Wonder Story Lab</span>
     </div>
     <div class="topbar-end">
-      <span id="lessonTag" class="lesson-tag">Class 1 &middot; Image Maker</span>
+      <span id="lessonTag" class="lesson-tag">Class 1 &middot; Picture Maker</span>
       <button id="closeBtn" class="icon-btn" type="button" aria-label="Close and return to the start">
         <span aria-hidden="true" data-icon="close"></span>
       </button>
@@ -394,17 +394,17 @@
         <div class="wl-cards" role="group" aria-label="Choose what to make">
           <button class="wl-card" type="button" data-intro-choice="imageMaker" aria-pressed="false">
             <img class="wl-card-icon" src="assets/intro/icon-image-maker.png" alt="" draggable="false">
-            <span class="wl-card-title">Image Maker</span>
-            <span class="wl-card-body">Create AI images<br>to start your story.</span>
+            <span class="wl-card-title">Picture Maker</span>
+            <span class="wl-card-body">Create images for your story!</span>
           </button>
           <button class="wl-card" type="button" data-intro-choice="storyBuilder" aria-pressed="false">
             <img class="wl-card-icon" src="assets/intro/icon-story-builder.png" alt="" draggable="false">
             <span class="wl-card-title">Story Builder</span>
-            <span class="wl-card-body">Sequence your scenes<br>and build your story.</span>
+            <span class="wl-card-body">Tell your story!</span>
           </button>
         </div>
 
-        <button class="wl-start" type="button" data-go="roster" disabled>Start Creating</button>
+        <button class="wl-start" type="button" data-go="roster" disabled>Start</button>
       </div>
     </section>
 
@@ -774,8 +774,8 @@ function showScreen(screenName) {
    intro: everything up to the roster is Class 1, and results are reviewed after
    Class 2. Same wording the children see on their own screens. */
 const SCREEN_LABELS = {
-  welcome: "Class 1 · Image Maker",
-  roster: "Class 1 · Image Maker",
+  welcome: "Class 1 · Picture Maker",
+  roster: "Class 1 · Picture Maker",
   results: "Class 2 · Story Builder",
   studentDetail: "Class 2 · Story Builder"
 };
@@ -1358,7 +1358,7 @@ function startClass() {
   window.open(studentHref(), "_blank", "noopener");
 }
 
-/* Image Maker starts at the top; Story Builder starts at Class 2. */
+/* Picture Maker starts at the top; Story Builder starts at Class 2. */
 function studentHref() {
   return state.introChoice === "storyBuilder" ? "student.html#storyBuilder" : "student.html";
 }

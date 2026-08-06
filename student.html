@@ -27,7 +27,7 @@
           <div class="celebrate">
             <div class="celebrate-say">
               <span class="celebrate-owl owl-sprite" aria-hidden="true"></span>
-              <p class="celebrate-bubble is-left" role="status">hi!</p>
+              <p class="celebrate-bubble is-left" role="status">Hi!</p>
               <p class="celebrate-bubble" role="status">Welcome!</p>
             </div>
             <h1 class="celebrate-title">Look at the teacher!</h1>
@@ -50,7 +50,7 @@
       <div class="screen-inner">
         <header class="screen-head">
           <div class="screen-head-copy">
-            <h1>Look closely at the two scenes.</h1>
+            <h1>Look closely at the two pictures.</h1>
           </div>
         </header>
 
@@ -72,7 +72,7 @@
                 <ul class="observe-list">
                   <li><span aria-hidden="true" data-icon="eyes"></span> What do you see?</li>
                   <li><span aria-hidden="true" data-icon="pin"></span> Where are they?</li>
-                  <li><span aria-hidden="true" data-icon="thought"></span> What happens next?</li>
+                  <li><span aria-hidden="true" data-icon="thought"></span> What is happening?</li>
                 </ul>
               </div>
               <div class="observe-block">
@@ -110,7 +110,7 @@
       <div class="screen-inner">
         <header class="screen-head">
           <div class="screen-head-copy">
-            <h1>Tap scenes to place them in order.</h1>
+            <h1>Tap pictures to place them in order.</h1>
           </div>
         </header>
 
@@ -134,7 +134,7 @@
           </div>
           <button class="btn ghost" type="button" data-go="baseScenes"><span data-icon="chevronLeft"></span> Back</button>
           <div class="foot-actions">
-            <button id="goAiMakerBtn" class="btn primary" type="button" disabled>Make My AI Scene <span data-icon="chevronRight"></span></button>
+            <button id="goAiMakerBtn" class="btn primary" type="button" disabled>Make My Picture <span data-icon="chevronRight"></span></button>
           </div>
         </div>
       </footer>
@@ -194,7 +194,7 @@
           </div>
           <button class="btn ghost" type="button" data-go="firstSequence"><span data-icon="chevronLeft"></span> Back</button>
           <div class="foot-actions">
-            <button id="goAiSceneBtn" class="btn primary" type="button" disabled>Generate Scene <span data-icon="chevronRight"></span></button>
+            <button id="goAiSceneBtn" class="btn primary" type="button" disabled>Generate Picture <span data-icon="chevronRight"></span></button>
           </div>
         </div>
       </footer>
@@ -206,7 +206,7 @@
       <div class="screen-inner">
         <header class="screen-head">
           <div class="screen-head-copy">
-            <h1 id="aiSceneTitle">Your AI scene is ready</h1>
+            <h1 id="aiSceneTitle">Your picture is ready</h1>
           </div>
         </header>
 
@@ -225,7 +225,7 @@
           </div>
           <button class="btn ghost" type="button" data-go="aiMaker"><span data-icon="chevronLeft"></span> Back</button>
           <div class="foot-actions">
-            <button id="useSceneBtn" class="btn primary" type="button" disabled>Use this <span data-icon="chevronRight"></span></button>
+            <button id="useSceneBtn" class="btn primary" type="button" disabled>Use This <span data-icon="chevronRight"></span></button>
           </div>
         </div>
       </footer>
@@ -236,7 +236,7 @@
       <div class="screen-inner">
         <header class="screen-head">
           <div class="screen-head-copy">
-            <h1>Tap scenes to place them in order.</h1>
+            <h1>Tap pictures to place them in order.</h1>
           </div>
         </header>
 
@@ -268,10 +268,10 @@
           <div class="celebrate">
             <div class="celebrate-say">
               <span class="celebrate-owl owl-sprite" aria-hidden="true"></span>
-              <p class="celebrate-bubble is-left" role="status">bye!</p>
+              <p class="celebrate-bubble is-left" role="status">Bye!</p>
               <p class="celebrate-bubble" role="status">See you next time!</p>
             </div>
-            <h1 class="celebrate-title">Storyboard finished<br>Great job, storyteller!</h1>
+            <h1 class="celebrate-title">Storyboard finished.<br>Great job, storyteller!</h1>
             <button class="btn primary celebrate-go" type="button" data-go="storyBuilder">
               Start Story Builder <span data-icon="chevronRight"></span>
             </button>
@@ -363,10 +363,10 @@
           <div class="celebrate">
             <div class="celebrate-say">
               <span class="celebrate-owl owl-sprite" aria-hidden="true"></span>
-              <p class="celebrate-bubble is-left" role="status">wow!</p>
+              <p class="celebrate-bubble is-left" role="status">Wow!</p>
               <p class="celebrate-bubble" role="status">You did it!</p>
             </div>
-            <h1 class="celebrate-title">Story submitted.<br>Get ready to share your story.</h1>
+            <h1 class="celebrate-title">Story finished.<br>Get ready to share your story.</h1>
           </div>
         </div>
       </div>
@@ -511,7 +511,7 @@
       <button id="closeComponentSpeechBtn" class="modal-close" type="button" aria-label="Close">
         <span aria-hidden="true" data-icon="close"></span>
       </button>
-      <h2 id="componentSpeechTitle">What happens in the scene?</h2>
+      <h2 id="componentSpeechTitle">What happens in your picture?</h2>
 
       <!-- Speaking. The sentence frame is where the child sees what was heard. -->
       <div class="speech-pane" data-pane="speak">
@@ -614,9 +614,9 @@ const aiOptions = [
 
 
 const sceneComponentPrompts = {
-  who:    { title: "Who is in the scene?",        frame: "In my scene, I see _____." },
-  where:  { title: "Where is the scene?",         frame: "My scene takes place _____." },
-  happen: { title: "What happens in the scene?",  frame: "In my scene, _____." },
+  who:    { title: "Who is in your picture?",     frame: "In my picture, I see _____." },
+  where:  { title: "Where does your picture take place?", frame: "My picture takes place _____." },
+  happen: { title: "What happens in your picture?", frame: "In my picture, _____." },
   when:   { title: "When does it happen?",        frame: "It happens _____." },
   feel:   { title: "How do they feel?",           frame: "They feel _____ because _____." }
 };
@@ -902,7 +902,7 @@ function getActiveTopTab() {
 
 /* With the tabs gone, the current class is announced by the label on the right. */
 const CLASS_LABELS = {
-  class1: "Class 1 · Image Maker",
+  class1: "Class 1 · Picture Maker",
   class2: "Class 2 · Story Builder",
   portfolio: "Portfolio"
 };
@@ -1066,15 +1066,21 @@ function showComponentPane(pane) {
 function renderComponentFrame() {
   const prompt = sceneComponentPrompts[state.activeComponent];
   if (!prompt || !els.componentSentenceFrame) return;
-  const saved = (state.componentResponses[state.activeComponent] || "").trim();
-  els.componentSentenceFrame.textContent = saved || prompt.frame;
-  els.componentSentenceFrame.classList.toggle("is-answer", Boolean(saved));
+
+  /* The words being worked on, not the ones already saved. Reading the saved
+     answer meant the box sat on the example while the child was talking and only
+     caught up after Done - the one moment they most needed to see it land. The
+     input holds the live answer and is seeded from the saved one on open, so it
+     covers both. */
+  const answer = els.componentSpeechInput.value.trim();
+  els.componentSentenceFrame.textContent = answer || prompt.frame;
+  els.componentSentenceFrame.classList.toggle("is-answer", Boolean(answer));
 
   /* With an answer in it the box is the answer, so it is editable in place and
      "Type instead" has nothing left to offer - the child taps the words. */
-  els.componentSentenceFrame.setAttribute("contenteditable", saved ? "plaintext-only" : "false");
+  els.componentSentenceFrame.setAttribute("contenteditable", answer ? "plaintext-only" : "false");
   els.componentSentenceFrame.spellcheck = false;
-  if (els.typeComponentBtn) els.typeComponentBtn.hidden = Boolean(saved);
+  if (els.typeComponentBtn) els.typeComponentBtn.hidden = Boolean(answer);
 }
 
 /* Nothing to save yet means nothing to press. */
@@ -1316,23 +1322,28 @@ function sceneCard(scene, options = {}) {
   const tagPill = options.showMeta === false ? "" : `
     <span class="scene-tag ${scene.tag === "AI" ? "is-ai" : ""}">${escapeHtml(scene.tag)}</span>`;
 
-  const meta = options.showMeta === false ? "" : `
+  const meta = options.showMeta === false || options.showName === false ? "" : `
     <div class="scene-meta">
       <h3>${escapeHtml(scene.name)}</h3>
       ${options.showDescription ? `<p>${escapeHtml(scene.description)}</p>` : ""}
     </div>`;
 
+  /* Inside the picture box, not on the card: the empty AI card's art is a small
+     frame floating in a square, and a badge pinned to the card's own corner ended
+     up an inch away from the thing it names. */
   const badge = options.badge
     ? `<span class="card-badge ${scene.tag === "AI" ? "is-ai" : ""} ${options.placed ? "is-placed" : ""}">${escapeHtml(options.badge)}</span>`
     : "";
 
-  return `<article class="${classes}" ${dragAttr}>${badge}${sceneArt(scene, "", tagPill)}${meta}</article>`;
+  return `<article class="${classes}" ${dragAttr}>${sceneArt(scene, "", tagPill + badge)}${meta}</article>`;
 }
 
 /* ============================================== CLASS 1 · BASE SCENES === */
 function renderBaseScenes() {
+  /* Picture and its Base tag, nothing else. Naming what a child is being asked
+     to look at does the looking for them. */
   els.baseSceneGrid.innerHTML = baseScenes
-    .map((scene) => sceneCard(scene, { showDescription: true }))
+    .map((scene) => sceneCard(scene, { showMeta: false }))
     .join("");
 }
 
@@ -1345,7 +1356,7 @@ function storyboardIsFilled() {
    a separate checklist the child has to cross-reference. */
 /* No numbers: the pictures tell them apart, and "Base 1" beside a badge that
    already says Base on the observe screen was two names for one thing. */
-const trayLabels = { snowstorm: "Base", snowman: "Base", "ai-placeholder": "AI card" };
+const trayLabels = { "ai-placeholder": "My new picture" };
 
 function renderFirstSequence() {
   const library = [...baseScenes, aiPlaceholder];
@@ -1383,7 +1394,7 @@ function renderSlots(slotIds, scope) {
              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 5.5v13M5.5 12h13"
                   fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg>
            </span>
-           Drag a scene here
+           Drag a picture here
          </div>`;
 
     return `
@@ -1533,8 +1544,8 @@ function renderAiOptions() {
      it is still being drawn. */
   if (els.aiSceneTitle) {
     els.aiSceneTitle.textContent = state.aiGenerating
-      ? "Making your AI scene"
-      : hasScene ? "Your AI scene is ready" : "Let's make your AI scene";
+      ? "Making your picture"
+      : hasScene ? "Your picture is ready" : "Let's make your picture";
   }
 
   if (state.aiGenerating) {
@@ -1573,7 +1584,7 @@ function renderAiOptions() {
       </div>
       <div class="ai-actions">
         <button id="regenerateAiBtn" class="btn mint" type="button">
-          <span aria-hidden="true" data-icon="wand"></span> Generate again
+          <span aria-hidden="true" data-icon="wand"></span> Try again
         </button>
         <button id="editPromptBtn" class="btn rose" type="button">
           <span aria-hidden="true" data-icon="pencil"></span> Edit prompt
@@ -2160,13 +2171,14 @@ function renderReview() {
   els.reviewScenes.innerHTML = getFinalScenes().map((scene) => `
     <figure class="final-scene">${sceneArt(scene)}</figure>`).join("");
 
-  /* One line per scene, not one run-on block: the child reads back the three
-     parts they wrote and can tell which part is which. */
-  const lines = getFinalScenes()
+  /* One paragraph, not a line per scene. Split up it read as three captions;
+     joined, it reads as the story they wrote. */
+  const story = getFinalScenes()
     .map((scene) => (state.savedSentences[scene.id] || "").trim())
-    .filter(Boolean);
-  els.reviewParagraph.innerHTML = lines.length
-    ? lines.map((line) => `<p>${escapeHtml(line)}</p>`).join("")
+    .filter(Boolean)
+    .join(" ");
+  els.reviewParagraph.innerHTML = story
+    ? `<p>${escapeHtml(story)}</p>`
     : '<p class="story-lines-empty">Your story will appear here.</p>';
 }
 
@@ -2365,7 +2377,7 @@ document.addEventListener("click", (event) => {
   if (target.id === "goAiSceneBtn") {
     /* The button says Generate, so it generates - the child should not have to
        ask for the same thing twice. An existing scene is left alone; the
-       drawing page has its own "Generate again". */
+       drawing page has its own "Try again". */
     if (target.disabled) return;
     showScreen("aiScene");
     if (!state.aiOptionsGenerated) generateSingleAiScene();
