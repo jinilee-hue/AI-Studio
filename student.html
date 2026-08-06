@@ -1569,7 +1569,7 @@ function renderAiOptions() {
       <div class="result-frame">
         <div class="result-placeholder">
           <span class="result-icon" aria-hidden="true">${icon("image")}</span>
-          <strong>Your AI scene will appear here</strong>
+          <strong>Your picture will appear here</strong>
           <span>Answer the three questions first.</span>
         </div>
       </div>
@@ -2308,7 +2308,7 @@ function renderPresentation() {
   els.presentationArt.innerHTML = sceneImageMarkup(scene);
   els.presentationTitle.textContent = "My Story";
   els.presentationParagraph.textContent = story.paragraph || "Your complete story will appear here.";
-  els.presentationCount.textContent = `Scene ${state.presentationSceneIndex + 1} of ${story.sceneIds.length}`;
+  els.presentationCount.textContent = `Picture ${state.presentationSceneIndex + 1} of ${story.sceneIds.length}`;
   els.app.querySelector("#prevSlideBtn").disabled = state.presentationSceneIndex === 0;
   els.app.querySelector("#nextSlideBtn").disabled = state.presentationSceneIndex >= story.sceneIds.length - 1;
 }
