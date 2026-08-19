@@ -471,7 +471,45 @@ ul { list-style: none; }
 .paragraph-box h3 .ico { width: 32px; height: 32px; }
 .observe-block h3 .ico { width: 30px; height: 30px; }
 .btn .ico { width: 24px; height: 24px; }
-.icon-btn .ico { width: 26px; height: 26px; }
+.icon-btn .ico { width: 34px; height: 34px; }
+/* The speaker is drawn edge to edge in its box where the close cross is not, so
+   it takes the larger glyph to read at the same weight beside it. The button
+   itself does not change size. */
+/* Sized so the drawn speaker stands exactly as tall as the drawn cross beside
+   it. The two glyphs fill their 48-unit boxes differently - the cross spans 24
+   units, the speaker 30 - so equal box sizes made the speaker the taller of the
+   two. Matching what is on the page, not what the boxes measure. */
+.bgm-toggle .ico { width: 25px; height: 25px; }
+/* The cover hides the top bar, so its copy of the control floats over the art -
+   on the cover's own grid, mirroring the chip in the opposite corner, so it sits
+   on the composition rather than on top of it. Solid white with a real shadow:
+   the art behind it is a video that goes from night sky to lit snow, and a
+   translucent button disappears into the bright frames. */
+.bgm-toggle.is-on-cover {
+  position: absolute;
+  top: calc(23 * var(--u));
+  right: calc(24 * var(--u));
+  z-index: 6;
+  width: calc(48 * var(--u));
+  height: calc(48 * var(--u));
+  border-radius: calc(15 * var(--u));
+  background: rgba(255, 255, 255, .14);
+  border: 1.5px solid rgba(255, 255, 255, .48);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: 0 4px 16px rgba(10, 8, 35, .28);
+}
+/* The glyph is drawn in violet for light chrome; over the night sky it is
+   flattened to white instead, which the cover's own type already is. */
+.bgm-toggle.is-on-cover .ico {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, .45));
+}
+.bgm-toggle.is-on-cover:hover {
+  background: rgba(255, 255, 255, .26);
+  border-color: rgba(255, 255, 255, .68);
+}
 /* Proportional, so the glyph keeps its weight as the button scales. The wrapper
    carries the percentage: on the <svg> it resolves against the wrapper, which is
    itself sized by the svg, and the span ends up stretched full width. */
@@ -3743,6 +3781,42 @@ ul { list-style: none; }
 .tell-heard[hidden] { display: none; }
 .modal-actions .btn[hidden] { display: none; }
 
+/* Round because it is not one of the two decisions on that row - it plays
+   something back and hands the sheet straight back to the child. */
+.round-btn {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
+  box-shadow: var(--glass-hi), 0 2px 8px rgba(108, 75, 216, .14);
+  transition: transform var(--dur-1) var(--ease), background var(--dur-1) var(--ease),
+              box-shadow var(--dur-1) var(--ease);
+}
+.round-btn[hidden] { display: none; }
+.round-btn .ico { width: 30px; height: 30px; }
+.round-btn:hover {
+  transform: translateY(-1px);
+  background: var(--brand-tint);
+  box-shadow: var(--glass-hi), 0 5px 16px rgba(108, 75, 216, .24);
+}
+/* Playing back: the ring pulses for as long as the child is hearing themselves,
+   and the same tap stops it. */
+.round-btn.is-playing {
+  background: var(--brand-tint);
+  animation: replayPulse 1.1s var(--ease) infinite;
+}
+@keyframes replayPulse {
+  0%, 100% { box-shadow: var(--glass-hi), 0 0 0 0 rgba(108, 75, 216, .34); }
+  50% { box-shadow: var(--glass-hi), 0 0 0 9px rgba(108, 75, 216, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .round-btn.is-playing { animation: none; }
+}
+
 /* This pane carries more rows than the other two, so it packs tighter. */
 .speech-pane.is-confirm { gap: clamp(12px, 2vh, 26px); }
 
@@ -3788,17 +3862,13 @@ ul { list-style: none; }
   overflow: hidden;
   background: var(--surface-3);
 }
-/* The same panel the teacher reads the story in - one flat violet field, not a
-   gradient fading to white. Two people looking at the same story should be
-   looking at the same thing. */
+/* The panel itself carries nothing now - it only holds the cards apart. Each
+   story sits in its own box, so the two are separate things being compared
+   rather than one field with a line drawn down it. */
 .story-panel {
   display: grid;
   grid-template-rows: minmax(0, 1fr);
-  gap: 10px;
-  padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 30px);
-  border-radius: var(--r-lg);
-  background: var(--brand-soft);
-  border: 1.5px solid var(--brand-tint);
+  gap: clamp(12px, 1.4vw, 20px);
   min-height: 0;
 }
 /* Both column labels share one rule, so the two halves are headed identically -
@@ -3829,26 +3899,42 @@ ul { list-style: none; }
 }
 .story-lines-empty { color: var(--ink-3); }
 
-/* Split: their story and the AI's, one rule apart. Equal halves on purpose -
-   giving the AI the wider column would say whose version counts. */
+/* The bar belongs to the box it sits in, so it takes the card's blue rather than
+   the violet every other scroller on the app uses. */
+.story-col.is-ai .story-lines::-webkit-scrollbar-thumb {
+  background: #AFC0EC;
+  background-clip: padding-box;
+}
+.story-col.is-ai .story-lines::-webkit-scrollbar-thumb:hover {
+  background: #7E99DE;
+  background-clip: padding-box;
+}
+.story-col.is-ai .story-lines { scrollbar-color: #AFC0EC transparent; }
+
+/* Split: two boxes side by side. Equal halves on purpose - giving the AI the
+   wider one would say whose version counts. */
 .story-panel.is-split {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(16px, 2vw, 32px);
 }
-/* Half the width, and the AI's version is the longer of the two - so the box
-   gets back in height what the split took away. */
-.story-panel.is-split .story-lines { max-height: clamp(112px, 22vh, 220px); }
 .story-col[hidden] { display: none; }
 .story-col {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
+  padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 30px);
+  border-radius: var(--r-lg);
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand-tint);
   min-width: 0;
   min-height: 0;
 }
+/* Tone on tone with its own heading: the field is the MAGIC blue (#1A47B8) held
+   at the same hue and lightened, the way the violet card is a lightening of the
+   violet heading. A paler sky blue read as a different colour sitting under the
+   title rather than the same one. */
 .story-col.is-ai {
-  padding-left: clamp(16px, 2vw, 32px);
-  border-left: 1.5px solid var(--brand-tint);
+  background: #E3EAFC;
+  border-color: #C7D2F2;
   animation: aiColIn var(--dur-3, 320ms) var(--ease) both;
 }
 @keyframes aiColIn {
@@ -3904,13 +3990,39 @@ ul { list-style: none; }
   mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
 }
 
-/* A new retelling should look new. The old text dims while the AI is thinking,
-   the new one arrives on a short rise - enough to notice, not enough to wait for. */
-.story-lines.is-thinking p {
-  opacity: .35;
-  filter: blur(1px);
-  transition: opacity var(--dur-2) var(--ease), filter var(--dur-2) var(--ease);
+/* Waiting for the AI. The box centres its one item instead of stacking from the
+   top, so the spinner sits in the middle of the space the story will fill. */
+.story-lines.is-loading {
+  align-content: center;
+  justify-items: center;
 }
+.story-loading {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 8px 0;
+}
+.story-spinner {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 4px solid #C6D3F1;
+  border-top-color: #2E6BE0;
+  animation: storySpin 800ms linear infinite;
+}
+@keyframes storySpin {
+  to { transform: rotate(360deg); }
+}
+.story-loading-say {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-align: center;
+  color: #3A5FBF;
+}
+
+/* A new retelling should look new: it arrives on a short rise - enough to
+   notice, not enough to wait for. */
 .story-lines p.is-fresh { animation: aiStoryIn var(--dur-2) var(--ease) both; }
 @keyframes aiStoryIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -3920,6 +4032,10 @@ ul { list-style: none; }
   .story-lines p.is-fresh,
   .story-col.is-ai,
   .btn.is-working .ico { animation: none; }
+  /* A still ring reads as nothing, so the spinner keeps moving - slowly, and by
+     fading rather than turning. */
+  .story-spinner { animation: storyPulse 1.4s ease-in-out infinite; }
+  @keyframes storyPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 }
 
 /* --- narrow and short screens -------------------------------------------- */
@@ -3936,11 +4052,13 @@ ul { list-style: none; }
 
   /* The two stories stay side by side at every width - stacked, the child
      scrolls between them instead of comparing them, which is the whole job of
-     the screen. Only the gutter narrows. */
-  .story-panel.is-split { gap: 14px; }
-  .story-col.is-ai { padding-left: 14px; }
+     the screen. Only the gap and the padding narrow. */
+  .story-panel.is-split { gap: 12px; }
+  .story-panel.is-split .story-col { padding: 14px 16px; }
 }
 @media (max-height: 820px) {
   .write-slot-text { -webkit-line-clamp: 2; }
-  .story-lines { max-height: clamp(84px, 17vh, 140px); }
+  /* The cards give up padding rather than height on a short screen - the
+     paragraph is what the screen is for. */
+  .story-col { padding: 14px clamp(16px, 2vw, 24px); }
 }

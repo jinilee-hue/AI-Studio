@@ -369,6 +369,12 @@
     </div>
     <div class="topbar-end">
       <span id="lessonTag" class="lesson-tag">Class 1 &middot; Picture Maker</span>
+      <!-- The music runs through a whole lesson, so the way to stop it belongs
+           in the bar that is always there - beside Close, not inside a screen. -->
+      <button class="icon-btn bgm-toggle" type="button" data-bgm-toggle
+              aria-pressed="false" aria-label="Mute background music">
+        <span aria-hidden="true" data-icon="speaker"></span>
+      </button>
       <button id="closeBtn" class="icon-btn" type="button" aria-label="Close and return to the start">
         <span aria-hidden="true" data-icon="close"></span>
       </button>
@@ -384,6 +390,13 @@
              video cannot run. -->
         <video class="wl-bg" src="assets/intro/intro.mp4" poster="assets/intro/bg.jpg"
                autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <!-- The cover runs full bleed with the top bar hidden, so the music it
+             starts needs its own way off the screen it started on. Same control
+             as the bar's, same state - whichever one is on screen. -->
+        <button class="icon-btn bgm-toggle is-on-cover" type="button" data-bgm-toggle
+                aria-pressed="false" aria-label="Mute background music">
+          <span aria-hidden="true" data-icon="speaker"></span>
+        </button>
         <!-- Chips, logo, cards and CTA are separate elements now, so copy,
              state and interaction are editable without re-exporting art. -->
         <div class="wl-chip wl-chip--ai">AI Powered Creativity</div>
@@ -560,6 +573,7 @@ const state = {
 
 const els = {
   app: document.querySelector("#app"),
+  bgmToggles: [...document.querySelectorAll("[data-bgm-toggle]")],
   rosterGrid: document.querySelector("#rosterGrid"),
   lessonTag: document.querySelector("#lessonTag"),
   resultGrid: document.querySelector("#resultGrid"),
@@ -611,17 +625,20 @@ function getBgmTrackName(screenName) {
   return null;
 }
 
+/* One state, however many buttons carry it: the bar has one and the cover has
+   its own, since the cover hides the bar. Both must read the same. */
 function updateBgmToggle() {
-  if (!els.bgmToggle) return;
-  const host = els.bgmToggle.querySelector("[data-icon], span");
-  if (host) {
-    host.dataset.icon = bgmMuted ? "muted" : "speaker";
-    host.dataset.iconHydrated = "0";
-    host.innerHTML = icon(host.dataset.icon);
-    host.dataset.iconHydrated = "1";
-  }
-  els.bgmToggle.setAttribute("aria-pressed", String(bgmMuted));
-  els.bgmToggle.setAttribute("aria-label", bgmMuted ? "Unmute background music" : "Mute background music");
+  els.bgmToggles.forEach((button) => {
+    const host = button.querySelector("[data-icon], span");
+    if (host) {
+      host.dataset.icon = bgmMuted ? "muted" : "speaker";
+      host.dataset.iconHydrated = "0";
+      host.innerHTML = icon(host.dataset.icon);
+      host.dataset.iconHydrated = "1";
+    }
+    button.setAttribute("aria-pressed", String(bgmMuted));
+    button.setAttribute("aria-label", bgmMuted ? "Unmute background music" : "Mute background music");
+  });
 }
 
 function cancelBgmFade(audio) {
@@ -701,6 +718,13 @@ function setBgmMuted(muted) {
   bgmMuted = Boolean(muted);
   saveBgmMuted();
   updateBgmToggle();
+
+  /* Silence first, fade second. The fade runs on animation frames, which a
+     background tab stops handing out - a teacher who mutes and switches away
+     would otherwise leave the music playing. Muting the element takes effect
+     on the spot and does not depend on a frame arriving. */
+  Object.values(bgmTracks || {}).forEach((audio) => { audio.muted = bgmMuted; });
+
   if (bgmMuted) Object.values(bgmTracks || {}).forEach((audio) => fadeBgmAudio(audio, 0, 300, true));
   else syncBgmForScreen(currentScreen);
 }
@@ -742,9 +766,11 @@ function initializeBgmSystem() {
   document.addEventListener("pointerdown", unlockBgm, { capture: true, once: true });
   document.addEventListener("click", unlockBgm, { capture: true, once: true });
 
-  els.bgmToggle?.addEventListener("click", () => {
-    bgmUnlocked = true;
-    setBgmMuted(!bgmMuted);
+  els.bgmToggles.forEach((button) => {
+    button.addEventListener("click", () => {
+      bgmUnlocked = true;
+      setBgmMuted(!bgmMuted);
+    });
   });
 
   document.addEventListener("visibilitychange", () => {

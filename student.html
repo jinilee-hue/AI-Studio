@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wonder Story Lab - Student</title>
-<link rel="stylesheet" href="wsl-core.css?v=6">
+<link rel="stylesheet" href="wsl-core.css?v=10">
 <style>
 /* The student view has no chrome: the lesson owns the whole screen, and the only
    close button in the product is the one on the speech sheet. */
@@ -485,6 +485,12 @@
           <span aria-hidden="true" data-icon="keyboard"></span> Type instead
         </button>
         <div class="modal-actions">
+          <!-- Only once there is a recording to play. Hearing yourself back is
+               how a child catches what the sentence actually sounded like. -->
+          <button id="replayVoiceBtn" class="round-btn" type="button"
+                  aria-label="Listen to what you said" hidden>
+            <span aria-hidden="true" data-icon="headset"></span>
+          </button>
           <button id="cancelStoryBtn" class="btn ghost" type="button">Cancel</button>
           <button id="reviewStoryBtn" class="btn primary" type="button" disabled>Done</button>
         </div>
@@ -700,6 +706,7 @@ const els = {
   reviewTypedBtn: document.querySelector("#reviewTypedBtn"),
   tellStoryFrame: document.querySelector("#tellStoryFrame"),
   tellStoryMicBtn: document.querySelector("#tellStoryMicBtn"),
+  replayVoiceBtn: document.querySelector("#replayVoiceBtn"),
   tellStoryStatus: document.querySelector("#tellStoryStatus"),
   tellStoryInput: document.querySelector("#tellStoryInput"),
   typeStoryBtn: document.querySelector("#typeStoryBtn"),
@@ -1820,6 +1827,7 @@ function openTellStory(index, trigger) {
     outcome: "great"
   };
   tellStoryTrigger = trigger;
+  clearVoiceClip();
   els.tellStoryInput.value = state.tellStory.heard;
   renderTellStory();
   setTellStoryStatus("ready");
@@ -1953,6 +1961,7 @@ function showTellStoryOutcome(outcome) {
 
 function closeTellStory() {
   stopTellStoryRecognition();
+  clearVoiceClip();
   els.tellStoryModal.hidden = true;
   state.tellStory = null;
   tellStoryTrigger?.focus();
@@ -1990,6 +1999,21 @@ function setTellStoryStatus(micState, detail = "") {
   els.tellStoryMicBtn.classList.toggle("listening", micState === "listening");
   els.tellStoryMicBtn.classList.toggle("processing", micState === "processing");
   els.tellStoryMicBtn.classList.toggle("try-again", micState === "retry");
+  setMicButtonFace(micState === "listening");
+}
+
+/* Tapping the button while it listens already stops the recording - the mic on
+   its face was the only thing still saying "start". Listening shows a stop
+   square instead, so the button reads as what pressing it will do. */
+function setMicButtonFace(listening) {
+  const host = els.tellStoryMicBtn?.querySelector("[data-icon], span");
+  if (!host) return;
+  const wanted = listening ? "stop" : "mic";
+  if (host.dataset.icon === wanted && host.dataset.iconHydrated === "1") return;
+  host.dataset.icon = wanted;
+  host.innerHTML = icon(wanted);
+  host.dataset.iconHydrated = "1";
+  els.tellStoryMicBtn.setAttribute("aria-label", listening ? "Stop speaking" : "Start speaking");
 }
 
 function stopTellStoryRecognition() {
@@ -1998,6 +2022,78 @@ function stopTellStoryRecognition() {
   tellStoryRecognition = null;
   if (recognition) { try { recognition.abort(); } catch (error) { /* already ending */ } }
   els.tellStoryMicBtn?.classList.remove("listening", "processing");
+  setMicButtonFace(false);
+  stopVoiceRecording();
+}
+
+/* ------------------------------------------------------- VOICE REPLAY ---
+   Speech recognition hands back words, never sound, so the child's own voice is
+   captured alongside it. Kept only in memory and only for the sentence being
+   worked on: the next one starts over, closing the sheet throws it away. */
+let voiceStream = null;
+let voiceRecorder = null;
+let voiceChunks = [];
+let voiceClipUrl = null;
+let voicePlayback = null;
+
+function clearVoiceClip() {
+  stopVoicePlayback();
+  if (voiceClipUrl) URL.revokeObjectURL(voiceClipUrl);
+  voiceClipUrl = null;
+  voiceChunks = [];
+  if (els.replayVoiceBtn) els.replayVoiceBtn.hidden = true;
+}
+
+async function startVoiceRecording() {
+  if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") return;
+  try {
+    voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    voiceChunks = [];
+    voiceRecorder = new MediaRecorder(voiceStream);
+    voiceRecorder.ondataavailable = (event) => {
+      if (event.data?.size) voiceChunks.push(event.data);
+    };
+    voiceRecorder.onstop = () => {
+      /* The clip replaces the last one only if there is something in it - a
+         recorder that caught nothing should not blank a good take. */
+      if (voiceChunks.length) {
+        if (voiceClipUrl) URL.revokeObjectURL(voiceClipUrl);
+        voiceClipUrl = URL.createObjectURL(new Blob(voiceChunks, { type: voiceRecorder.mimeType }));
+        if (els.replayVoiceBtn) els.replayVoiceBtn.hidden = false;
+      }
+      voiceChunks = [];
+    };
+    voiceRecorder.start();
+  } catch (error) {
+    /* No microphone permission for a second stream, or no recorder here. The
+       sentence still works; only hearing it back does not. */
+    console.warn("The voice could not be recorded.", error);
+    voiceRecorder = null;
+  }
+}
+
+function stopVoiceRecording() {
+  if (voiceRecorder && voiceRecorder.state !== "inactive") {
+    try { voiceRecorder.stop(); } catch (error) { /* already stopped */ }
+  }
+  voiceRecorder = null;
+  voiceStream?.getTracks().forEach((track) => track.stop());
+  voiceStream = null;
+}
+
+function stopVoicePlayback() {
+  if (voicePlayback) { voicePlayback.pause(); voicePlayback = null; }
+  els.replayVoiceBtn?.classList.remove("is-playing");
+}
+
+function playVoiceClip() {
+  if (!voiceClipUrl) return;
+  if (voicePlayback) { stopVoicePlayback(); return; }
+  voicePlayback = new Audio(voiceClipUrl);
+  els.replayVoiceBtn.classList.add("is-playing");
+  voicePlayback.addEventListener("ended", stopVoicePlayback);
+  voicePlayback.addEventListener("error", stopVoicePlayback);
+  voicePlayback.play().catch(stopVoicePlayback);
 }
 
 /* TODO: swap for the real sentence-checking API. The local pass fixes the
@@ -2052,6 +2148,8 @@ function startTellStorySpeaking() {
     setTellStoryStatus("retry");
     return;
   }
+
+  startVoiceRecording();
 
   const recognition = new SpeechRecognition();
   tellStoryRecognition = recognition;
@@ -2287,6 +2385,7 @@ function markClipped(box) {
 
 function renderAiStory() {
   if (!els.reviewAiParagraph) return;
+  els.reviewAiParagraph.classList.remove("is-loading");
   const enriched = enrichStoryText(getFinalParagraph(), state.aiStoryVariant);
   els.reviewAiParagraph.innerHTML = enriched
     ? `<p class="is-fresh">${escapeHtml(enriched)}</p>`
@@ -2294,6 +2393,14 @@ function renderAiStory() {
   markClipped(els.reviewAiParagraph);
   markClipped(els.reviewParagraph);
 }
+
+/* A spinner in the middle of the box - the shape everyone already reads as
+   "wait", rather than something this screen invented. */
+const AI_LOADING_MARKUP = `
+  <div class="story-loading" role="status">
+    <span class="story-spinner" aria-hidden="true"></span>
+    <p class="story-loading-say">Magic is writing your story…</p>
+  </div>`;
 
 /* Magic opens the second column the first time and rewrites it every time
    after - the button keeps working, so a retelling they do not like is one more
@@ -2304,25 +2411,24 @@ function runMagic() {
   state.aiStoryBusy = true;
   els.magicBtn.disabled = true;
 
-  const firstRun = !state.aiStoryShown;
-  if (firstRun) {
+  if (!state.aiStoryShown) {
     state.aiStoryShown = true;
     els.aiStoryCol.hidden = false;
     els.storyPanel.classList.add("is-split");
-    els.reviewAiParagraph.innerHTML = "";
   } else {
     state.aiStoryVariant += 1;
-    els.reviewAiParagraph.classList.add("is-thinking");
   }
   els.magicBtn.classList.add("is-working");
+  els.reviewAiParagraph.classList.remove("is-clipped");
+  els.reviewAiParagraph.classList.add("is-loading");
+  els.reviewAiParagraph.innerHTML = AI_LOADING_MARKUP;
 
   window.setTimeout(() => {
     state.aiStoryBusy = false;
     els.magicBtn.disabled = false;
     els.magicBtn.classList.remove("is-working");
-    els.reviewAiParagraph.classList.remove("is-thinking");
     renderAiStory();
-  }, 700);
+  }, 1100);
 }
 
 /* Everything the child could still change goes quiet at once, so "Submitted" is
@@ -2370,7 +2476,7 @@ function renderReview() {
   els.aiStoryCol.hidden = true;
   els.storyPanel.classList.remove("is-split");
   els.magicBtn.classList.remove("is-working");
-  els.reviewAiParagraph.classList.remove("is-thinking");
+  els.reviewAiParagraph.classList.remove("is-clipped", "is-loading");
   els.reviewAiParagraph.innerHTML = "";
   setReviewSubmitted(false);
   els.magicBtn.disabled = !story;
@@ -2629,6 +2735,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.id === "tellStoryMicBtn") { startTellStorySpeaking(); return; }
+  if (target.id === "replayVoiceBtn") { playVoiceClip(); return; }
   if (target.id === "closeTellStoryBtn") { closeTellStory(); return; }
 
   if (target.id === "sayAgainBtn") {

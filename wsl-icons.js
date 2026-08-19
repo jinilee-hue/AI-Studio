@@ -440,25 +440,48 @@ const ICON_DRAW = {
       <path d="M19.5 22h9M19.5 27h9M19.5 32h6" stroke="#E9A010" stroke-width="2.2" stroke-linecap="round" opacity=".55"/>`;
   },
   speaker() {
+    /* One wave, not two, and the cone taking the room the second one gave up.
+       The corners are rounded by stroking the cone in its own fill with a round
+       join, which also grows the shape - so the glyph reads at button size
+       instead of thinning out into a small mark. */
     return `
       <defs>
-        <linearGradient id="gSpkVol" x1="8" y1="12" x2="40" y2="36" gradientUnits="userSpaceOnUse">
+        <linearGradient id="gSpkVol" x1="6" y1="10" x2="40" y2="38" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#8B6BF0"/><stop offset="1" stop-color="#4A2BA8"/>
         </linearGradient>
       </defs>
-      <path d="M8.5 19h6.2l9.3-7.5v25L14.7 29H8.5a2.5 2.5 0 0 1-2.5-2.5v-5A2.5 2.5 0 0 1 8.5 19Z" fill="url(#gSpkVol)"/>
-      <path d="M30 17.5c2.6 2.2 4.2 5.1 4.2 6.5s-1.6 4.3-4.2 6.5" fill="none" stroke="#6C4BD8" stroke-width="3.2" stroke-linecap="round"/>
-      <path d="M34.5 13.5c4.2 3.4 6.7 7.6 6.7 10.5s-2.5 7.1-6.7 10.5" fill="none" stroke="#5634C0" stroke-width="3.2" stroke-linecap="round"/>`;
+      <path d="M7.2 18h7.44l11.16-9v30L14.64 30H7.2a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"
+            fill="url(#gSpkVol)" stroke="url(#gSpkVol)" stroke-width="2.6"
+            stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M32.5 14c4.4 3.5 7 7.8 7 10s-2.6 6.5-7 10" fill="none" stroke="#5634C0"
+            stroke-width="4.2" stroke-linecap="round"/>`;
   },
   muted() {
+    /* The speaker in full - cone and both waves - with one line drawn across the
+       whole of it. Muted is the same object silenced, not a different object, and
+       the cross that used to sit where the waves go read as a small mark beside
+       the cone rather than a state of it. The slash is masked out of the artwork
+       so it cuts a real gap, which holds on any button colour. */
     return `
       <defs>
-        <linearGradient id="gMute" x1="8" y1="12" x2="40" y2="36" gradientUnits="userSpaceOnUse">
+        <linearGradient id="gMute" x1="6" y1="10" x2="40" y2="38" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#8B6BF0"/><stop offset="1" stop-color="#4A2BA8"/>
         </linearGradient>
+        <mask id="mMuteCut">
+          <rect x="0" y="0" width="48" height="48" fill="#FFFFFF"/>
+          <path d="M8.5 8.5 39.5 39.5" fill="none" stroke="#000000" stroke-width="8"
+                stroke-linecap="round"/>
+        </mask>
       </defs>
-      <path d="M8.5 19h6.2l9.3-7.5v25L14.7 29H8.5a2.5 2.5 0 0 1-2.5-2.5v-5A2.5 2.5 0 0 1 8.5 19Z" fill="url(#gMute)"/>
-      <path d="M31 18.5 41 28.5M41 18.5 31 28.5" fill="none" stroke="#FF6B9A" stroke-width="3.2" stroke-linecap="round"/>`;
+      <g mask="url(#mMuteCut)">
+        <path d="M7.2 18h7.44l11.16-9v30L14.64 30H7.2a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"
+              fill="url(#gMute)" stroke="url(#gMute)" stroke-width="2.6"
+              stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M32.5 14c4.4 3.5 7 7.8 7 10s-2.6 6.5-7 10" fill="none" stroke="#5634C0"
+              stroke-width="4.2" stroke-linecap="round"/>
+      </g>
+      <path d="M8.5 8.5 39.5 39.5" fill="none" stroke="#FF6B9A" stroke-width="3.6"
+            stroke-linecap="round"/>`;
   },
   mic() {
     return `
@@ -475,5 +498,32 @@ const ICON_DRAW = {
       <path d="M24 32.5v6.5" stroke="#8B6BF0" stroke-width="3.4" stroke-linecap="round"/>
       <path d="M17 41.5h14" stroke="#8B6BF0" stroke-width="3.4" stroke-linecap="round"/>
       <ellipse cx="21" cy="12" rx="2.2" ry="3" fill="#fff" opacity=".7"/>`;
+  },
+  stop() {
+    /* The recording button's other face. One rounded square, nothing else - it
+       has to be readable at a glance by a child who is mid-sentence, and it sits
+       on the crimson the listening button already turns, so it is drawn in the
+       same white the mic's head is. */
+    return `
+      <defs>
+        <linearGradient id="gStop" x1="14" y1="14" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFE7EE"/>
+        </linearGradient>
+      </defs>
+      <rect x="14" y="14" width="20" height="20" rx="6" fill="url(#gStop)"/>`;
+  },
+  headset() {
+    /* Headphones - the band over the top and a cup each side. It says "listen"
+       to a child who cannot read the label under it. */
+    return `
+      <defs>
+        <linearGradient id="gHead" x1="10" y1="12" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#8B6BF0"/><stop offset="1" stop-color="#4A2BA8"/>
+        </linearGradient>
+      </defs>
+      <path d="M10 30v-5a14 14 0 0 1 28 0v5" fill="none" stroke="url(#gHead)"
+            stroke-width="4" stroke-linecap="round"/>
+      <rect x="6" y="26" width="10" height="14" rx="5" fill="url(#gHead)"/>
+      <rect x="32" y="26" width="10" height="14" rx="5" fill="url(#gHead)"/>`;
   }
 };
