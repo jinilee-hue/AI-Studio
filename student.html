@@ -487,7 +487,7 @@
         <div class="modal-actions">
           <!-- Only once there is a recording to play. Hearing yourself back is
                how a child catches what the sentence actually sounded like. -->
-          <button id="replayVoiceBtn" class="round-btn" type="button"
+          <button class="round-btn" type="button" data-replay-voice
                   aria-label="Listen to what you said" hidden>
             <span aria-hidden="true" data-icon="headset"></span>
           </button>
@@ -548,6 +548,10 @@
           <span aria-hidden="true" data-icon="keyboard"></span> Type instead
         </button>
         <div class="modal-actions">
+          <button class="round-btn" type="button" data-replay-voice
+                  aria-label="Listen to what you said" hidden>
+            <span aria-hidden="true" data-icon="headset"></span>
+          </button>
           <button id="cancelComponentSpeechBtn" class="btn ghost" type="button">Cancel</button>
           <button id="saveComponentSpeechBtn" class="btn primary" type="button" disabled>Done</button>
         </div>
@@ -648,6 +652,11 @@ const sceneComponentOrder = ["who", "where", "happen", "when", "feel"];
 let currentScreen = "welcome";
 let dragState = null;
 let componentRecognition = null;
+/* Between the stop tap and the recogniser's own onend there is a gap: stop() has
+   been asked for and the last utterance is still on its way back, but the button
+   has to be at rest already because the child just pressed it. This lets the two
+   disagree for that moment - the sheet is idle, the recogniser is not done. */
+let componentStopping = false;
 let componentTrigger = null;
 let storyRecognition = null;
 
@@ -706,7 +715,7 @@ const els = {
   reviewTypedBtn: document.querySelector("#reviewTypedBtn"),
   tellStoryFrame: document.querySelector("#tellStoryFrame"),
   tellStoryMicBtn: document.querySelector("#tellStoryMicBtn"),
-  replayVoiceBtn: document.querySelector("#replayVoiceBtn"),
+  replayVoiceBtns: [...document.querySelectorAll("[data-replay-voice]")],
   tellStoryStatus: document.querySelector("#tellStoryStatus"),
   tellStoryInput: document.querySelector("#tellStoryInput"),
   typeStoryBtn: document.querySelector("#typeStoryBtn"),
@@ -1030,19 +1039,28 @@ function setComponentMicStatus(micState, detail = "") {
     ? label
     : `${label} — ${detail}`;
   els.componentSpeechStatus.dataset.state = micState;
-  els.componentMicBtn.classList.toggle("listening", micState === "listening");
+  const listening = !componentStopping
+    && (micState === "listening" || Boolean(componentRecognition));
+  els.componentMicBtn.classList.toggle("listening", listening);
   els.componentMicBtn.classList.toggle("processing", micState === "processing");
   els.componentMicBtn.classList.toggle("try-again", micState === "retry");
   els.componentMicBtn.classList.toggle("speech-added", micState === "added");
-  els.componentMicBtn.setAttribute("aria-label", micState === "retry" ? "Try speech again" : "Start speaking");
+  setMicButtonFace(els.componentMicBtn, listening, micState === "retry");
+  if (!listening) showIdleMicTimer(els.componentMicBtn, "#componentMicCountdown");
 }
 
 function stopComponentRecognition() {
   stopMicTimer();
   const recognition = componentRecognition;
   componentRecognition = null;
+  componentStopping = false;
+  /* abort, not stop: this is the sheet being closed or swapped, so the utterance
+     still coming back is not wanted. The stop button takes the other path. */
   if (recognition) { try { recognition.abort(); } catch (error) { /* already ending */ } }
   els.componentMicBtn.classList.remove("listening", "processing");
+  setMicButtonFace(els.componentMicBtn, false);
+  hideMicCountdown("#componentMicCountdown", els.componentSpeechStatus);
+  stopVoiceRecording();
 }
 
 function openComponentSpeech(componentKey, trigger) {
@@ -1055,6 +1073,7 @@ function openComponentSpeech(componentKey, trigger) {
   els.componentSpeechTitle.textContent = prompt.title;
   els.componentSentenceFrame.textContent = prompt.frame;
   els.componentSpeechInput.value = state.componentResponses[componentKey] || "";
+  clearVoiceClip();
   renderComponentFrame();
   setComponentMicStatus("ready");
   els.componentSpeechModal.hidden = false;
@@ -1063,6 +1082,7 @@ function openComponentSpeech(componentKey, trigger) {
 
 function closeComponentSpeech() {
   stopComponentRecognition();
+  clearVoiceClip();
   stopMicTimer();
   els.componentSpeechModal.hidden = true;
   state.activeComponent = null;
@@ -1112,6 +1132,7 @@ function renderComponentFrame() {
   els.componentSentenceFrame.setAttribute("contenteditable", answer ? "plaintext-only" : "false");
   els.componentSentenceFrame.spellcheck = false;
   if (els.typeComponentBtn) els.typeComponentBtn.hidden = Boolean(answer);
+  refreshReplayButton();
 }
 
 /* Nothing to save yet means nothing to press. */
@@ -1129,6 +1150,30 @@ function saveComponentResponse() {
   renderPromptComponents();
 }
 
+/* The end of one take, however it was reached: the child pressed stop, or the
+   twenty seconds ran out. Both are the same ending, so both come here - the
+   button, the ring and the seconds go back to exactly how they were before the
+   take started, the sentence stays where it is, and the listen button appears
+   beside Cancel with what was just said.
+
+   stop(), not abort(). abort throws away the utterance still travelling back,
+   which on a stop tap is precisely the words the child has just finished
+   saying; stop lets that last result land before the recogniser closes. */
+function finishComponentSpeaking() {
+  if (!componentRecognition) return;
+  componentStopping = true;
+  try { componentRecognition.stop(); } catch (error) { /* already stopping */ }
+  /* Ahead of onend, which arrives a browser round-trip later: the child pressed
+     the button, so the button answers now. */
+  stopMicTimer();
+  hideMicCountdown("#componentMicCountdown", els.componentSpeechStatus);
+  /* The recording ends with the tap too, not a round-trip later - and its clip
+     is what the listen button is waiting for. */
+  stopVoiceRecording();
+  setComponentMicStatus(els.componentSpeechInput.value.trim() ? "ready" : "retry");
+  renderComponentFrame();
+}
+
 function startComponentSpeaking() {
   const SpeechRecognition = getSpeechRecognitionConstructor();
   if (!SpeechRecognition) {
@@ -1138,11 +1183,23 @@ function startComponentSpeaking() {
     return;
   }
 
-  if (componentRecognition) {
-    stopComponentRecognition();
-    setComponentMicStatus("retry", "Listening stopped. Tap the microphone to try again.");
-    return;
-  }
+  /* Still winding down from the last take: the button is already back at rest,
+     so a press here means "go again", not "stop". Drop what is closing and start
+     clean - swallowing the tap would leave a child pressing a mic that does
+     nothing for as long as the recogniser takes to hang up. */
+  if (componentStopping) stopComponentRecognition();
+
+  /* Listening: the same button is the stop button, and pressing it ends the
+     take. Every following press starts a new one - the loop is the whole
+     interaction, so nothing here is allowed to be a one-time path. */
+  if (componentRecognition) { finishComponentSpeaking(); return; }
+
+  /* A take in progress has nothing to listen back to yet, and a voice coming out
+     of the speaker would be recorded by the microphone about to open. Both go
+     before the recorder starts; the button returns at the end of the take. */
+  stopVoicePlayback();
+  showReplayButton(false);
+  startVoiceRecording();
 
   const recognition = new SpeechRecognition();
   componentRecognition = recognition;
@@ -1171,20 +1228,19 @@ function startComponentSpeaking() {
     startMicTimer(
       els.componentMicBtn,
       () => {
-        /* Time is up: stop cleanly and keep whatever was heard. */
-        setComponentMicStatus("processing", "Time is up. Saving what you said.");
-        try { recognition.stop(); } catch (error) { /* already stopping */ }
+        /* Time is up. The take ends exactly as a stop tap ends it, down the same
+           path - what was heard stays, and the sheet waits for the child. */
+        finishComponentSpeaking();
       },
       (secondsLeft, ending) => {
         if (!readout) return;
-        /* Unhide here, not before startMicTimer: that call resets the previous
-           timer, which hides this element. */
         readout.hidden = false;
         readout.textContent = String(secondsLeft);
         readout.classList.toggle("is-ending", ending);
         els.componentSpeechStatus.classList.toggle("is-ending", ending);
       }
     );
+    if (readout) { readout.hidden = false; readout.textContent = String(MIC_LIMIT_SECONDS); }
   };
 
   recognition.onresult = (event) => {
@@ -1234,7 +1290,14 @@ function startComponentSpeaking() {
 
     stopMicTimer();
     componentRecognition = null;
-    if (!heardSpeech && !recognitionFailed) setComponentMicStatus("retry");
+    componentStopping = false;
+    /* The clip only exists once the recorder is told to stop. */
+    stopVoiceRecording();
+    setComponentMicStatus(heardSpeech || recognitionFailed ? "ready" : "retry");
+    /* The listen button waits for this. On a stop tap the sentence is already on
+       screen, but a take that ran to the clock lands its last words right here,
+       and the button has to count them. */
+    renderComponentFrame();
   };
 
   try {
@@ -1295,6 +1358,9 @@ function startMicTimer(button, onExpire, onTick) {
   button.classList.add("is-timing");
   const fill = ensureMicGauge(button).querySelector(".mic-gauge-fill");
 
+  /* The readout and the draining rim belong to a microphone that is running.
+     Every path that stops it goes through stopMicTimer, which clears both - so
+     they are on screen while the child speaks and gone the moment they stop. */
   const step = (now) => {
     const elapsed = (now - startedAt) / 1000;
     const left = Math.max(0, MIC_LIMIT_SECONDS - elapsed);
@@ -1812,6 +1878,7 @@ function updateWriteChrome(scenes, active) {
 
 /* --- Tell My Story sheet ------------------------------------------------- */
 let tellStoryRecognition = null;
+let tellStoryStopping = false;
 let tellStoryTrigger = null;
 
 function openTellStory(index, trigger) {
@@ -1985,6 +2052,7 @@ function renderTellStory() {
   els.tellStoryFrame.spellcheck = false;
 
   els.reviewStoryBtn.disabled = !heard;
+  refreshReplayButton();
   /* With an answer in the box, "Type instead" has nothing left to offer - the
      child taps the words. Same bargain the Class 1 sheet strikes. */
   els.typeStoryBtn.hidden = Boolean(heard);
@@ -1996,33 +2064,47 @@ function setTellStoryStatus(micState, detail = "") {
     ? label
     : `${label} — ${detail}`;
   els.tellStoryStatus.dataset.state = micState;
-  els.tellStoryMicBtn.classList.toggle("listening", micState === "listening");
+  /* The button follows the microphone, not the caption. A recognised sentence
+     sets the line back to "ready" while recognition is still running, and taking
+     the button out of its listening state there left a resting mic sitting above
+     a countdown that was still ticking. It stays a stop button until the
+     recogniser is actually finished with. */
+  const listening = !tellStoryStopping
+    && (micState === "listening" || Boolean(tellStoryRecognition));
+  els.tellStoryMicBtn.classList.toggle("listening", listening);
   els.tellStoryMicBtn.classList.toggle("processing", micState === "processing");
   els.tellStoryMicBtn.classList.toggle("try-again", micState === "retry");
-  setMicButtonFace(micState === "listening");
+  setMicButtonFace(els.tellStoryMicBtn, listening, micState === "retry");
+  if (!listening) showIdleMicTimer(els.tellStoryMicBtn, "#tellStoryCountdown");
 }
 
-/* Tapping the button while it listens already stops the recording - the mic on
-   its face was the only thing still saying "start". Listening shows a stop
-   square instead, so the button reads as what pressing it will do. */
-function setMicButtonFace(listening) {
-  const host = els.tellStoryMicBtn?.querySelector("[data-icon], span");
+/* Tapping either microphone while it listens already stops the recording - the
+   mic on its face was the only thing still saying "start". Listening shows a
+   stop square instead, so the button reads as what pressing it will do. Both
+   sheets share it: Class 1 asks about the picture, Class 2 tells the story, and
+   the same button should not mean two things. */
+function setMicButtonFace(button, listening, retry = false) {
+  const host = button?.querySelector("[data-icon], span");
   if (!host) return;
   const wanted = listening ? "stop" : "mic";
-  if (host.dataset.icon === wanted && host.dataset.iconHydrated === "1") return;
-  host.dataset.icon = wanted;
-  host.innerHTML = icon(wanted);
-  host.dataset.iconHydrated = "1";
-  els.tellStoryMicBtn.setAttribute("aria-label", listening ? "Stop speaking" : "Start speaking");
+  if (host.dataset.icon !== wanted || host.dataset.iconHydrated !== "1") {
+    host.dataset.icon = wanted;
+    host.innerHTML = icon(wanted);
+    host.dataset.iconHydrated = "1";
+  }
+  button.setAttribute("aria-label",
+    listening ? "Stop speaking" : (retry ? "Try speech again" : "Start speaking"));
 }
 
 function stopTellStoryRecognition() {
   stopMicTimer();
   const recognition = tellStoryRecognition;
   tellStoryRecognition = null;
+  tellStoryStopping = false;
   if (recognition) { try { recognition.abort(); } catch (error) { /* already ending */ } }
   els.tellStoryMicBtn?.classList.remove("listening", "processing");
-  setMicButtonFace(false);
+  setMicButtonFace(els.tellStoryMicBtn, false);
+  hideMicCountdown("#tellStoryCountdown", els.tellStoryStatus);
   stopVoiceRecording();
 }
 
@@ -2035,35 +2117,98 @@ let voiceRecorder = null;
 let voiceChunks = [];
 let voiceClipUrl = null;
 let voicePlayback = null;
+/* MediaRecorder hands back its last chunk and its stop asynchronously, and those
+   handlers write the clip that everything else reads. Stamping each take and
+   checking the stamp keeps a slow ending out of the sheet that opened after it -
+   otherwise the child finds the previous slot's voice under the listen button. */
+let voiceTake = 0;
 
 function clearVoiceClip() {
+  voiceTake += 1;
   stopVoicePlayback();
   if (voiceClipUrl) URL.revokeObjectURL(voiceClipUrl);
   voiceClipUrl = null;
   voiceChunks = [];
-  if (els.replayVoiceBtn) els.replayVoiceBtn.hidden = true;
+  showReplayButton(false);
+}
+
+/* The seconds-left readout belongs to a microphone that is running. */
+function hideMicCountdown(selector, status) {
+  const readout = document.querySelector(selector);
+  if (readout) { readout.hidden = true; readout.classList.remove("is-ending"); }
+  status?.classList.remove("is-ending");
+}
+
+/* The seconds and the ring belong to a microphone that is running, and to
+   nothing else: they appear when the child presses record and go when they press
+   stop. At rest - before the first word and after the last - the sheet is the
+   button and the sentence. */
+function showIdleMicTimer(button, readoutSelector) {
+  const readout = document.querySelector(readoutSelector);
+  if (readout) { readout.hidden = true; readout.classList.remove("is-ending"); }
+  button?.classList.remove("is-timing", "is-ending");
+}
+
+/* Both sheets carry one of these, so toggling the pair had Class 2 un-hiding
+   Class 1's button behind it. Only the sheet on screen owns it; with neither
+   open - closing, resetting - the pair goes away together. */
+function showReplayButton(visible) {
+  const openSheet = [els.tellStoryModal, els.componentSpeechModal].find((m) => m && !m.hidden);
+  els.replayVoiceBtns.forEach((button) => {
+    if (!openSheet || openSheet.contains(button)) button.hidden = !visible;
+  });
+}
+
+/* Whatever sentence the open sheet is holding. Class 1 answers a question about
+   the picture, Class 2 tells a sentence of the story; the replay button serves
+   whichever one the child is looking at. */
+function currentSpokenText() {
+  if (!els.tellStoryModal.hidden) return (state.tellStory?.heard || "").trim();
+  if (!els.componentSpeechModal.hidden) return (els.componentSpeechInput.value || "").trim();
+  return "";
+}
+
+/* Any sentence on the sheet earns the button. Gating it on "was this recorded in
+   this visit" hid it whenever the recording could not be made - a browser that
+   refuses a second microphone stream, a permission never granted - and a button
+   that is sometimes there is worse than one that always is. With a recording it
+   plays the child their own voice; without one it reads the sentence back. */
+function refreshReplayButton() {
+  showReplayButton(Boolean(voiceClipUrl || currentSpokenText()));
 }
 
 async function startVoiceRecording() {
   if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") return;
+  const take = ++voiceTake;
   try {
-    voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    /* The first use of this is a permission prompt, which the child can sit on
+       for as long as they like - by the time it answers the sheet may be gone. */
+    if (take !== voiceTake) { stream.getTracks().forEach((track) => track.stop()); return; }
+    voiceStream = stream;
     voiceChunks = [];
-    voiceRecorder = new MediaRecorder(voiceStream);
-    voiceRecorder.ondataavailable = (event) => {
+    /* Held locally as well: stopVoiceRecording drops the shared reference the
+       moment it asks the recorder to stop, and the stop event arrives after
+       that. Reading the shared one here threw, so the clip was never built and
+       the listen button always fell back to reading the sentence aloud. */
+    const recorder = new MediaRecorder(stream);
+    voiceRecorder = recorder;
+    recorder.ondataavailable = (event) => {
+      if (take !== voiceTake) return;
       if (event.data?.size) voiceChunks.push(event.data);
     };
-    voiceRecorder.onstop = () => {
+    recorder.onstop = () => {
+      if (take !== voiceTake) { voiceChunks = []; return; }
       /* The clip replaces the last one only if there is something in it - a
          recorder that caught nothing should not blank a good take. */
       if (voiceChunks.length) {
         if (voiceClipUrl) URL.revokeObjectURL(voiceClipUrl);
-        voiceClipUrl = URL.createObjectURL(new Blob(voiceChunks, { type: voiceRecorder.mimeType }));
-        if (els.replayVoiceBtn) els.replayVoiceBtn.hidden = false;
+        voiceClipUrl = URL.createObjectURL(new Blob(voiceChunks, { type: recorder.mimeType }));
+        refreshReplayButton();
       }
       voiceChunks = [];
     };
-    voiceRecorder.start();
+    recorder.start();
   } catch (error) {
     /* No microphone permission for a second stream, or no recorder here. The
        sentence still works; only hearing it back does not. */
@@ -2083,17 +2228,36 @@ function stopVoiceRecording() {
 
 function stopVoicePlayback() {
   if (voicePlayback) { voicePlayback.pause(); voicePlayback = null; }
-  els.replayVoiceBtn?.classList.remove("is-playing");
+  window.speechSynthesis?.cancel();
+  els.replayVoiceBtns.forEach((button) => button.classList.remove("is-playing"));
 }
 
 function playVoiceClip() {
-  if (!voiceClipUrl) return;
-  if (voicePlayback) { stopVoicePlayback(); return; }
-  voicePlayback = new Audio(voiceClipUrl);
-  els.replayVoiceBtn.classList.add("is-playing");
-  voicePlayback.addEventListener("ended", stopVoicePlayback);
-  voicePlayback.addEventListener("error", stopVoicePlayback);
-  voicePlayback.play().catch(stopVoicePlayback);
+  /* window-qualified: optional chaining does not save a bare name that was never
+     declared, and this is the first thing the button touches. */
+  if (voicePlayback || window.speechSynthesis?.speaking) { stopVoicePlayback(); return; }
+
+  if (voiceClipUrl) {
+    voicePlayback = new Audio(voiceClipUrl);
+    els.replayVoiceBtns.forEach((button) => button.classList.add("is-playing"));
+    voicePlayback.addEventListener("ended", stopVoicePlayback);
+    voicePlayback.addEventListener("error", stopVoicePlayback);
+    voicePlayback.play().catch(stopVoicePlayback);
+    return;
+  }
+
+  /* No recording to play - read the sentence back instead, so the button still
+     does the thing it promises. */
+  const text = currentSpokenText();
+  if (!text || !window.speechSynthesis) return;
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  speech.rate = 0.9;
+  speech.onend = stopVoicePlayback;
+  speech.onerror = stopVoicePlayback;
+  els.replayVoiceBtns.forEach((button) => button.classList.add("is-playing"));
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
 }
 
 /* TODO: swap for the real sentence-checking API. The local pass fixes the
@@ -2132,6 +2296,19 @@ function useTellStorySentence() {
 
 /* Mirrors the Class 1 microphone: continuous, restarted on Chrome's own
    hang-ups, and stopped only by the shared twenty-second clock. */
+/* Class 1's ending, on Class 2's sheet. Same button, same loop, so the same
+   path - see finishComponentSpeaking for why it is stop() and not abort(). */
+function finishTellStorySpeaking() {
+  if (!tellStoryRecognition) return;
+  tellStoryStopping = true;
+  try { tellStoryRecognition.stop(); } catch (error) { /* already stopping */ }
+  stopMicTimer();
+  hideMicCountdown("#tellStoryCountdown", els.tellStoryStatus);
+  stopVoiceRecording();
+  setTellStoryStatus(state.tellStory?.heard?.trim() ? "ready" : "retry");
+  renderTellStory();
+}
+
 function startTellStorySpeaking() {
   const SpeechRecognition = getSpeechRecognitionConstructor();
   if (!SpeechRecognition) {
@@ -2143,12 +2320,16 @@ function startTellStorySpeaking() {
     return;
   }
 
-  if (tellStoryRecognition) {
-    stopTellStoryRecognition();
-    setTellStoryStatus("retry");
-    return;
-  }
+  if (tellStoryStopping) stopTellStoryRecognition();
 
+  /* Stop means stop, not "that went wrong". The sentence heard so far stays on
+     screen, the button goes back to the microphone it was, and the listen button
+     appears beside Cancel so the child can hear what they just said - then the
+     next press starts the next take. */
+  if (tellStoryRecognition) { finishTellStorySpeaking(); return; }
+
+  stopVoicePlayback();
+  showReplayButton(false);
   startVoiceRecording();
 
   const recognition = new SpeechRecognition();
@@ -2174,20 +2355,26 @@ function startTellStorySpeaking() {
     startMicTimer(
       els.tellStoryMicBtn,
       () => {
-        setTellStoryStatus("processing", "Time is up.");
-        try { recognition.stop(); } catch (error) { /* already stopping */ }
-        /* Twenty seconds of nothing is its own ending - the child gets told to
-           look again rather than left staring at a mic that has given up. */
-        if (!spoken.trim()) showTellStoryOutcome("retry");
+        /* The limit ends the recording. It does not end the child's turn: moving
+           the sheet on by itself took the sentence away from someone who had not
+           finished with it, and who never pressed stop. Only stop, Done and
+           Cancel change what is on screen. */
+        finishTellStorySpeaking();
       },
       (secondsLeft, ending) => {
         if (!readout) return;
+        /* Unhide here, not before startMicTimer: that call resets the previous
+           timer, which hides this element. */
         readout.hidden = false;
         readout.textContent = String(secondsLeft);
         readout.classList.toggle("is-ending", ending);
         els.tellStoryStatus.classList.toggle("is-ending", ending);
       }
     );
+    /* Shown here rather than on the first tick: the tick runs on an animation
+       frame, and a frame that arrives late left the readout blank while the
+       child was already speaking. startMicTimer has done its hiding by now. */
+    if (readout) { readout.hidden = false; readout.textContent = String(MIC_LIMIT_SECONDS); }
   };
 
   recognition.onresult = (event) => {
@@ -2227,7 +2414,16 @@ function startTellStorySpeaking() {
     }
     stopMicTimer();
     tellStoryRecognition = null;
-    if (!spoken && !recognitionFailed) setTellStoryStatus("retry");
+    tellStoryStopping = false;
+    /* The recorder has to be closed here too, not only on the paths that go
+       through stopTellStoryRecognition - a recording that is never stopped
+       never produces a clip, and the listen button waits for one forever. */
+    stopVoiceRecording();
+    /* Recognition is over: re-run the status so the button drops out of its
+       listening state now that tellStoryRecognition is null, and re-render so a
+       take that ran to the clock still earns its listen button. */
+    setTellStoryStatus(spoken || recognitionFailed ? "ready" : "retry");
+    renderTellStory();
   };
 
   try {
@@ -2735,7 +2931,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.id === "tellStoryMicBtn") { startTellStorySpeaking(); return; }
-  if (target.id === "replayVoiceBtn") { playVoiceClip(); return; }
+  if (target.hasAttribute("data-replay-voice")) { playVoiceClip(); return; }
   if (target.id === "closeTellStoryBtn") { closeTellStory(); return; }
 
   if (target.id === "sayAgainBtn") {
@@ -2924,6 +3120,9 @@ els.componentSpeechInput?.addEventListener("input", renderComponentDone);
 els.componentSentenceFrame?.addEventListener("input", () => {
   els.componentSpeechInput.value = els.componentSentenceFrame.textContent.trim();
   renderComponentDone();
+  /* Erase the sentence and there is nothing left to listen to, so the button
+     goes with it rather than staying on to do nothing. */
+  refreshReplayButton();
 });
 trackKeyboardInset();
 hydrateIcons();

@@ -2915,7 +2915,8 @@ ul { list-style: none; }
   box-shadow: var(--sh-brand);
   transition: transform var(--dur-2) var(--ease);
 }
-.mic-button:hover { transform: scale(1.05); }
+.mic-button:hover:not(:disabled) { transform: scale(1.05); }
+
 
 /* Two looks, not five: resting violet, and recording. Recording keeps its own
    crimson because "we are listening to you right now" is worth its own colour;
@@ -3786,8 +3787,10 @@ ul { list-style: none; }
 .round-btn {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
+  /* The same height as Cancel and Done beside it, and square so it stays a
+     circle - one token, so the three keep matching when it changes. */
+  width: var(--action-btn-h);
+  height: var(--action-btn-h);
   flex: none;
   border-radius: 50%;
   background: var(--brand-soft);
@@ -3972,16 +3975,18 @@ ul { list-style: none; }
    lift, next to an Edit and a Magic that have gone quiet with it. It keeps full
    opacity all the same: the one word telling them the story is in has to read. */
 .screen-foot .btn:disabled { opacity: .45; }
-.screen-foot .btn.primary.is-done:disabled { opacity: 1; }
+/* Submitted keeps the button it was - the same violet, the same white tick -
+   and simply goes quiet: no gradient lift, no glow, dimmed like any spent
+   control. Repainting it grey made it look like a different button rather than
+   this one, finished. The grayscale that .btn:disabled adds is cancelled here,
+   or the violet drains out of it. */
 .btn.primary.is-done {
-  background: #F0F0F3;
-  color: #7C7C86;
-  border: 2px solid #D8D8DE;
+  background: var(--brand-grad);
+  border-color: var(--edge-brand);
+  color: var(--ink-on-brand);
   box-shadow: none;
+  filter: none;
 }
-/* The tick is drawn white for a filled button, so on the grey one it has to be
-   restated - a CSS stroke beats the gradient set on the path. */
-.btn.primary.is-done .ico path { stroke: #9A9AA4; }
 
 /* The fade only appears on a box that really has more text below it - on a short
    story it would dim a last line that was never cut off. */
