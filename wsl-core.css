@@ -481,10 +481,15 @@ ul { list-style: none; }
    two. Matching what is on the page, not what the boxes measure. */
 .bgm-toggle .ico { width: 25px; height: 25px; }
 /* The cover hides the top bar, so its copy of the control floats over the art -
-   on the cover's own grid, mirroring the chip in the opposite corner, so it sits
-   on the composition rather than on top of it. Solid white with a real shadow:
-   the art behind it is a video that goes from night sky to lit snow, and a
-   translucent button disappears into the bright frames. */
+   on the cover's own grid, mirroring the AI Powered Creativity chip in the
+   opposite corner. It is dressed as that chip too, because it is the only other
+   thing on the composition: the chip's own outline violet, its indigo showing
+   the night sky through, and the same soft violet glow around it. White chrome
+   and a white glyph made it the brightest object on a cover it should be
+   sitting quietly in the corner of.
+
+   #7B31D1 is the brightest point of the stroke drawn into chip-ai.png; #9456FF
+   is the chip's lettering, already set on .wl-chip--ai. */
 .bgm-toggle.is-on-cover {
   position: absolute;
   top: calc(23 * var(--u));
@@ -493,22 +498,32 @@ ul { list-style: none; }
   width: calc(48 * var(--u));
   height: calc(48 * var(--u));
   border-radius: calc(15 * var(--u));
-  background: rgba(255, 255, 255, .14);
-  border: 1.5px solid rgba(255, 255, 255, .48);
+  background: rgba(12, 0, 105, .45);
+  border: 1.5px solid #7B31D1;
   backdrop-filter: blur(10px) saturate(120%);
   -webkit-backdrop-filter: blur(10px) saturate(120%);
-  box-shadow: 0 4px 16px rgba(10, 8, 35, .28);
+  box-shadow: 0 calc(4 * var(--u)) calc(16 * var(--u)) rgba(10, 8, 35, .28),
+              0 0 calc(14 * var(--u)) rgba(123, 49, 209, .38);
 }
-/* The glyph is drawn in violet for light chrome; over the night sky it is
-   flattened to white instead, which the cover's own type already is. */
 .bgm-toggle.is-on-cover .ico {
   width: calc(30 * var(--u));
   height: calc(30 * var(--u));
-  filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, .45));
+  filter: drop-shadow(0 0 calc(6 * var(--u)) rgba(148, 86, 255, .45));
 }
+/* The glyph's own violets restated in the chip's, reached by what they are drawn
+   with rather than by position: the cone carries the gradient, the wave carries
+   its one violet. Everything else the speaker is made of is left alone - the
+   muted slash keeps its pink, because that is the one mark that has to read as a
+   state and not as a colour, and the mask's black stays black or the line it
+   cuts through the artwork stops cutting. */
+.bgm-toggle.is-on-cover .ico [fill^="url("] { fill: #9456FF; }
+.bgm-toggle.is-on-cover .ico [stroke^="url("],
+.bgm-toggle.is-on-cover .ico [stroke="#5634C0"] { stroke: #9456FF; }
 .bgm-toggle.is-on-cover:hover {
-  background: rgba(255, 255, 255, .26);
-  border-color: rgba(255, 255, 255, .68);
+  background: rgba(20, 4, 128, .58);
+  border-color: #9456FF;
+  box-shadow: 0 calc(4 * var(--u)) calc(16 * var(--u)) rgba(10, 8, 35, .28),
+              0 0 calc(20 * var(--u)) rgba(148, 86, 255, .52);
 }
 /* Proportional, so the glyph keeps its weight as the button scales. The wrapper
    carries the percentage: on the <svg> it resolves against the wrapper, which is
