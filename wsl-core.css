@@ -876,6 +876,29 @@ ul { list-style: none; }
     0 0 34px rgba(34, 199, 169, .40);
 }
 
+/* Blue: the same filled pill as .primary, one hue over. Stops stay opaque and at
+   or below #2E6BE0 - lighter blues drop white label text under 4.5:1. */
+.btn.blue {
+  position: relative;
+  color: var(--ink-on-brand);
+  background: linear-gradient(105deg, #2E6BE0 0%, #2158D6 45%, #1A47B8 100%);
+  border: 2px solid #163C99;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .48),
+    inset 0 -1px 0 rgba(255, 255, 255, .14),
+    0 4px 12px rgba(33, 88, 214, .30),
+    0 10px 26px rgba(33, 88, 214, .22);
+}
+.btn.blue:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: linear-gradient(105deg, #3A76E8 0%, #2A63DE 45%, #2050C4 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    0 6px 16px rgba(33, 88, 214, .34),
+    0 14px 32px rgba(33, 88, 214, .26),
+    0 0 34px rgba(59, 123, 255, .42);
+}
+
 /* Rose: "go back and change your words" is its own kind of action, and sharing
    grey with Back made the two look like the same button in two places. */
 .btn.rose {
@@ -3724,9 +3747,13 @@ ul { list-style: none; }
 .speech-pane.is-confirm { gap: clamp(12px, 2vh, 26px); }
 
 /* --- final check --------------------------------------------------------- */
+/* The pictures had the whole screen and the story got a strip at the bottom.
+   Sized as a ratio instead, the two grow and shrink together and the paragraph -
+   the thing being checked on a screen called Check your final story - gets room
+   to be read without scrolling. */
 .final-layout {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) minmax(0, .78fr);
   gap: clamp(16px, 2.4vh, 30px);
   height: 100%;
   min-height: 0;
@@ -3766,6 +3793,7 @@ ul { list-style: none; }
    looking at the same thing. */
 .story-panel {
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   gap: 10px;
   padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 30px);
   border-radius: var(--r-lg);
@@ -3773,7 +3801,10 @@ ul { list-style: none; }
   border: 1.5px solid var(--brand-tint);
   min-height: 0;
 }
-.story-panel-title {
+/* Both column labels share one rule, so the two halves are headed identically -
+   only the colour says which side is which. */
+.story-panel-title,
+.magic-tag {
   font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-weight: 800;
@@ -3781,10 +3812,13 @@ ul { list-style: none; }
   text-transform: uppercase;
   color: var(--brand-strong);
 }
+/* No clamp any more - the box is whatever the panel's share of the screen
+   leaves it, and scrolls only when the story really is longer than that. */
 .story-lines {
   display: grid;
+  align-content: start;
   gap: 8px;
-  max-height: clamp(96px, 20vh, 190px);
+  min-height: 0;
 }
 .story-lines p {
   font-family: var(--font-body);
@@ -3794,6 +3828,99 @@ ul { list-style: none; }
   color: var(--ink);
 }
 .story-lines-empty { color: var(--ink-3); }
+
+/* Split: their story and the AI's, one rule apart. Equal halves on purpose -
+   giving the AI the wider column would say whose version counts. */
+.story-panel.is-split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 32px);
+}
+/* Half the width, and the AI's version is the longer of the two - so the box
+   gets back in height what the split took away. */
+.story-panel.is-split .story-lines { max-height: clamp(112px, 22vh, 220px); }
+.story-col[hidden] { display: none; }
+.story-col {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+.story-col.is-ai {
+  padding-left: clamp(16px, 2vw, 32px);
+  border-left: 1.5px solid var(--brand-tint);
+  animation: aiColIn var(--dur-3, 320ms) var(--ease) both;
+}
+@keyframes aiColIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: none; }
+}
+/* The head row holds the title on both sides, so the two paragraphs start on
+   the same line whether or not a button sits beside one of them. */
+.story-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 38px;
+}
+/* The AI half is labelled by the button that made it, not by a second heading -
+   the child reads "Magic" and knows which press this text came from. */
+.magic-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1A47B8;
+}
+.magic-tag .ico { width: 20px; height: 20px; }
+
+/* Waiting on the AI: the wand turns while the button is out of action, so the
+   pause reads as work rather than a dead press. */
+.btn.is-working .ico { animation: magicSpin 700ms var(--ease) infinite; }
+@keyframes magicSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Submitted is a state, not an invitation - it gives up the gradient and the
+   lift, next to an Edit and a Magic that have gone quiet with it. It keeps full
+   opacity all the same: the one word telling them the story is in has to read. */
+.screen-foot .btn:disabled { opacity: .45; }
+.screen-foot .btn.primary.is-done:disabled { opacity: 1; }
+.btn.primary.is-done {
+  background: #F0F0F3;
+  color: #7C7C86;
+  border: 2px solid #D8D8DE;
+  box-shadow: none;
+}
+/* The tick is drawn white for a filled button, so on the grey one it has to be
+   restated - a CSS stroke beats the gradient set on the path. */
+.btn.primary.is-done .ico path { stroke: #9A9AA4; }
+
+/* The fade only appears on a box that really has more text below it - on a short
+   story it would dim a last line that was never cut off. */
+.story-lines.is-clipped {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+}
+
+/* A new retelling should look new. The old text dims while the AI is thinking,
+   the new one arrives on a short rise - enough to notice, not enough to wait for. */
+.story-lines.is-thinking p {
+  opacity: .35;
+  filter: blur(1px);
+  transition: opacity var(--dur-2) var(--ease), filter var(--dur-2) var(--ease);
+}
+.story-lines p.is-fresh { animation: aiStoryIn var(--dur-2) var(--ease) both; }
+@keyframes aiStoryIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story-lines p.is-fresh,
+  .story-col.is-ai,
+  .btn.is-working .ico { animation: none; }
+}
 
 /* --- narrow and short screens -------------------------------------------- */
 @media (max-width: 900px) {
@@ -3806,6 +3933,12 @@ ul { list-style: none; }
   .write-slots { gap: 10px; }
   .write-slot { padding: 9px 14px; }
   .write-slot-box { padding: 7px 12px; }
+
+  /* The two stories stay side by side at every width - stacked, the child
+     scrolls between them instead of comparing them, which is the whole job of
+     the screen. Only the gutter narrows. */
+  .story-panel.is-split { gap: 14px; }
+  .story-col.is-ai { padding-left: 14px; }
 }
 @media (max-height: 820px) {
   .write-slot-text { -webkit-line-clamp: 2; }

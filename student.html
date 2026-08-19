@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wonder Story Lab - Student</title>
-<link rel="stylesheet" href="wsl-core.css">
+<link rel="stylesheet" href="wsl-core.css?v=6">
 <style>
 /* The student view has no chrome: the lesson owns the whole screen, and the only
    close button in the product is the one on the speech sheet. */
@@ -334,9 +334,22 @@
         <div class="screen-body">
           <div class="final-layout">
             <div id="reviewScenes" class="final-scenes"></div>
-            <section class="story-panel">
-              <h2 class="story-panel-title">My Story</h2>
-              <div id="reviewParagraph" class="story-lines scroll-y"></div>
+            <!-- One story until Magic is pressed. The AI column then opens
+                 beside it - side by side is the whole point, the child reads the
+                 difference instead of being told about it. -->
+            <section id="storyPanel" class="story-panel">
+              <div class="story-col">
+                <div class="story-col-head">
+                  <h2 class="story-panel-title">My Story</h2>
+                </div>
+                <div id="reviewParagraph" class="story-lines scroll-y"></div>
+              </div>
+              <div id="aiStoryCol" class="story-col is-ai" hidden>
+                <div class="story-col-head">
+                  <span class="magic-tag"><span data-icon="wand" aria-hidden="true"></span> Magic</span>
+                </div>
+                <div id="reviewAiParagraph" class="story-lines scroll-y" aria-live="polite"></div>
+              </div>
             </section>
           </div>
         </div>
@@ -347,8 +360,9 @@
             <span class="steps-label">Final Check</span>
             <span class="step-dot done"></span><span class="step-dot on"></span>
           </div>
-          <button class="btn ghost" type="button" data-go="storyBuilder"><span data-icon="chevronLeft"></span> Edit</button>
+          <button id="reviewEditBtn" class="btn ghost" type="button" data-go="storyBuilder"><span data-icon="chevronLeft"></span> Edit</button>
           <div class="foot-actions">
+            <button id="magicBtn" class="btn blue" type="button"><span data-icon="wand"></span> Magic</button>
             <button id="submitStoryBtn" class="btn primary" type="button">Submit <span data-icon="chevronRight"></span></button>
           </div>
         </div>
@@ -647,6 +661,10 @@ const state = {
   tellStory: null,
   scriptedShown: new Set(),
   savedSentences: {},
+  aiStoryVariant: 0,
+  aiStoryShown: false,
+  aiStoryBusy: false,
+  storySubmitted: false,
   portfolioTab: "all",
   portfolio: [],
   presentationStoryIndex: 0,
@@ -689,6 +707,12 @@ const els = {
   useSentenceBtn: document.querySelector("#useSentenceBtn"),
   reviewScenes: document.querySelector("#reviewScenes"),
   reviewParagraph: document.querySelector("#reviewParagraph"),
+  reviewAiParagraph: document.querySelector("#reviewAiParagraph"),
+  storyPanel: document.querySelector("#storyPanel"),
+  aiStoryCol: document.querySelector("#aiStoryCol"),
+  magicBtn: document.querySelector("#magicBtn"),
+  reviewEditBtn: document.querySelector("#reviewEditBtn"),
+  submitStoryBtn: document.querySelector("#submitStoryBtn"),
   starField: document.querySelector("#starField"),
   portfolioContent: document.querySelector("#portfolioContent"),
   presentationCount: document.querySelector("#presentationCount"),
@@ -2159,6 +2183,163 @@ function correctStorySentenceLocally(value) {
 }
 
 /* ================================================= REVIEW / SUBMIT === */
+/* The AI retelling. The child's own words stay the spine of it - every pass
+   starts from their sentences again, never from the last AI draft, so pressing
+   Magic twice gives a different retelling rather than a compounded one.
+   Three variants, so the button always has somewhere new to go. */
+const AI_STORY_VARIANTS = [
+  {
+    openers: ["One cold winter morning,", "A little later,", "At the very end,"],
+    tails: [
+      "and the whole village sparkled under the soft white snow",
+      "while tiny snowflakes danced in the freezing air",
+      "and everyone smiled with warm, happy hearts"
+    ]
+  },
+  {
+    openers: ["On a bright snowy day,", "Soon after that,", "Finally,"],
+    tails: [
+      "and the frosty rooftops glowed like sugar in the morning light",
+      "as the cold wind whispered through the quiet street",
+      "and the day ended with laughter that nobody wanted to stop"
+    ]
+  },
+  {
+    openers: ["Once, in a small snowy town,", "Then, without waiting,", "In the end,"],
+    tails: [
+      "and every window shone with a tiny golden light",
+      "while the snow crunched softly under two busy boots",
+      "and it became a story worth telling again and again"
+    ]
+  }
+];
+
+/* Plain words traded for fuller ones. "snowman" runs before "snow" so the word
+   boundary keeps them apart. */
+const AI_WORD_UPGRADES = [
+  [/\bsnowman\b/gi, "cheerful snowman"],
+  [/\bsnow\b/gi, "soft white snow"],
+  [/\bbig\b/gi, "enormous"],
+  [/\bsmall\b/gi, "tiny"],
+  [/\bhappy\b/gi, "joyful"],
+  [/\bsad\b/gi, "gloomy"],
+  [/\bnice\b/gi, "wonderful"],
+  [/\bgood\b/gi, "amazing"],
+  [/\bcold\b/gi, "freezing"],
+  [/\bfriend\b/gi, "best friend"],
+  [/\bhouse\b/gi, "cozy house"],
+  [/\bboy\b/gi, "little boy"],
+  [/\bgirl\b/gi, "little girl"],
+  [/\bran\b/gi, "raced"],
+  [/\bwent\b/gi, "hurried"],
+  [/\bsaw\b/gi, "spotted"],
+  [/\bmade\b/gi, "carefully made"],
+  [/\bhat\b/gi, "bright red hat"],
+  [/\bscarf\b/gi, "long woolly scarf"]
+];
+
+function enrichStoryText(value, variantIndex) {
+  const source = String(value || "").trim();
+  if (!source) return "";
+
+  const variant = AI_STORY_VARIANTS[variantIndex % AI_STORY_VARIANTS.length];
+  const sentences = (source.match(/[^.!?]+[.!?]*/g) || [source])
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
+  return sentences.map((sentence, index) => {
+    /* Spelling and grammar first - the same pass the child already saw while
+       writing - then the words that carry the picture. */
+    const corrected = correctStorySentenceLocally(sentence).text;
+    const mark = /[.!?]$/.test(corrected) ? corrected.slice(-1) : ".";
+    let body = corrected.replace(/[.!?]+$/, "").trim();
+    AI_WORD_UPGRADES.forEach(([pattern, replacement]) => {
+      body = body.replace(pattern, replacement);
+    });
+
+    /* "a enormous snowman" - swapping the word changes the article it needs. */
+    body = body.replace(/\b(a|an|A|An)\s+([A-Za-z][\w'-]*)/g, (match, article, word) => {
+      const wantsAn = /^[aeiou]/i.test(word) && !/^(uni|use|user|one|euro)/i.test(word);
+      const corrected = wantsAn ? "an" : "a";
+      return `${/^[A-Z]/.test(article) ? corrected[0].toUpperCase() + corrected.slice(1) : corrected} ${word}`;
+    });
+
+    /* A sentence that already opens on a time gets no second one - "One cold
+       winter morning, it was a quiet night" says the same thing twice. */
+    const opener = variant.openers[Math.min(index, variant.openers.length - 1)];
+    if (!/^(it was|one |once|on a|then|soon|after|finally|at last|later|first|next)\b/i.test(body)) {
+      /* "I" is the one first word that must not be lowered when the opener
+         takes over the front of the sentence. */
+      if (!/^I\b/.test(body)) body = body.charAt(0).toLowerCase() + body.slice(1);
+      body = `${opener} ${body}`;
+    }
+
+    return `${body.replace(/[,\s]+$/, "")}, ${variant.tails[index % variant.tails.length]}${mark}`;
+  }).join(" ");
+}
+
+/* Marks a story box that has text below the fold, so the fade that says "there
+   is more" only shows up when there is. */
+function markClipped(box) {
+  if (!box) return;
+  box.classList.toggle("is-clipped", box.scrollHeight - box.clientHeight > 4);
+}
+
+function renderAiStory() {
+  if (!els.reviewAiParagraph) return;
+  const enriched = enrichStoryText(getFinalParagraph(), state.aiStoryVariant);
+  els.reviewAiParagraph.innerHTML = enriched
+    ? `<p class="is-fresh">${escapeHtml(enriched)}</p>`
+    : '<p class="story-lines-empty">The AI version appears once you have written your story.</p>';
+  markClipped(els.reviewAiParagraph);
+  markClipped(els.reviewParagraph);
+}
+
+/* Magic opens the second column the first time and rewrites it every time
+   after - the button keeps working, so a retelling they do not like is one more
+   press away. A beat of waiting first: instant would read as a canned list the
+   page had all along. */
+function runMagic() {
+  if (state.aiStoryBusy || state.storySubmitted || !getFinalParagraph()) return;
+  state.aiStoryBusy = true;
+  els.magicBtn.disabled = true;
+
+  const firstRun = !state.aiStoryShown;
+  if (firstRun) {
+    state.aiStoryShown = true;
+    els.aiStoryCol.hidden = false;
+    els.storyPanel.classList.add("is-split");
+    els.reviewAiParagraph.innerHTML = "";
+  } else {
+    state.aiStoryVariant += 1;
+    els.reviewAiParagraph.classList.add("is-thinking");
+  }
+  els.magicBtn.classList.add("is-working");
+
+  window.setTimeout(() => {
+    state.aiStoryBusy = false;
+    els.magicBtn.disabled = false;
+    els.magicBtn.classList.remove("is-working");
+    els.reviewAiParagraph.classList.remove("is-thinking");
+    renderAiStory();
+  }, 700);
+}
+
+/* Everything the child could still change goes quiet at once, so "Submitted" is
+   not a label sitting next to buttons that still invite a change. */
+function setReviewSubmitted(submitted) {
+  state.storySubmitted = submitted;
+  if (!els.submitStoryBtn) return;
+  els.submitStoryBtn.innerHTML = submitted
+    ? '<span data-icon="check"></span> Submitted'
+    : 'Submit <span data-icon="chevronRight"></span>';
+  els.submitStoryBtn.classList.toggle("is-done", submitted);
+  els.submitStoryBtn.disabled = submitted;
+  els.reviewEditBtn.disabled = submitted;
+  els.magicBtn.disabled = submitted || state.aiStoryBusy;
+  hydrateIcons(els.submitStoryBtn);
+}
+
 function getFinalParagraph() {
   return getFinalSceneIds()
     .map((sceneId) => state.savedSentences[sceneId])
@@ -2180,9 +2361,24 @@ function renderReview() {
   els.reviewParagraph.innerHTML = story
     ? `<p>${escapeHtml(story)}</p>`
     : '<p class="story-lines-empty">Your story will appear here.</p>';
+
+  /* Back from Edit with different sentences: close the AI column and start over
+     rather than leaving last visit's retelling of a story that no longer exists. */
+  state.aiStoryShown = false;
+  state.aiStoryBusy = false;
+  state.aiStoryVariant = 0;
+  els.aiStoryCol.hidden = true;
+  els.storyPanel.classList.remove("is-split");
+  els.magicBtn.classList.remove("is-working");
+  els.reviewAiParagraph.classList.remove("is-thinking");
+  els.reviewAiParagraph.innerHTML = "";
+  setReviewSubmitted(false);
+  els.magicBtn.disabled = !story;
+  markClipped(els.reviewParagraph);
 }
 
 function submitStory() {
+  if (state.storySubmitted) return;
   state.portfolio.unshift({
     id: Date.now(),
     studentName: state.studentName,
@@ -2191,7 +2387,11 @@ function submitStory() {
   });
   state.presentationStoryIndex = 0;
   state.presentationSceneIndex = 0;
-  showScreen("submitSuccess");
+
+  /* The screen stays put. The button answering "Submitted" is the whole result -
+     moving on by itself would take the story away before they had finished
+     looking at it. */
+  setReviewSubmitted(true);
 }
 
 function launchStars() {
@@ -2343,6 +2543,10 @@ function resetStory() {
   state.tellStory = null;
   state.scriptedShown = new Set();
   state.savedSentences = {};
+  state.aiStoryVariant = 0;
+  state.aiStoryShown = false;
+  state.aiStoryBusy = false;
+  state.storySubmitted = false;
   state.presentationSceneIndex = 0;
   showScreen("welcome");
 }
@@ -2457,6 +2661,8 @@ document.addEventListener("click", (event) => {
     }
     return;
   }
+
+  if (target.id === "magicBtn") { runMagic(); return; }
 
   if (target.id === "submitStoryBtn") {
     if (!storyIsComplete()) return;
