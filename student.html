@@ -577,7 +577,7 @@
 <script>
 /* =============================================================================
    WONDER STORY LAB — application logic
-   Sections: data · state · bgm · router · speech · class 1 · class 2 ·
+   Sections: data · state · router · speech · class 1 · class 2 ·
              portfolio · presentation · events
    ========================================================================== */
 
@@ -688,7 +688,6 @@ const state = {
 
 const els = {
   app: document.querySelector("#app"),
-  bgmToggle: document.querySelector("#bgmToggle"),
   baseSceneGrid: document.querySelector("#baseSceneGrid"),
   sequenceLibrary: document.querySelector("#sequenceLibrary"),
   firstSlots: document.querySelector("#firstSlots"),
@@ -752,186 +751,6 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 }
 
-/* ================================================================== BGM ===
-   Cover / Class / Portfolio tracks. Position is preserved when navigating
-   inside the same section so the music never restarts mid-lesson.
-   ======================================================================== */
-const BGM_VOLUME = 0.2;
-const BGM_FADE_MS = 850;
-const BGM_STORAGE_KEY = "wonderStoryLabBgmMuted";
-const classActivityScreens = new Set([
-  "welcome", "baseScenes", "firstSequence", "aiMaker", "aiScene", "finalRearrange",
-  "class1Complete", "storyBuilder", "storyReview", "submitSuccess"
-]);
-
-let bgmTracks = null;
-let bgmActiveTrackName = null;
-let bgmUnlocked = false;
-let bgmMuted = false;
-const bgmFadeFrames = new Map();
-
-function readSavedBgmMuted() {
-  try { return localStorage.getItem(BGM_STORAGE_KEY) === "true"; }
-  catch (error) { return false; }
-}
-
-function saveBgmMuted() {
-  try { localStorage.setItem(BGM_STORAGE_KEY, String(bgmMuted)); }
-  catch (error) { console.warn("BGM mute preference could not be saved.", error); }
-}
-
-function getBgmTrackName(screenName) {
-  if (classActivityScreens.has(screenName)) return "class12";
-  if (screenName === "portfolio" || screenName === "presentation") return "portfolio";
-  return null;
-}
-
-function updateBgmToggle() {
-  if (!els.bgmToggle) return;
-  const host = els.bgmToggle.querySelector("[data-icon], span");
-  if (host) {
-    host.dataset.icon = bgmMuted ? "muted" : "speaker";
-    host.dataset.iconHydrated = "0";
-    host.innerHTML = icon(host.dataset.icon);
-    host.dataset.iconHydrated = "1";
-  }
-  els.bgmToggle.setAttribute("aria-pressed", String(bgmMuted));
-  els.bgmToggle.setAttribute("aria-label", bgmMuted ? "Unmute background music" : "Mute background music");
-}
-
-function cancelBgmFade(audio) {
-  const frame = bgmFadeFrames.get(audio);
-  if (frame) cancelAnimationFrame(frame);
-  bgmFadeFrames.delete(audio);
-}
-
-/* HTMLMediaElement.volume throws outside [0,1], and interpolation can drift a
-   fraction past either end, so every write is clamped. */
-function clampVolume(value) {
-  return Math.min(1, Math.max(0, value));
-}
-
-function fadeBgmAudio(audio, targetVolume, duration = BGM_FADE_MS, pauseWhenSilent = false) {
-  if (!audio) return;
-  cancelBgmFade(audio);
-  const startVolume = audio.volume;
-  const endVolume = clampVolume(targetVolume);
-  const startedAt = performance.now();
-
-  if (duration <= 0 || Math.abs(startVolume - endVolume) < 0.002) {
-    audio.volume = endVolume;
-    if (pauseWhenSilent && endVolume === 0) audio.pause();
-    return;
-  }
-
-  const step = (now) => {
-    const progress = Math.min(1, (now - startedAt) / duration);
-    audio.volume = clampVolume(startVolume + ((endVolume - startVolume) * progress));
-    if (progress < 1) { bgmFadeFrames.set(audio, requestAnimationFrame(step)); return; }
-    bgmFadeFrames.delete(audio);
-    audio.volume = endVolume;
-    if (pauseWhenSilent && endVolume === 0) audio.pause();
-  };
-  bgmFadeFrames.set(audio, requestAnimationFrame(step));
-}
-
-function playBgmAudio(audio) {
-  if (!audio || !audio.paused) return;
-  const playPromise = audio.play();
-  if (playPromise?.catch) playPromise.catch((error) => console.warn("BGM could not start.", error));
-}
-
-function canPlayBgm() { return bgmUnlocked && !bgmMuted && !document.hidden; }
-
-function syncBgmForScreen(screenName, immediate = false) {
-  if (!bgmTracks) return;
-  const nextTrackName = getBgmTrackName(screenName);
-  const previousTrack = bgmActiveTrackName ? bgmTracks[bgmActiveTrackName] : null;
-  const nextTrack = nextTrackName ? bgmTracks[nextTrackName] : null;
-
-  if (nextTrackName === bgmActiveTrackName) {
-    if (!nextTrack) return;
-    if (canPlayBgm()) {
-      playBgmAudio(nextTrack);
-      if (Math.abs(nextTrack.volume - BGM_VOLUME) >= 0.002) {
-        fadeBgmAudio(nextTrack, BGM_VOLUME, immediate ? 0 : BGM_FADE_MS);
-      }
-    } else if (bgmMuted) {
-      fadeBgmAudio(nextTrack, 0, immediate ? 0 : 300, true);
-    }
-    return;
-  }
-
-  bgmActiveTrackName = nextTrackName;
-  if (previousTrack) fadeBgmAudio(previousTrack, 0, immediate ? 0 : BGM_FADE_MS, true);
-
-  if (nextTrack && canPlayBgm()) {
-    if (nextTrack.paused) nextTrack.volume = 0;
-    playBgmAudio(nextTrack);
-    fadeBgmAudio(nextTrack, BGM_VOLUME, immediate ? 0 : BGM_FADE_MS);
-  }
-}
-
-function setBgmMuted(muted) {
-  bgmMuted = Boolean(muted);
-  saveBgmMuted();
-  updateBgmToggle();
-  if (bgmMuted) Object.values(bgmTracks || {}).forEach((audio) => fadeBgmAudio(audio, 0, 300, true));
-  else syncBgmForScreen(currentScreen);
-}
-
-function unlockBgm() {
-  if (bgmUnlocked) return;
-  bgmUnlocked = true;
-  syncBgmForScreen(currentScreen);
-}
-
-function initializeBgmSystem() {
-  bgmTracks = {
-    cover: new Audio("assets/Audio/coverpage_bgm.mp3"),
-    class12: new Audio("assets/Audio/class1and2_bgm.mp3"),
-    portfolio: new Audio("assets/Audio/portfolio_bgm.mp3")
-  };
-
-  Object.entries(bgmTracks).forEach(([name, audio]) => {
-    audio.loop = true;
-    audio.preload = "auto";
-    audio.volume = 0;
-    audio.addEventListener("error", () => console.warn(`Could not load ${name} BGM.`, audio.error));
-  });
-
-  bgmMuted = readSavedBgmMuted();
-  updateBgmToggle();
-
-  bgmActiveTrackName = getBgmTrackName(currentScreen);
-  if (!bgmMuted && !document.hidden) {
-    const openingTrack = bgmTracks[bgmActiveTrackName];
-    if (openingTrack) {
-      openingTrack.volume = BGM_VOLUME;
-      const autoplayPromise = openingTrack.play();
-      if (autoplayPromise?.then) {
-        autoplayPromise.then(() => { bgmUnlocked = true; }).catch(() => { openingTrack.volume = 0; });
-      }
-    }
-  }
-
-  document.addEventListener("pointerdown", unlockBgm, { capture: true, once: true });
-  document.addEventListener("click", unlockBgm, { capture: true, once: true });
-
-  els.bgmToggle?.addEventListener("click", () => {
-    bgmUnlocked = true;
-    setBgmMuted(!bgmMuted);
-  });
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      Object.values(bgmTracks).forEach((audio) => { cancelBgmFade(audio); audio.pause(); });
-      return;
-    }
-    syncBgmForScreen(currentScreen);
-  });
-}
-
 /* =============================================================== ROUTER === */
 function getActiveTopTab() {
   if (["welcome", "baseScenes", "firstSequence", "aiMaker", "aiScene", "finalRearrange", "class1Complete"].includes(currentScreen)) return "class1";
@@ -972,7 +791,6 @@ function showScreen(screenName) {
 
   playVeil(currentScreen, screenName);
   currentScreen = screenName;
-  syncBgmForScreen(screenName);
 
   document.querySelectorAll("[data-screen]").forEach((screen) => {
     screen.classList.toggle("on", screen.dataset.screen === screenName);
@@ -3126,7 +2944,6 @@ els.componentSentenceFrame?.addEventListener("input", () => {
 });
 trackKeyboardInset();
 hydrateIcons();
-initializeBgmSystem();
 initOwlGuide();
 
 /* The teacher's view can hand us a starting point - #storyBuilder to open on
