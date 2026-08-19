@@ -552,9 +552,13 @@ const RESULT_SCENES = [
   "assets/My%20Generated%20Scene_1.png",
   "assets/Base%20Image%202.jpg"
 ];
+/* One entry per scene, in the same order as RESULT_SCENES - which is how the
+   child writes it: a sentence belongs to the picture it was said about, and the
+   card puts it back under that picture. */
 const RESULT_STORY = [
   "It is a beautiful day. The boy makes a snowman.",
-  "He decorates the snowman with lights. Then he makes a wish."
+  "He decorates the snowman with lights.",
+  "Then he makes a wish."
 ];
 /* Who has handed something in. The rest are still working. */
 const SUBMITTED = new Set(["s1", "s2", "s3", "s4", "s5", "s6", "s7"]);
@@ -1018,21 +1022,37 @@ async function drawStoryCard(student) {
      two-sentence story. */
   const pad = 70;
   const gap = 34;
-  const frameW = (CARD_W - pad * 2 - gap * 2) / 3;
-  const frameH = Math.round(frameW * 0.75);
+  const boxW = (CARD_W - pad * 2 - gap * 2) / 3;
   const top = pad + 150;
-  const panelTop = top + frameH + 44;
-  const textW = CARD_W - pad * 2 - 80;
+
+  /* One box per scene, holding the picture and the sentence that was said about
+     it. A white mount above a separate violet panel drew a line between a picture
+     and its own words, and numbered the panels to put them back together again -
+     three scenes should be three things on this card, not six with labels
+     explaining which belongs to which.
+
+     The sentence is inset to the picture's own edges rather than the box's, so
+     the two share a left margin and read as one column. */
+  const inset = 22;
+  const imgW = boxW - inset * 2;
+  const imgH = Math.round(imgW * 0.75);
+  const textGap = 18;
+  const capLineH = 42;
+  const textTop = top + inset + imgH + textGap;
+  const caption = (index) => String(RESULT_STORY[index] || "").trim();
 
   const gauge = document.createElement("canvas").getContext("2d");
-  gauge.font = "600 36px Nunito, Segoe UI, sans-serif";
-  const bodyH = RESULT_STORY.reduce(
-    (sum, line) => sum + drawWrapped(null, line, 0, 0, textW, 50, gauge) + 10, 0);
-  const panelH = 84 + bodyH + 24;
+  gauge.font = "600 30px Nunito, Segoe UI, sans-serif";
+  /* One height for all three, taken from the longest. Sizing each box to its own
+     sentence ended the three columns at three different depths, which reads as a
+     card that went wrong rather than as three sentences of different lengths. */
+  const capBodyH = RESULT_SCENES.reduce((tallest, _, index) => Math.max(
+    tallest, drawWrapped(null, caption(index), 0, 0, imgW, capLineH, gauge)), 0);
+  const boxH = inset + imgH + textGap + capBodyH + inset;
 
   const canvas = document.createElement("canvas");
   canvas.width = CARD_W;
-  canvas.height = Math.round(panelTop + panelH + pad);
+  canvas.height = Math.round(top + boxH + pad);
   const ctx = canvas.getContext("2d");
 
   ctx.fillStyle = "#FFFFFF";
@@ -1047,43 +1067,31 @@ async function drawStoryCard(student) {
   ctx.font = "700 30px Nunito, Segoe UI, sans-serif";
   ctx.fillText(LESSON_LABEL, pad, pad + 74);
 
-  /* Three scenes across, each in the white mount the screens use. */
+  /* Three scenes across, each one box: the picture, and under it the words the
+     child said about that picture, on the violet the story is always shown on. */
   images.forEach((img, index) => {
-    const x = pad + index * (frameW + gap);
-    ctx.fillStyle = "#FFFFFF";
-    ctx.strokeStyle = "#E7E2F7";
+    const x = pad + index * (boxW + gap);
+
+    ctx.fillStyle = "#F0EBFF";
+    ctx.strokeStyle = "#E4DBFC";
     ctx.lineWidth = 3;
-    roundRect(ctx, x, top, frameW, frameH, 22);
+    roundRect(ctx, x, top, boxW, boxH, 26);
     ctx.fill();
     ctx.stroke();
+
     ctx.save();
-    roundRect(ctx, x + 10, top + 10, frameW - 20, frameH - 20, 14);
+    roundRect(ctx, x + inset, top + inset, imgW, imgH, 16);
     ctx.clip();
     /* Cover, so a portrait source is not squashed into a landscape frame. */
-    const scale = Math.max((frameW - 20) / img.width, (frameH - 20) / img.height);
+    const scale = Math.max(imgW / img.width, imgH / img.height);
     const w = img.width * scale;
     const h = img.height * scale;
-    ctx.drawImage(img, x + 10 + ((frameW - 20) - w) / 2, top + 10 + ((frameH - 20) - h) / 2, w, h);
+    ctx.drawImage(img, x + inset + (imgW - w) / 2, top + inset + (imgH - h) / 2, w, h);
     ctx.restore();
-  });
 
-  /* My Story, on the same violet panel both views show it in. */
-  ctx.fillStyle = "#F0EBFF";
-  ctx.strokeStyle = "#E4DBFC";
-  ctx.lineWidth = 3;
-  roundRect(ctx, pad, panelTop, CARD_W - pad * 2, panelH, 26);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = "#5634C0";
-  ctx.font = "800 26px Nunito, Segoe UI, sans-serif";
-  ctx.fillText("MY STORY", pad + 40, panelTop + 34);
-
-  ctx.fillStyle = "#1D1B3C";
-  ctx.font = "600 36px Nunito, Segoe UI, sans-serif";
-  let y = panelTop + 84;
-  RESULT_STORY.forEach((line) => {
-    y = drawWrapped(ctx, line, pad + 40, y, textW, 50) + 10;
+    ctx.fillStyle = "#1D1B3C";
+    ctx.font = "600 30px Nunito, Segoe UI, sans-serif";
+    drawWrapped(ctx, caption(index), x + inset, textTop, imgW, capLineH);
   });
 
   return canvas;
